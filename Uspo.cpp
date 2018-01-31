@@ -647,21 +647,35 @@ int main(int argc, char* argv[])
 									}
 									else if (oneEng)
 									{
-										if (statusRed != "red_on")
+										if (soundFFT.reduktor_gl_obor > helicopter.red_obor_mg1)
 										{
-											offsetMg1 = getOffset(helicopter.fullName["red_on"], soundFFT.reduktor_gl_obor);
-											statusRed = "red_on";
+											if (statusRed != "red_off")
+											{
+												offsetAvt = getOffset(helicopter.fullName["red_avt_mg"], soundFFT.reduktor_gl_obor);
+												offsetMg1 = getOffset(helicopter.fullName["red_off"], soundFFT.reduktor_gl_obor);
+												statusRed = "red_off";
+											}
+											turnAvt = getParameterFromFile(helicopter.fullName["red_avt_mg"], offsetAvt);
+											offsetAvt += delta;
+											turnMg1 = getParameterFromFile(helicopter.fullName["red_off"], offsetMg1) * turnAvt / helicopter.red_obor_mg2;
+											offsetMg1 += delta;
 										}
-										turnMg1 = getParameterFromFile(helicopter.fullName["red_on"], offsetMg1);
-										offsetMg1 += delta;
+										else
+										{
+											if (statusRed != "red_on")
+											{
+												offsetMg1 = getOffset(helicopter.fullName["red_on"], soundFFT.reduktor_gl_obor);
+												statusRed = "red_on";
+											}
+											turnMg1 = getParameterFromFile(helicopter.fullName["red_on"], offsetMg1);
+											offsetMg1 += delta;
+										}
 									}
 								}
 							}
 						}
 						else
 						{
-
-
 							if (statusRed != "red_off")
 							{
 								offsetAvt = getOffset(helicopter.fullName["red_avt_mg"], soundFFT.reduktor_gl_obor);
@@ -672,7 +686,6 @@ int main(int argc, char* argv[])
 							offsetAvt += delta;
 							turnMg1 = getParameterFromFile(helicopter.fullName["red_off"], offsetMg1) * turnAvt / helicopter.red_obor_mg2;
 							offsetMg1 += delta;
-
 						}
 
 
