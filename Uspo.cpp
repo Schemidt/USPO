@@ -906,7 +906,6 @@ int main(int argc, char* argv[])
 						cout << "Continue? [y/n]" << endl;
 						while (!std::regex_match(ch, regex("[yn]")))//повторяем ввод пока не будет цифра от 1 до 4
 							ch = getch();//считываем буфер ввода
-
 						switch (ch[0])
 						{
 						case 'y':
