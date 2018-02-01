@@ -65,7 +65,7 @@ float offsetAnsatRev = 0;
 
 int main(int argc, char* argv[])
 {
-	/*if (argc > 1)// если передаем аргументы, то argc будет больше 1(в зависимости от кол-ва аргументов)
+	if (argc > 1)// если передаем аргументы, то argc будет больше 1(в зависимости от кол-ва аргументов)
 	{
 		if (argv[1] == mi_8_mtv5.modelName) { helicopter = mi_8_mtv5; }
 		else if (argv[1] == mi_8_amtsh.modelName) { helicopter = mi_8_amtsh; }
@@ -80,76 +80,77 @@ int main(int argc, char* argv[])
 			cout << " Unknown argument" << endl;
 		}
 	}
-	else
-	{
-		string ch;
-		string Type;
-		printf(" Types of Armed Forces:\n 1) VVS\n 2) VMF\n");
+	//else
+	//{
+	//	string ch;
+	//	string Type;
+	//	printf(" Types of Armed Forces:\n 1) VVS\n 2) VMF\n");
 
-		while (!std::regex_match(ch, regex("[1-2]")))//повторяем ввод пока не будет цифра от 1 до 4
-			ch = getch();//считываем буфер ввода
+	//	while (!std::regex_match(ch, regex("[1-2]")))//повторяем ввод пока не будет цифра от 1 до 4
+	//		ch = getch();//считываем буфер ввода
 
-		switch (ch[0])
-		{
-		case '1':
-			Type = "VVS";
-			break;
-		case '2':
-			Type = "VMF";
-			break;
-		}
-		system("cls");
-		if (Type == "VVS")
-		{
-			ch = "NULL";
-			printf(" Choose Helicopter:\n 1) Mi-8 MTV-5\n 2) Mi-8 AMTSH\n 3) Mi-26\n 4) Mi-28\n 5) Ka-226\n 6) ANSAT\n");
+	//	switch (ch[0])
+	//	{
+	//	case '1':
+	//		Type = "VVS";
+	//		break;
+	//	case '2':
+	//		Type = "VMF";
+	//		break;
+	//	}
+	//	//Type = "VVS";
+	//	system("cls");
+	//	if (Type == "VVS")
+	//	{
+	//		ch = "NULL";
+	//		printf(" Choose Helicopter:\n 1) Mi-8 MTV-5\n 2) Mi-8 AMTSH\n 3) Mi-26\n 4) Mi-28\n 5) Ka-226\n 6) ANSAT\n");
 
-			while (!std::regex_match(ch, regex("[1-6]")))//повторяем ввод пока не будет цифра от 1 до 4
-				ch = getch();//считываем буфер ввода
+	//		while (!std::regex_match(ch, regex("[1-6]")))//повторяем ввод пока не будет цифра от 1 до 4
+	//			ch = getch();//считываем буфер ввода
 
-			switch (ch[0])
-			{
-			case '1':
-				helicopter = mi_8_mtv5;
-				break;
-			case '2':
-				helicopter = mi_8_amtsh;
-				break;
-			case '3':
-				helicopter = mi_26;
-				break;
-			case '4':
-				helicopter = mi_28;
-				break;
-			case '5':
-				helicopter = ka_226;
-				break;
-			case '6':
-				helicopter = ansat;
-				break;
-			}
-		}
-		else if (Type == "VMF")
-		{
-			ch = "NULL";
-			printf(" Choose Helicopter:\n 1) Ka-27M\n 2) Ka-29\n");
+	//		switch (ch[0])
+	//		{
+	//		case '1':
+	//			helicopter = mi_8_mtv5;
+	//			break;
+	//		case '2':
+	//			helicopter = mi_8_amtsh;
+	//			break;
+	//		case '3':
+	//			helicopter = mi_26;
+	//			break;
+	//		case '4':
+	//			helicopter = mi_28;
+	//			break;
+	//		case '5':
+	//			helicopter = ka_226;
+	//			break;
+	//		case '6':
+	//			helicopter = ansat;
+	//			break;
+	//		}
+	//	}
+	//	else if (Type == "VMF")
+	//	{
+	//		ch = "NULL";
+	//		printf(" Choose Helicopter:\n 1) Ka-27M\n 2) Ka-29\n");
 
-			while (!std::regex_match(ch, regex("[1-2]")))//повторяем ввод пока не будет цифра от 1 до 4
-				ch = getch();//считываем буфер ввода
+	//		while (!std::regex_match(ch, regex("[1-2]")))//повторяем ввод пока не будет цифра от 1 до 4
+	//			ch = getch();//считываем буфер ввода
 
-			switch (ch[0])
-			{
-			case '1':
-				helicopter = ka_27;
-				break;
-			case '2':
-				helicopter = ka_29;
-				break;
-			}
-		}
+	//		switch (ch[0])
+	//		{
+	//		case '1':
+	//			helicopter = ka_27;
+	//			break;
+	//		case '2':
+	//			helicopter = ka_29;
+	//			break;
+	//		}
+	//	}
 
-	}*/
-	helicopter = ka_29;
+	//}
+	helicopter = ka_27;
 	system("cls");
 	std::cout << "Using " << helicopter.modelName << std::endl;
 	helicopter.setPath(helicopter.modelName + "/");
