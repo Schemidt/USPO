@@ -29,6 +29,8 @@ float getOffset(string filename, float parameter);
 
 float getParameterFromFile(string filename, float offset);
 
+float getParameterFromVector(vector<float> value, vector<float> time, float offset);
+
 SOUNDFFT soundFFT;
 RED red;
 Helicopter helicopter;
@@ -78,6 +80,7 @@ int main(int argc, char* argv[])
 		else
 		{
 			cout << " Unknown argument" << endl;
+			return 0;
 		}
 	}
 	//else
@@ -178,6 +181,7 @@ int main(int argc, char* argv[])
 		return 0;
 	InitRealTime(1);
 
+	bool hovering = 0;
 	float currentTime = 0;
 	while (1)
 	{
@@ -192,6 +196,7 @@ int main(int argc, char* argv[])
 		{
 			if (!pause) //Программа не поставлена на паузу
 			{
+				
 				//Блок штатной работы программы
 				if (!test)
 				{
@@ -788,6 +793,7 @@ int main(int argc, char* argv[])
 					{
 						if (timeReset == 0)
 						{
+							soundFFT.p_model_stop = 1;
 							system("cls");
 							printf(" TEST:\n 1) 0 - 200\n 2) 203 - 292\n 3) 295 - 434\n 4) 437 - 586\n 5) 589 - 688\n 6) 691 - 1100\n 7) 1103 - 1322\n 8) 1325 - 1589\n");
 
@@ -848,11 +854,12 @@ int main(int argc, char* argv[])
 						//Признак работы теста
 						soundFFT.p_model_stop = 0;
 					}
-					if (helicopter.modelName == "ka_27" || helicopter.modelName == "ka_29")
+					if (helicopter.modelName == "ka_29")
 					{
 						//Сброс параметров в начале теста
 						if (timeReset == 0)
 						{
+							soundFFT.p_model_stop = 1;
 							system("cls");
 							printf(" TEST:\n 1) 0 - 75\n 2) 77 - 429\n 3) 431 - 701\n 4) 703 - 858\n 5) 860 - 920\n 6) 922 - 1387\n 7) 1389 - 1919\n");
 
@@ -910,13 +917,80 @@ int main(int argc, char* argv[])
 						//Признак работы теста
 						soundFFT.p_model_stop = 0;
 					}
+					if (helicopter.modelName == "ka_27")
+					{
+						
+						//Сброс параметров в начале теста
+						if (timeReset == 0)
+						{
+							soundFFT.p_model_stop = 1;
+							system("cls");
+							printf(" Choose type:\n 1) Standart\n 2) Hovering\n");
+
+							while (!std::regex_match(ch, regex("[1-2]")))//повторяем ввод пока не будет цифра от 1 до 4
+								ch = getch();//считываем буфер ввода
+
+							switch (ch[0])
+							{
+							case '1':
+								hovering = 0;
+								break;
+							case '2':
+								hovering = 1;
+								break;
+							}
+
+							system("cls");
+							printf(" Enter range (in seconds): [start] [end]\n ");
+							cin >> offsetTest;
+							cin >> timeEnd;
+							
+							soundFFT.time = 0;
+							rt.timeS = 0;
+							currentTime = 0;
+							delta = 0;
+							timeReset = 1;
+							system("cls");
+						}
+
+						if (hovering)
+						{
+							//Передача данных теста
+							offsetTest += delta;
+							soundFFT.eng1_obor = getParameterFromFile("test/eng1_7h.txt", offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
+							soundFFT.eng2_obor = getParameterFromFile("test/eng2_7h.txt", offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
+							soundFFT.reduktor_gl_obor = getParameterFromFile("test/red_7h.txt", offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
+							soundFFT.styk_hv = getParameterFromFile("test/h_7h.txt", offsetTest);//
+							soundFFT.styk_hv = (soundFFT.styk_hv < 0) ? 0 : soundFFT.styk_hv;
+							soundFFT.osadki = 0;
+							soundFFT.ny = getParameterFromFile("test/step_7h.txt", offsetTest);//
+							soundFFT.v = getParameterFromFile("test/v_7h.txt", offsetTest) * 0.28;//
+																						  //Признак работы теста
+							soundFFT.p_model_stop = 0;
+						}
+						else
+						{
+							//Передача данных теста
+							offsetTest += delta;
+							soundFFT.eng1_obor = getParameterFromFile("test/eng1_7.txt", offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
+							soundFFT.eng2_obor = getParameterFromFile("test/eng2_7.txt", offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
+							soundFFT.reduktor_gl_obor = getParameterFromFile("test/red_7.txt", offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
+							soundFFT.styk_hv = getParameterFromFile("test/h_7.txt", offsetTest);//
+							soundFFT.styk_hv = (soundFFT.styk_hv < 0) ? 0 : soundFFT.styk_hv;
+							soundFFT.osadki = getParameterFromFile("test/tangaz_7.txt", offsetTest);//
+							soundFFT.ny = getParameterFromFile("test/step_7.txt", offsetTest);//
+							soundFFT.v = getParameterFromFile("test/v_7.txt", offsetTest) * 0.28;//
+																						  //Признак работы теста
+							soundFFT.p_model_stop = 0;
+						}
+					}
 					//Тест закончился
 					if (offsetTest > timeEnd)
 					{
 						//Признак работы теста
 						soundFFT.p_model_stop = 1;
 						system("cls");
-						cout << "Test [" <<ch[0]<<"] ended..."<< endl;
+						cout << "Test ended..."<< endl;
 						cout << "Continue? [y/n]" << endl;
 						while (!std::regex_match(ch, regex("[yn]")))//повторяем ввод пока не будет цифра от 1 до 4
 							ch = getch();//считываем буфер ввода
@@ -1311,57 +1385,7 @@ float getParameterFromFile(string filename, float offset)
 	}
 	base.close();
 
-	float x, x0, x1, x2, fx, fx0, fx1, fx2, a0, a1, a2;
-	int n = time.size();
-
-	for (i = 0; i < n; i++)
-	{
-		if (offset < time[0])
-		{
-			turn = value[0];//достаем обороты из базы
-			break;
-		}
-		if (offset == time[i])//реальная отметка времени совпала с отметкой из бд
-		{
-			turn = value[i];//достаем обороты из базы
-			break;
-		}
-		if (offset > time[n - 1])//отметка не совпала с базой
-		{
-			turn = value[n - 1];//достаем обороты из базы
-			break;
-		}
-		if (offset > time[i] && offset < time[i + 1])//отметка не совпала с базой
-		{
-
-			//квадратичная интерполяция
-			if (i - 1 == -1 || i + 1 == n)
-			{
-				if (i - 1 == -1)
-				{
-					x = offset; x0 = time[i]; fx0 = value[i]; x1 = time[i + 1]; fx1 = value[i + 1]; x2 = time[i + 2]; fx2 = value[i + 2];
-				}
-				if (i + 1 == n)
-				{
-					x = offset; x0 = time[i - 2]; fx0 = value[i - 2]; x1 = time[i - 1]; fx1 = value[i - 1]; x2 = time[i]; fx2 = value[i];
-				}
-			}
-			else
-			{
-				x = offset; x0 = time[i - 1]; fx0 = value[i - 1]; x1 = time[i]; fx1 = value[i]; x2 = time[i + 1]; fx2 = value[i + 1];
-			}
-			//если квадратичная интерполяция не работает - берем линейную
-			if (x1 == x0 | x2 == x1)
-			{
-				turn = lineInterpolation(x0, fx0, x1, fx1, x);
-			}
-			else
-			{
-				turn = squareInterpolation(x0, fx0, x1, fx1, x2, fx2, x);
-			}
-		}
-	}
-	return turn;
+	return turn = getParameterFromVector(value, time, offset);
 }
 
 float getPitch(float offset, string filename, float parameter)
@@ -1568,4 +1592,87 @@ float getOffset(string filename, float parameter)
 
 	return new_offset;
 
+}
+
+float getParameterFromVector(vector<float> value, vector<float> time, float offset)
+{
+	float turn = 0;
+	float x, x0, x1, x2, fx, fx0, fx1, fx2, a0, a1, a2;
+	int n = time.size();
+
+	for (int i = 0; i < n; i++)
+	{
+		if (offset < time[0])
+		{
+			turn = value[0];//достаем обороты из базы
+			break;
+		}
+		if (offset == time[i])//реальная отметка времени совпала с отметкой из бд
+		{
+			turn = value[i];//достаем обороты из базы
+			break;
+		}
+		if (offset > time[n - 1])//отметка не совпала с базой
+		{
+			turn = value[n - 1];//достаем обороты из базы
+			break;
+		}
+		if (offset > time[i] && offset < time[i + 1])//отметка не совпала с базой
+		{
+
+			//квадратичная интерполяция
+			if (i - 1 == -1 || i + 1 == n)
+			{
+				if (i - 1 == -1)
+				{
+					x = offset; x0 = time[i]; fx0 = value[i]; x1 = time[i + 1]; fx1 = value[i + 1]; x2 = time[i + 2]; fx2 = value[i + 2];
+				}
+				if (i + 1 == n)
+				{
+					x = offset; x0 = time[i - 2]; fx0 = value[i - 2]; x1 = time[i - 1]; fx1 = value[i - 1]; x2 = time[i]; fx2 = value[i];
+				}
+			}
+			else
+			{
+				x = offset; x0 = time[i - 1]; fx0 = value[i - 1]; x1 = time[i]; fx1 = value[i]; x2 = time[i + 1]; fx2 = value[i + 1];
+			}
+			//если квадратичная интерполяция не работает - берем линейную
+			if (x1 == x0 | x2 == x1)
+			{
+				turn = lineInterpolation(x0, fx0, x1, fx1, x);
+			}
+			else
+			{
+				turn = squareInterpolation(x0, fx0, x1, fx1, x2, fx2, x);
+			}
+		}
+	}
+	return turn;
+}
+//Функция жрущая файл с любым количеством столбцев, записывает их в переданные параметры
+template<typename... T>//WIP
+float getParameterFromFile(string filename, float offset,const T*... args)
+{
+	float t = 0;
+	float v = 0;
+	vector <float> time, value;
+
+	//данные в базе должны храниться в строках парами, по паре в каждой строке (не больше)
+	string str;
+	ifstream base(filename);
+	while (!base.eof())
+	{
+		getline(base, str);
+		sscanf(str.c_str(), "%f %f", &t, &v);
+		time.push_back(t);
+		value.push_back(v);
+	}
+	base.close();
+
+	for (auto it : std::initializer_list<float> args)
+	{
+
+	}
+
+	return 1;
 }
