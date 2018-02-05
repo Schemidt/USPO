@@ -1024,6 +1024,19 @@ int main(int argc, char* argv[])
 									timeTest.push_back(t);
 								}
 								base5.close();
+
+								//иру
+								ifstream base7("test/step_7h.txt");
+								while (!base7.eof())
+								{
+									string str;
+									float t = 0;
+									float v = 0;
+									getline(base7, str);
+									sscanf(str.c_str(), "%f %f", &t, &v);
+									stepTest.push_back(v);
+								}
+								base7.close();
 							}
 							else
 							{
