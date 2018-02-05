@@ -1790,55 +1790,63 @@ float getParameterFromVector(vector<float> value, vector<float> time, float offs
 {
 	float turn = 0;
 	float x, x0, x1, x2, fx, fx0, fx1, fx2, a0, a1, a2;
+	int l = 0;
 	int n = time.size();
+	int r = n;
 
-	for (int i = 0; i < n; i++)
+	if (offset < time[0])
 	{
-		if (offset < time[0])
+		return turn = value[0];//достаем обороты из базы
+	}
+	else if (offset > time[n - 1])//отметка не совпала с базой
+	{
+		return turn = value[n - 1];//достаем обороты из базы
+	}
+	else
+	{
+		while (abs(l - r) >= 2)
 		{
-			turn = value[0];//достаем обороты из базы
-			break;
-		}
-		if (offset == time[i])//реальна€ отметка времени совпала с отметкой из бд
-		{
-			turn = value[i];//достаем обороты из базы
-			break;
-		}
-		if (offset > time[n - 1])//отметка не совпала с базой
-		{
-			turn = value[n - 1];//достаем обороты из базы
-			break;
-		}
-		if (offset > time[i] && offset < time[i + 1])//отметка не совпала с базой
-		{
-
-			//квадратична€ интерпол€ци€
-			if (i - 1 == -1 || i + 1 == n)
+			n = (l + r) / 2;
+			if (offset == time[n])
 			{
-				if (i - 1 == -1)
-				{
-					x = offset; x0 = time[i]; fx0 = value[i]; x1 = time[i + 1]; fx1 = value[i + 1]; x2 = time[i + 2]; fx2 = value[i + 2];
-				}
-				if (i + 1 == n)
-				{
-					x = offset; x0 = time[i - 2]; fx0 = value[i - 2]; x1 = time[i - 1]; fx1 = value[i - 1]; x2 = time[i]; fx2 = value[i];
-				}
+				return turn = value[n];
 			}
 			else
 			{
-				x = offset; x0 = time[i - 1]; fx0 = value[i - 1]; x1 = time[i]; fx1 = value[i]; x2 = time[i + 1]; fx2 = value[i + 1];
-			}
-			//если квадратична€ интерпол€ци€ не работает - берем линейную
-			if (x1 == x0 | x2 == x1)
-			{
-				turn = lineInterpolation(x0, fx0, x1, fx1, x);
-			}
-			else
-			{
-				turn = squareInterpolation(x0, fx0, x1, fx1, x2, fx2, x);
+				if (offset < time[n])
+				{
+					r = n;
+				}
+				else
+				{
+					l = n;
+				}
 			}
 		}
 	}
+	//¬ыбираем 3 точки
+	if (n - 1 == -1)
+	{
+		x = offset; x0 = time[n]; fx0 = value[n]; x1 = time[n + 1]; fx1 = value[n + 1]; x2 = time[n + 2]; fx2 = value[n + 2];
+	}
+	else if (n + 1 == time.size())
+	{
+		x = offset; x0 = time[n - 2]; fx0 = value[n - 2]; x1 = time[n - 1]; fx1 = value[n - 1]; x2 = time[n]; fx2 = value[n];
+	}
+	else
+	{
+		x = offset; x0 = time[n - 1]; fx0 = value[n - 1]; x1 = time[n]; fx1 = value[n]; x2 = time[n + 1]; fx2 = value[n + 1];
+	}
+	//если квадратична€ интерпол€ци€ не работает - берем линейную
+	if (x1 == x0 | x2 == x1)
+	{
+		turn = lineInterpolation(x0, fx0, x1, fx1, x);
+	}
+	else
+	{
+		turn = squareInterpolation(x0, fx0, x1, fx1, x2, fx2, x);
+	}
+
 	return turn;
 }
 //‘ункци€ жруща€ файл с любым количеством столбцев, записывает их в переданные параметры
