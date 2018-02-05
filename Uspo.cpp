@@ -180,9 +180,10 @@ int main(int argc, char* argv[])
 	if (!shaInit())				// Инициализация общей памяти 
 		return 0;
 	InitRealTime(1);
-
 	bool hovering = 0;
 	float currentTime = 0;
+
+	vector <float> timeTest, eng1Test, eng2Test, redTest, highTest, velocityTest, tangazTest, stepTest;
 	while (1)
 	{
 		delta = rt.timeS - currentTime;
@@ -919,7 +920,6 @@ int main(int argc, char* argv[])
 					}
 					if (helicopter.modelName == "ka_27")
 					{
-						
 						//Сброс параметров в начале теста
 						if (timeReset == 0)
 						{
@@ -945,6 +945,192 @@ int main(int argc, char* argv[])
 							cin >> offsetTest;
 							cin >> timeEnd;
 							
+							if (hovering)
+							{
+								//ДВ1
+								ifstream base("test/eng1_7h.txt");
+								while (!base.eof())
+								{
+									string str;
+									float t = 0;
+									float v = 0;
+									getline(base, str);
+									sscanf(str.c_str(), "%f %f", &t, &v);
+									eng1Test.push_back(v);
+								}
+								base.close();
+
+								//ДВ2
+								ifstream base1("test/eng2_7h.txt");
+								while (!base1.eof())
+								{
+									string str;
+									float t = 0;
+									float v = 0;
+									getline(base1, str);
+									sscanf(str.c_str(), "%f %f", &t, &v);
+									eng2Test.push_back(v);
+								}
+								base1.close();
+
+								//Ред
+								ifstream base2("test/red_7h.txt");
+								while (!base2.eof())
+								{
+									string str;
+									float t = 0;
+									float v = 0;
+									getline(base2, str);
+									sscanf(str.c_str(), "%f %f", &t, &v);
+									redTest.push_back(v);
+								}
+								base2.close();
+
+								//Скорость
+								ifstream base3("test/v_7h.txt");
+								while (!base3.eof())
+								{
+									string str;
+									float t = 0;
+									float v = 0;
+									getline(base3, str);
+									sscanf(str.c_str(), "%f %f", &t, &v);
+									velocityTest.push_back(v);
+								}
+								base3.close();
+
+								//Высота
+								ifstream base4("test/h_7h.txt");
+								while (!base4.eof())
+								{
+									string str;
+									float t = 0;
+									float v = 0;
+									getline(base4, str);
+									sscanf(str.c_str(), "%f %f", &t, &v);
+									highTest.push_back(v);
+								}
+								base4.close();
+
+								//Время
+								ifstream base5("test/h_7h.txt");
+								while (!base5.eof())
+								{
+									string str;
+									float t = 0;
+									float v = 0;
+									getline(base5, str);
+									sscanf(str.c_str(), "%f %f", &t, &v);
+									timeTest.push_back(t);
+								}
+								base5.close();
+							}
+							else
+							{
+								//ДВ1
+								ifstream base("test/eng1_7.txt");
+								while (!base.eof())
+								{
+									string str;
+									float t = 0;
+									float v = 0;
+									getline(base, str);
+									sscanf(str.c_str(), "%f %f", &t, &v);
+									eng1Test.push_back(v);
+								}
+								base.close();
+
+								//ДВ2
+								ifstream base1("test/eng2_7.txt");
+								while (!base1.eof())
+								{
+									string str;
+									float t = 0;
+									float v = 0;
+									getline(base1, str);
+									sscanf(str.c_str(), "%f %f", &t, &v);
+									eng2Test.push_back(v);
+								}
+								base1.close();
+
+								//Ред
+								ifstream base2("test/red_7.txt");
+								while (!base2.eof())
+								{
+									string str;
+									float t = 0;
+									float v = 0;
+									getline(base2, str);
+									sscanf(str.c_str(), "%f %f", &t, &v);
+									redTest.push_back(v);
+								}
+								base2.close();
+
+								//Скорость
+								ifstream base3("test/v_7.txt");
+								while (!base3.eof())
+								{
+									string str;
+									float t = 0;
+									float v = 0;
+									getline(base3, str);
+									sscanf(str.c_str(), "%f %f", &t, &v);
+									velocityTest.push_back(v);
+								}
+								base3.close();
+
+								//Высота
+								ifstream base4("test/h_7.txt");
+								while (!base4.eof())
+								{
+									string str;
+									float t = 0;
+									float v = 0;
+									getline(base4, str);
+									sscanf(str.c_str(), "%f %f", &t, &v);
+									highTest.push_back(v);
+								}
+								base4.close();
+
+								//Тангаж
+								ifstream base5("test/tangaz_7.txt");
+								while (!base5.eof())
+								{
+									string str;
+									float t = 0;
+									float v = 0;
+									getline(base5, str);
+									sscanf(str.c_str(), "%f %f", &t, &v);
+									tangazTest.push_back(v);
+								}
+								base5.close();
+
+								//Шаг
+								ifstream base7("test/step_7.txt");
+								while (!base7.eof())
+								{
+									string str;
+									float t = 0;
+									float v = 0;
+									getline(base7, str);
+									sscanf(str.c_str(), "%f %f", &t, &v);
+									stepTest.push_back(v);
+								}
+								base7.close();
+
+								//Время
+								ifstream base6("test/h_7.txt");
+								while (!base6.eof())
+								{
+									string str;
+									float t = 0;
+									float v = 0;
+									getline(base6, str);
+									sscanf(str.c_str(), "%f %f", &t, &v);
+									timeTest.push_back(t);
+								}
+								base6.close();
+							}
 							soundFFT.time = 0;
 							rt.timeS = 0;
 							currentTime = 0;
@@ -957,36 +1143,42 @@ int main(int argc, char* argv[])
 						{
 							//Передача данных теста
 							offsetTest += delta;
-							soundFFT.eng1_obor = getParameterFromFile("test/eng1_7h.txt", offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
-							soundFFT.eng2_obor = getParameterFromFile("test/eng2_7h.txt", offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
-							soundFFT.reduktor_gl_obor = getParameterFromFile("test/red_7h.txt", offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
-							soundFFT.styk_hv = getParameterFromFile("test/h_7h.txt", offsetTest);//
+							soundFFT.eng1_obor = getParameterFromVector(eng1Test,timeTest, offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
+							soundFFT.eng2_obor = getParameterFromVector(eng2Test, timeTest, offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
+							soundFFT.reduktor_gl_obor = getParameterFromVector(redTest, timeTest, offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
+							soundFFT.styk_hv = getParameterFromVector(highTest, timeTest, offsetTest);//
 							soundFFT.styk_hv = (soundFFT.styk_hv < 0) ? 0 : soundFFT.styk_hv;
 							soundFFT.osadki = 0;
-							soundFFT.ny = getParameterFromFile("test/step_7h.txt", offsetTest);//
-							soundFFT.v = getParameterFromFile("test/v_7h.txt", offsetTest) * 0.28;//
-																						  //Признак работы теста
-							soundFFT.p_model_stop = 0;
+							soundFFT.ny = getParameterFromVector(stepTest, timeTest, offsetTest);//
+							soundFFT.v = getParameterFromVector(velocityTest, timeTest, offsetTest) * 0.28;//									  
+							soundFFT.p_model_stop = 0;//Признак работы теста
 						}
 						else
 						{
 							//Передача данных теста
 							offsetTest += delta;
-							soundFFT.eng1_obor = getParameterFromFile("test/eng1_7.txt", offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
-							soundFFT.eng2_obor = getParameterFromFile("test/eng2_7.txt", offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
-							soundFFT.reduktor_gl_obor = getParameterFromFile("test/red_7.txt", offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
-							soundFFT.styk_hv = getParameterFromFile("test/h_7.txt", offsetTest);//
+							soundFFT.eng1_obor = getParameterFromVector(eng1Test, timeTest, offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
+							soundFFT.eng2_obor = getParameterFromVector(eng2Test, timeTest, offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
+							soundFFT.reduktor_gl_obor = getParameterFromVector(redTest, timeTest, offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
+							soundFFT.styk_hv = getParameterFromVector(highTest, timeTest, offsetTest);//
 							soundFFT.styk_hv = (soundFFT.styk_hv < 0) ? 0 : soundFFT.styk_hv;
-							soundFFT.osadki = getParameterFromFile("test/tangaz_7.txt", offsetTest);//
-							soundFFT.ny = getParameterFromFile("test/step_7.txt", offsetTest);//
-							soundFFT.v = getParameterFromFile("test/v_7.txt", offsetTest) * 0.28;//
-																						  //Признак работы теста
-							soundFFT.p_model_stop = 0;
+							soundFFT.osadki = getParameterFromVector(tangazTest, timeTest, offsetTest);//тангаж
+							soundFFT.ny = getParameterFromVector(stepTest, timeTest, offsetTest);//шаг
+							soundFFT.v = getParameterFromVector(velocityTest, timeTest, offsetTest) * 0.28;//										  
+							soundFFT.p_model_stop = 0;//Признак работы теста
 						}
 					}
 					//Тест закончился
 					if (offsetTest > timeEnd)
 					{
+						eng1Test.clear();
+						eng2Test.clear();
+						redTest.clear();
+						tangazTest.clear();
+						highTest.clear();
+						velocityTest.clear();
+						timeTest.clear();
+						stepTest.clear();
 						//Признак работы теста
 						soundFFT.p_model_stop = 1;
 						system("cls");
