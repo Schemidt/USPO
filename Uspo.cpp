@@ -40,6 +40,7 @@ bool avtOn = 0;
 float delta = 0;
 float offsetTest = 0;
 float timeEnd = 0;
+float timeStart = 0;
 float pause = 0;
 float timeReset = 0;
 
@@ -188,6 +189,7 @@ int main(int argc, char* argv[])
 	{
 		delta = rt.timeS - currentTime;
 		currentTime = rt.timeS;
+		
 
 		if (!rt.pExchOK)
 		{		// Анализ  
@@ -786,6 +788,7 @@ int main(int argc, char* argv[])
 					{
 						soundFFT.p_eng2_ostanov = 0;
 					}
+					printf("Time = %10.3f VSU = %6.3f H = %6.3f VX = %6.3f STEP = %6.3f DT = %6.3f Rd = %6.3f E1 = %6.3f E2 = %6.3f\t\t\t\t\t\t\t\t\r", soundFFT.time, soundFFT.vsu_obor, soundFFT.styk_hv, soundFFT.v, soundFFT.ny, delta, soundFFT.reduktor_gl_obor, soundFFT.eng1_obor, soundFFT.eng2_obor);
 				}
 				else //тестовые циклограммы полеты для некоторых вертолетов
 				{
@@ -942,7 +945,7 @@ int main(int argc, char* argv[])
 
 							system("cls");
 							printf(" Enter range (in seconds): [start] [end]\n ");
-							cin >> offsetTest;
+							cin >> timeStart;
 							cin >> timeEnd;
 							
 							if (hovering)
@@ -1144,6 +1147,7 @@ int main(int argc, char* argv[])
 								}
 								base6.close();
 							}
+							offsetTest = timeStart;
 							soundFFT.time = 0;
 							rt.timeS = 0;
 							currentTime = 0;
@@ -1182,7 +1186,7 @@ int main(int argc, char* argv[])
 						}
 					}
 					//Тест закончился
-					if (offsetTest > timeEnd)
+					if (soundFFT.time + timeStart > timeEnd)
 					{
 						eng1Test.clear();
 						eng2Test.clear();
@@ -1209,6 +1213,7 @@ int main(int argc, char* argv[])
 							break;
 						}
 					}
+					printf("Time = %10.3f OffsetTest = %6.3f H = %6.3f VX = %6.3f STEP = %6.3f DT = %3.6f Rd = %6.3f E1 = %6.3f E2 = %6.3f\t\t\t\t\t\t\t\t\r", soundFFT.time, offsetTest, soundFFT.styk_hv, soundFFT.v, soundFFT.ny, offsetTest - soundFFT.time, soundFFT.reduktor_gl_obor, soundFFT.eng1_obor, soundFFT.eng2_obor);
 				}
 				soundFFT.time = currentTime;
 			}
@@ -1217,7 +1222,6 @@ int main(int argc, char* argv[])
 		{
 			rt.pExchOK = 0;
 		}
-		printf("Time = %10.3f VSU = %6.3f H = %6.3f VX = %6.3f STEP = %6.3f VY = %6.3f Rd = %6.3f E1 = %6.3f E2 = %6.3f\r", soundFFT.time, soundFFT.vsu_obor, soundFFT.styk_hv, soundFFT.v, soundFFT.ny, soundFFT.vy, soundFFT.reduktor_gl_obor, soundFFT.eng1_obor, soundFFT.eng2_obor);
 	}
 
 	StopRealTime();
@@ -1512,7 +1516,7 @@ void kbHit()
 
 float lineInterpolation(float x0, float fx0, float x1, float fx1, float x)
 {
-	float fx, a0, a1, a2;
+	double fx, a0, a1, a2;
 	if (x0<x1 && x>x1)
 	{
 		return fx1;
@@ -1535,7 +1539,7 @@ float lineInterpolation(float x0, float fx0, float x1, float fx1, float x)
 
 float squareInterpolation(float x0, float fx0, float x1, float fx1, float x2, float fx2, float x)
 {
-	float fx, a0, a1, a2;
+	double fx, a0, a1, a2;
 	if (x0<x2 && x>x2)
 	{
 		return fx2;
