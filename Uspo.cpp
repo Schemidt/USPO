@@ -21,15 +21,15 @@ void kbHit();
 
 double getTimeMs();
 
-float lineInterpolation(float x0, float fx0, float x1, float fx1, float x);
+double lineInterpolation(double x0, double fx0, double x1, double fx1, double x);
 
-float squareInterpolation(float x0, float fx0, float x1, float fx1, float x2, float fx2, float x);
+double squareInterpolation(double x0, double fx0, double x1, double fx1, double x2, double fx2, double x);
 
 float getOffset(string filename, float parameter);
 
-float getParameterFromFile(string filename, float offset);
+double getParameterFromFile(string filename, double offset);
 
-float getParameterFromVector(vector<float> value, vector<float> time, float offset);
+double getParameterFromVector(vector<double> value, vector<double> time, double offset);
 
 SOUNDFFT soundFFT;
 RED red;
@@ -183,8 +183,10 @@ int main(int argc, char* argv[])
 	InitRealTime(1);
 	bool hovering = 0;
 	float currentTime = 0;
+	float output = 0;
 
-	vector <float> timeTest, eng1Test, eng2Test, redTest, highTest, velocityTest, tangazTest, stepTest;
+	vector <double> timeTest, eng1Test, eng2Test, redTest, highTest, velocityTest, tangazTest, stepTest;
+	remove("test.txt");
 	while (1)
 	{
 		delta = rt.timeS - currentTime;
@@ -1167,7 +1169,7 @@ int main(int argc, char* argv[])
 							soundFFT.styk_hv = (soundFFT.styk_hv < 0) ? 0 : soundFFT.styk_hv;
 							soundFFT.osadki = 0;
 							soundFFT.ny = getParameterFromVector(stepTest, timeTest, offsetTest);//
-							soundFFT.v = getParameterFromVector(velocityTest, timeTest, offsetTest) * 0.28;//									  
+							soundFFT.v = getParameterFromVector(velocityTest, timeTest, offsetTest);//									  
 							soundFFT.p_model_stop = 0;//ѕризнак работы теста
 						}
 						else
@@ -1183,6 +1185,16 @@ int main(int argc, char* argv[])
 							soundFFT.ny = getParameterFromVector(stepTest, timeTest, offsetTest);//шаг
 							soundFFT.v = getParameterFromVector(velocityTest, timeTest, offsetTest) * 0.28;//										  
 							soundFFT.p_model_stop = 0;//ѕризнак работы теста
+							
+						}
+
+						output += delta;
+						if (output>=0.01)
+						{
+							FILE* test = fopen("test.txt", "at");
+							fprintf(test, "%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\n", soundFFT.eng1_obor, soundFFT.eng2_obor, soundFFT.reduktor_gl_obor, soundFFT.styk_hv, soundFFT.osadki, soundFFT.ny, soundFFT.v, soundFFT.time);
+							fclose(test);
+							output = 0;
 						}
 					}
 					//“ест закончилс€
@@ -1514,7 +1526,7 @@ void kbHit()
 	};
 }
 
-float lineInterpolation(float x0, float fx0, float x1, float fx1, float x)
+double lineInterpolation(double x0, double fx0, double x1, double fx1, double x)
 {
 	double fx, a0, a1, a2;
 	if (x0<x1 && x>x1)
@@ -1537,7 +1549,7 @@ float lineInterpolation(float x0, float fx0, float x1, float fx1, float x)
 	return	fx = fx0 + ((fx1 - fx0) / (x1 - x0))*(x - x0);
 }
 
-float squareInterpolation(float x0, float fx0, float x1, float fx1, float x2, float fx2, float x)
+double squareInterpolation(double x0, double fx0, double x1, double fx1, double x2, double fx2, double x)
 {
 	double fx, a0, a1, a2;
 	if (x0<x2 && x>x2)
@@ -1574,13 +1586,13 @@ float squareInterpolation(float x0, float fx0, float x1, float fx1, float x2, fl
 
 }
 
-float getParameterFromFile(string filename, float offset)
+double getParameterFromFile(string filename, double offset)
 {
-	float turn = 0;
-	float t = 0;
-	float v = 0;
+	double turn = 0;
+	double t = 0;
+	double v = 0;
 	int i = 0;
-	vector <float> time, value;
+	vector <double> time, value;
 
 	//данные в базе должны хранитьс€ в строках парами, по паре в каждой строке (не больше)
 	string str;
@@ -1803,10 +1815,10 @@ float getOffset(string filename, float parameter)
 
 }
 
-float getParameterFromVector(vector<float> value, vector<float> time, float offset)
+double getParameterFromVector(vector<double> value, vector<double> time, double offset)
 {
-	float turn = 0;
-	float x, x0, x1, x2, fx, fx0, fx1, fx2, a0, a1, a2;
+	double turn = 0;
+	double x, x0, x1, x2, fx, fx0, fx1, fx2, a0, a1, a2;
 	int l = 0;
 	int n = time.size();
 	int r = n;
