@@ -31,6 +31,8 @@ double getParameterFromFile(string filename, double offset);
 
 double getParameterFromVector(vector<double> value, vector<double> time, double offset);
 
+int binSer(vector<double> value, vector<double> time, double offset);
+
 SOUNDFFT soundFFT;
 RED red;
 Helicopter helicopter;
@@ -1042,6 +1044,18 @@ int main(int argc, char* argv[])
 									stepTest.push_back(v);
 								}
 								base7.close();
+								//Тангаж
+								ifstream base8("test/tangaz_7h.txt");
+								while (!base8.eof())
+								{
+									string str;
+									float t = 0;
+									float v = 0;
+									getline(base8, str);
+									sscanf(str.c_str(), "%f %f", &t, &v);
+									tangazTest.push_back(v);
+								}
+								base8.close();
 							}
 							else
 							{
@@ -1167,7 +1181,7 @@ int main(int argc, char* argv[])
 							soundFFT.reduktor_gl_obor = getParameterFromVector(redTest, timeTest, offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
 							soundFFT.styk_hv = getParameterFromVector(highTest, timeTest, offsetTest);//
 							soundFFT.styk_hv = (soundFFT.styk_hv < 0) ? 0 : soundFFT.styk_hv;
-							soundFFT.osadki = 0;
+							soundFFT.osadki = getParameterFromVector(tangazTest, timeTest, offsetTest);//тангаж
 							soundFFT.ny = getParameterFromVector(stepTest, timeTest, offsetTest);//
 							soundFFT.v = getParameterFromVector(velocityTest, timeTest, offsetTest);//									  
 							soundFFT.p_model_stop = 0;//Признак работы теста
@@ -1192,7 +1206,7 @@ int main(int argc, char* argv[])
 						if (output>=0.01)
 						{
 							FILE* test = fopen("test.txt", "at");
-							fprintf(test, "%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\n", soundFFT.eng1_obor, soundFFT.eng2_obor, soundFFT.reduktor_gl_obor, soundFFT.styk_hv, soundFFT.osadki, soundFFT.ny, soundFFT.v, soundFFT.time);
+							fprintf(test, "%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\n", soundFFT.eng1_obor, soundFFT.eng2_obor, soundFFT.reduktor_gl_obor, soundFFT.styk_hv, soundFFT.osadki, soundFFT.ny, soundFFT.v, soundFFT.time);
 							fclose(test);
 							output = 0;
 						}
@@ -1225,7 +1239,7 @@ int main(int argc, char* argv[])
 							break;
 						}
 					}
-					printf("Time = %10.3f OffsetTest = %6.3f H = %6.3f VX = %6.3f STEP = %6.3f DT = %3.6f Rd = %6.3f E1 = %6.3f E2 = %6.3f\t\t\t\t\t\t\t\t\r", soundFFT.time, offsetTest, soundFFT.styk_hv, soundFFT.v, soundFFT.ny, offsetTest - soundFFT.time, soundFFT.reduktor_gl_obor, soundFFT.eng1_obor, soundFFT.eng2_obor);
+					printf("Time = %10.3f OffsetTest = %6.3f H = %6.3f VX = %6.3f STEP = %6.3f Rd = %6.3f E1 = %6.3f E2 = %6.3f\t\t\t\t\t\t\t\t\r", soundFFT.time, offsetTest, soundFFT.styk_hv, soundFFT.v, soundFFT.ny, soundFFT.reduktor_gl_obor, soundFFT.eng1_obor, soundFFT.eng2_obor);
 				}
 				soundFFT.time = currentTime;
 			}
@@ -1600,7 +1614,7 @@ double getParameterFromFile(string filename, double offset)
 	while (!base.eof())
 	{
 		getline(base, str);
-		sscanf(str.c_str(), "%f %f", &t, &v);
+		sscanf(str.c_str(), "%lf %lf", &t, &v);
 		time.push_back(t);
 		value.push_back(v);
 	}
@@ -1818,10 +1832,8 @@ float getOffset(string filename, float parameter)
 double getParameterFromVector(vector<double> value, vector<double> time, double offset)
 {
 	double turn = 0;
-	double x, x0, x1, x2, fx, fx0, fx1, fx2, a0, a1, a2;
-	int l = 0;
 	int n = time.size();
-	int r = n;
+	double x, x0, x1, x2, fx, fx0, fx1, fx2, a0, a1, a2;
 
 	if (offset < time[0])
 	{
@@ -1833,27 +1845,9 @@ double getParameterFromVector(vector<double> value, vector<double> time, double 
 	}
 	else
 	{
-		while (abs(l - r) >= 2)
-		{
-			n = (l + r) / 2;
-			if (offset == time[n])
-			{
-				return turn = value[n];
-			}
-			else
-			{
-				if (offset < time[n])
-				{
-					r = n;
-				}
-				else
-				{
-					l = n;
-				}
-			}
-		}
+		n = binSer(value,time,offset);
 	}
-	//Выбираем 3 точки
+	//Выбираем 3 точки (вариант -1 0 +1)
 	if (n - 1 == -1)
 	{
 		x = offset; x0 = time[n]; fx0 = value[n]; x1 = time[n + 1]; fx1 = value[n + 1]; x2 = time[n + 2]; fx2 = value[n + 2];
@@ -1862,10 +1856,24 @@ double getParameterFromVector(vector<double> value, vector<double> time, double 
 	{
 		x = offset; x0 = time[n - 2]; fx0 = value[n - 2]; x1 = time[n - 1]; fx1 = value[n - 1]; x2 = time[n]; fx2 = value[n];
 	}
-	else
+	else 
 	{
 		x = offset; x0 = time[n - 1]; fx0 = value[n - 1]; x1 = time[n]; fx1 = value[n]; x2 = time[n + 1]; fx2 = value[n + 1];
 	}
+	////Выбираем 3 точки (вариант 0 +1 +2)
+	//if (n + 1 == time.size())
+	//{
+	//	x = offset; x0 = time[n - 2]; fx0 = value[n - 2]; x1 = time[n - 1]; fx1 = value[n - 1]; x2 = time[n]; fx2 = value[n];
+	//}
+	//else if (n + 2 == time.size())
+	//{
+	//	x = offset; x0 = time[n - 1]; fx0 = value[n - 1]; x1 = time[n]; fx1 = value[n]; x2 = time[n + 1]; fx2 = value[n + 1];
+	//}
+	//else 
+	//{
+	//	x = offset; x0 = time[n]; fx0 = value[n]; x1 = time[n + 1]; fx1 = value[n + 1]; x2 = time[n + 2]; fx2 = value[n + 2];
+	//}
+	
 	//если квадратичная интерполяция не работает - берем линейную
 	if (x1 == x0 | x2 == x1)
 	{
@@ -1904,4 +1912,28 @@ float getParameterFromFile(string filename, float offset,const T*... args)
 	}
 
 	return 1;
+}
+
+int binSer(vector<double> value, vector<double> time, double offset)
+{
+	int l = 0;
+	int n = time.size() - 1;
+	int r = n;
+	while (abs(l - r) >= 2)
+	{
+		if (offset == time[n])
+		{
+			return n;
+		}
+		else if (offset < time[n])
+		{
+			r = n;
+		}
+		else
+		{
+			l = n;
+		}
+		n = (l + r) / 2;
+	}
+	return n;
 }
