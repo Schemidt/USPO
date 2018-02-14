@@ -83,8 +83,12 @@ int main(int argc, char* argv[])
 		else
 		{
 			cout << " Unknown argument" << endl;
-			return 0;
+			helicopter = ka_29;
 		}
+	}
+	else
+	{
+		helicopter = ka_29;
 	}
 	//else
 	//{
@@ -156,7 +160,6 @@ int main(int argc, char* argv[])
 	//	}
 
 	//}
-	helicopter = ka_27;
 	system("cls");
 	std::cout << "Using " << helicopter.modelName << std::endl;
 	helicopter.setPath(helicopter.modelName + "/");
@@ -626,9 +629,9 @@ int main(int argc, char* argv[])
 								}
 								turnMg1 = getParameterFromFile(helicopter.fullName["red_on"], offsetMg1);
 								offsetMg1 += delta;
-								turnMg2 = getParameterFromFile(helicopter.fullName["red_on_mg"], offsetMg2) * turnMg1 / helicopter.red_obor_mg1;
+								turnMg2 = getParameterFromFile(helicopter.fullName["red_on_mg"], offsetMg2) * (turnMg1 / helicopter.red_obor_mg1);
 								offsetMg2 += delta;
-								turnAvt = getParameterFromFile(helicopter.fullName["red_mg_avt"], offsetAvt) * turnMg1 / helicopter.red_obor_mg1 * turnMg2 / helicopter.red_obor_mg2;
+								turnAvt = getParameterFromFile(helicopter.fullName["red_mg_avt"], offsetAvt) * (turnMg2 / helicopter.red_obor_mg2);
 								offsetAvt += delta;
 							}
 							else
@@ -655,7 +658,7 @@ int main(int argc, char* argv[])
 										}
 										turnMg1 = getParameterFromFile(helicopter.fullName["red_on"], offsetMg1);
 										offsetMg1 += delta;
-										turnMg2 = getParameterFromFile(helicopter.fullName["red_on_mg"], offsetMg2) * turnMg1 / helicopter.red_obor_mg1;
+										turnMg2 = getParameterFromFile(helicopter.fullName["red_on_mg"], offsetMg2) * (turnMg1 / helicopter.red_obor_mg1);
 										offsetMg2 += delta;
 									}
 									else if (oneEng)
@@ -869,7 +872,7 @@ int main(int argc, char* argv[])
 						{
 							soundFFT.p_model_stop = 1;
 							system("cls");
-							printf(" TEST:\n 1) 0 - 75\n 2) 77 - 429\n 3) 431 - 701\n 4) 703 - 858\n 5) 860 - 920\n 6) 922 - 1387\n 7) 1389 - 1919\n");
+							printf(" TEST:\n 1) 0 - 75\n 2) 77 - 429\n 3) 431 - 701\n 4) 703 - 858\n 5) 860 - 920\n 6) 922 - 1387\n 7) 1389 - 1919\n 8) [custom time]\n");
 
 							while (!std::regex_match(ch, regex("[1-8]")))//повторяем ввод пока не будет цифра от 1 до 4
 								ch = getch();//считываем буфер ввода
@@ -903,6 +906,12 @@ int main(int argc, char* argv[])
 							case '7':
 								offsetTest = 1389;
 								timeEnd = 1919;
+								break;
+							case '8':
+								system("cls");
+								printf(" Enter range (in seconds): [start] [end]\n ");
+								cin >> offsetTest;
+								cin >> timeEnd;
 								break;
 							}
 							soundFFT.time = 0;
