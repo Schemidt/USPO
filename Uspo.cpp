@@ -88,7 +88,7 @@ int main(int argc, char* argv[])
 	}
 	else
 	{
-		helicopter = ka_29;
+		helicopter = mi_28;
 	}
 	//else
 	//{
@@ -730,14 +730,14 @@ int main(int argc, char* argv[])
 					if (soundFFT.p_vsu_hp & !soundFFT.p_vsu_zap)
 					{
 						if (soundFFT.vsu_obor < (VSU_MAX_TURN * 0.35))
-							soundFFT.vsu_obor += (VSU_MAX_TURN * 0.35) / 8. * (delta);
+							soundFFT.vsu_obor += (VSU_MAX_TURN * 0.35) / 5. * (delta);
 						soundFFT.vsu_obor = (soundFFT.vsu_obor >(VSU_MAX_TURN * 0.35)) ? (VSU_MAX_TURN * 0.35) : soundFFT.vsu_obor;
 					}
 					//Холодная прокрутка ВСУ выкл
 					if (!soundFFT.p_vsu_hp & !soundFFT.p_vsu_zap)
 					{
 
-						soundFFT.vsu_obor -= (VSU_MAX_TURN * 0.35) / 2. * (delta);
+						soundFFT.vsu_obor -= (VSU_MAX_TURN * 0.35) / 5. * (delta);
 						soundFFT.vsu_obor = (soundFFT.vsu_obor < 0) ? 0 : soundFFT.vsu_obor;
 					}
 					//Запуск ВСУ
@@ -745,13 +745,13 @@ int main(int argc, char* argv[])
 					{
 						soundFFT.p_vsu_ostanov = 0;
 						if (soundFFT.vsu_obor < VSU_MAX_TURN)
-							soundFFT.vsu_obor += VSU_MAX_TURN / 10. * (delta);
+							soundFFT.vsu_obor += VSU_MAX_TURN / 5. * (delta);
 						soundFFT.vsu_obor = (soundFFT.vsu_obor > VSU_MAX_TURN) ? VSU_MAX_TURN : soundFFT.vsu_obor;
 					}
 					//Остановка ВСУ
 					if (soundFFT.p_vsu_ostanov && soundFFT.vsu_obor != 0)
 					{
-						soundFFT.vsu_obor -= VSU_MAX_TURN / 12. * (delta);
+						soundFFT.vsu_obor -= VSU_MAX_TURN / 11. * (delta);
 						//Обороты ВСУ не должны падать ниже 0
 						soundFFT.vsu_obor = (soundFFT.vsu_obor < 0) ? 0 : soundFFT.vsu_obor;
 					}
@@ -764,26 +764,26 @@ int main(int argc, char* argv[])
 					if (soundFFT.p_eng1_hp && soundFFT.eng1_obor < 20 && !soundFFT.p_eng1_ostanov && !soundFFT.p_eng1_zap)
 					{
 						statusEng1 = "eng_hp";
-						soundFFT.eng1_obor += (helicopter.eng_obor_mg * 0.3) / 22.*(delta);
+						soundFFT.eng1_obor += (helicopter.eng_obor_mg * 0.3) / 23.*(delta);
 					}
 					//Холодная прокрутка двигателя 1 выкл
 					if (!soundFFT.p_eng1_hp && soundFFT.eng1_obor > 0 && !soundFFT.p_eng1_ostanov && !soundFFT.p_eng1_zap)
 					{
 						statusEng1 = "eng_hp";
-						soundFFT.eng1_obor -= (helicopter.eng_obor_mg * 0.3) / 8.*(delta);
+						soundFFT.eng1_obor -= (helicopter.eng_obor_mg * 0.3) / 35.*(delta);
 						soundFFT.eng1_obor = (soundFFT.eng1_obor < 0) ? 0 : soundFFT.eng1_obor;
 					}
 					//Холодная прокрутка двигателя 2
 					if (soundFFT.p_eng2_hp && soundFFT.eng2_obor < 20 && !soundFFT.p_eng2_ostanov && !soundFFT.p_eng2_zap)
 					{
 						statusEng2 = "eng_hp";
-						soundFFT.eng2_obor += (helicopter.eng_obor_mg * 0.3) / 22.*(delta);
+						soundFFT.eng2_obor += (helicopter.eng_obor_mg * 0.3) / 23.*(delta);
 					}
 					//Холодная прокрутка двигателя 2 выкл
 					if (!soundFFT.p_eng2_hp && soundFFT.eng2_obor > 0 && !soundFFT.p_eng2_ostanov && !soundFFT.p_eng2_zap)
 					{
 						statusEng2 = "eng_hp";
-						soundFFT.eng2_obor -= (helicopter.eng_obor_mg * 0.3) / 8.*(delta);
+						soundFFT.eng2_obor -= (helicopter.eng_obor_mg * 0.3) / 35.*(delta);
 						soundFFT.eng2_obor = (soundFFT.eng2_obor < 0) ? 0 : soundFFT.eng2_obor;
 					}
 					//Возвращение в исходное состояние
@@ -865,7 +865,7 @@ int main(int argc, char* argv[])
 						//Признак работы теста
 						soundFFT.p_model_stop = 0;
 					}
-					if (helicopter.modelName == "ka_29")
+					if (helicopter.modelName == "ka_29" || helicopter.modelName == "mi_28")
 					{
 						//Сброс параметров в начале теста
 						if (timeReset == 0)
@@ -1449,6 +1449,9 @@ void kbHit()
 			case 'J':
 				soundFFT.p_vu1 = !soundFFT.p_vu1;//ВУ
 				break;
+			case 'S':
+				soundFFT.p_vu3 = !soundFFT.p_vu3;//Свист опционально
+				break;
 			case 'w':		
 				//
 				break;		
@@ -1508,10 +1511,10 @@ void kbHit()
 				soundFFT.eng2_obor -= .5;
 				break;
 			case 'c':
-				soundFFT.master_gain -= .1f;//Уменьшить громкость
+				soundFFT.master_gain -= .01f;//Уменьшить громкость
 				break;
 			case 'v':
-				soundFFT.master_gain += .1f;//Прибавить громкость
+				soundFFT.master_gain += .01f;//Прибавить громкость
 				break;
 			case 'n':
 				soundFFT.master_gain = 0;//Убрать звук
@@ -1624,7 +1627,7 @@ void kbHit()
 			case 'F':
 				test = !test;//Полет
 				break;
-			case 'S'://пауза (shift + s)
+			case 'P'://пауза (shift + s)
 				pause = !pause;
 				/*if (pause)
 					PauseRealTime();
