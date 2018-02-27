@@ -11,7 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectName>USPO_3.0</ProjectName>
+    <ProjectName>USPO</ProjectName>
     <ProjectGuid>{58AE2DCB-4474-4DBA-B244-A8286228951B}</ProjectGuid>
     <RootNamespace>Server</RootNamespace>
     <Keyword>Win32Proj</Keyword>
@@ -100,7 +100,14 @@
     <ClInclude Include="Memory.h" />
     <ClInclude Include="Net.h" />
     <ClInclude Include="RealTime.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="Uspo.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="USPO.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="USPO.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
