@@ -187,6 +187,7 @@ int main(int argc, char* argv[])
 		return 0;
 	InitRealTime(1);
 	bool hovering = 0;
+	bool skv = 0;
 	float currentTime = 0;
 	float output = 0;
 
@@ -873,18 +874,24 @@ int main(int argc, char* argv[])
 
 							string ch1;
 							system("cls");
-							printf(" Choose type:\n 1) Standart\n 2) Hovering\n");
+							printf(" Choose type:\n 1) Standart\n 2) Hovering\n 3) SKV\n");
 
-							while (!std::regex_match(ch1, regex("[1-2]")))//повторяем ввод пока не будет цифра от 1 до 4
+							while (!std::regex_match(ch1, regex("[1-3]")))//повторяем ввод пока не будет цифра от 1 до 4
 								ch1 = getch();//считываем буфер ввода
 
 							switch (ch1[0])
 							{
 							case '1':
 								hovering = 0;
+								skv = 0;
 								break;
 							case '2':
 								hovering = 1;
+								skv = 0;
+								break;
+							case '3':
+								hovering = 0;
+								skv = 1;
 								break;
 							}
 
@@ -998,6 +1005,37 @@ int main(int argc, char* argv[])
 								}
 								base8.close();
 							}
+							else if (skv)
+							{
+								soundFFT.p_model_stop = 1;
+								system("cls");
+								printf(" TEST:\n 1) 0 - 260\n 2) 261 - 691\n 3) 692 - 992\n 4) [custom time]\n");
+
+								while (!std::regex_match(ch, regex("[1-4]")))//повторяем ввод пока не будет цифра от 1 до 4
+									ch = getch();//считываем буфер ввода
+
+								switch (ch[0])
+								{
+								case '1':
+									offsetTest = 0;
+									timeEnd = 260;
+									break;
+								case '2':
+									offsetTest = 261;
+									timeEnd = 691;
+									break;
+								case '3':
+									offsetTest = 692;
+									timeEnd = 992;
+									break;
+								case '4':
+									system("cls");
+									printf(" Enter range (in seconds): [start] [end]\n ");
+									cin >> offsetTest;
+									cin >> timeEnd;
+									break;
+								}
+							}
 							else
 							{
 								soundFFT.p_model_stop = 1;
@@ -1060,9 +1098,23 @@ int main(int argc, char* argv[])
 							soundFFT.p_model_stop = 0;//Признак работы теста
 							soundFFT.p_vu3 = 1;
 						}
+						else if (skv)
+						{
+							//Передача данных теста
+							offsetTest += delta;
+							soundFFT.eng1_obor = getParameterFromFile("test/mi_28/eng1_8s.txt", offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
+							soundFFT.eng2_obor = getParameterFromFile("test/mi_28/eng2_8s.txt", offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
+							soundFFT.reduktor_gl_obor = getParameterFromFile("test/mi_28/red_8s.txt", offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
+							soundFFT.styk_hv = getParameterFromFile("test/mi_28/h_8s.txt", offsetTest);//
+							soundFFT.styk_hv = (soundFFT.styk_hv < 0) ? 0 : soundFFT.styk_hv;
+							soundFFT.osadki = getParameterFromFile("test/mi_28/tangaz_8s.txt", offsetTest);
+							soundFFT.ny = getParameterFromFile("test/mi_28/step_8s.txt", offsetTest);//
+							soundFFT.v = getParameterFromFile("test/mi_28/v_8s.txt", offsetTest);//
+							soundFFT.p_vu3 = 1;									  
+							soundFFT.p_model_stop = 0;//Признак работы теста
+						}
 						else
 						{
-
 							//Передача данных теста
 							offsetTest += delta;
 							soundFFT.eng1_obor = getParameterFromFile("test/mi_28/eng1_8.txt", offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
@@ -1073,7 +1125,7 @@ int main(int argc, char* argv[])
 							soundFFT.osadki = getParameterFromFile("test/mi_28/tangaz_8.txt", offsetTest);
 							soundFFT.ny = getParameterFromFile("test/mi_28/step_8.txt", offsetTest);//
 							soundFFT.v = getParameterFromFile("test/mi_28/v_8.txt", offsetTest);//
-							soundFFT.p_vu3 = 1;									  
+							soundFFT.p_vu3 = 1;
 							soundFFT.p_model_stop = 0;//Признак работы теста
 						}
 					}
