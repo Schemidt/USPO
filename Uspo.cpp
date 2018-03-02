@@ -88,7 +88,7 @@ int main(int argc, char* argv[])
 	}
 	else
 	{
-		helicopter = mi_8_amtsh;
+		helicopter = mi_28;
 	}
 	//else
 	//{
@@ -161,7 +161,7 @@ int main(int argc, char* argv[])
 
 	//}
 	system("cls");
-	std::cout << "Using " << helicopter.modelName << std::endl;
+	std::cout << " Using " << helicopter.modelName << std::endl;
 	helicopter.setPath(helicopter.modelName + "/");
 
 	//test = 1;
@@ -796,7 +796,6 @@ int main(int argc, char* argv[])
 					{
 						soundFFT.p_eng2_ostanov = 0;
 					}
-					printf("Time = %10.3f VSU = %6.3f H = %6.3f VX = %6.3f STEP = %6.3f DT = %6.3f Rd = %6.3f E1 = %6.3f E2 = %6.3f\t\t\t\t\t\t\t\t\r", soundFFT.time, soundFFT.vsu_obor, soundFFT.styk_hv, soundFFT.v, soundFFT.ny, delta, soundFFT.reduktor_gl_obor, soundFFT.eng1_obor, soundFFT.eng2_obor);
 				}
 				else //тестовые циклограммы полеты для некоторых вертолетов
 				{
@@ -1568,9 +1567,10 @@ int main(int argc, char* argv[])
 							break;
 						}
 					}
-					printf("Time = %10.3f OffsetTest = %6.3f H = %6.3f VX = %6.3f STEP = %6.3f Rd = %6.3f E1 = %6.3f E2 = %6.3f\t\t\t\t\t\t\t\t\r", soundFFT.time, offsetTest, soundFFT.styk_hv, soundFFT.v, soundFFT.ny, soundFFT.reduktor_gl_obor, soundFFT.eng1_obor, soundFFT.eng2_obor);
 				}
 				soundFFT.time = currentTime;
+				printf(" Time = %8.3f OffsetTest = %6.3f H = %6.3f VX = %6.3f STEP = %6.3f Rd = %6.3f E1 = %6.3f E2 = %6.3f\t\t\t\t\t\r", soundFFT.time, offsetTest, soundFFT.styk_hv, soundFFT.v, soundFFT.ny, soundFFT.reduktor_gl_obor, soundFFT.eng1_obor, soundFFT.eng2_obor);
+
 			}
 		}
 		if (rt.pExchOK) 
