@@ -88,7 +88,7 @@ int main(int argc, char* argv[])
 	}
 	else
 	{
-		helicopter = mi_28;
+		helicopter = ka_29;
 	}
 	//else
 	//{
@@ -806,7 +806,7 @@ int main(int argc, char* argv[])
 						{
 							soundFFT.p_model_stop = 1;
 							system("cls");
-							printf(" TEST:\n 1) 0 - 200\n 2) 203 - 292\n 3) 295 - 434\n 4) 437 - 586\n 5) 589 - 688\n 6) 691 - 1100\n 7) 1103 - 1322\n 8) 1325 - 1589\n 9) [custom]\n");
+							printf(" TEST:\n 1) 0 - 200\n 2) 201 - 291\n 3) 292 - 432\n 4) 433 - 583\n 5) 584 - 684\n 6) 685 - 1095\n 7) 1096 - 1316\n 8) 1317 - 1582\n 9) [custom]\n");
 
 							while (!std::regex_match(ch, regex("[1-9]")))//повторяем ввод пока не будет цифра от 1 до 4
 								ch = getch();//считываем буфер ввода
@@ -818,32 +818,32 @@ int main(int argc, char* argv[])
 								timeEnd = 200;
 								break;
 							case '2':
-								offsetTest = 203;
-								timeEnd = 292;
+								offsetTest = 201;
+								timeEnd = 291;
 								break;
 							case '3':
-								offsetTest = 295;
-								timeEnd = 434;
+								offsetTest = 292;
+								timeEnd = 432;
 								break;
 							case '4':
-								offsetTest = 437;
-								timeEnd = 586;
+								offsetTest = 433;
+								timeEnd = 583;
 								break;
 							case '5':
-								offsetTest = 589;
-								timeEnd = 688;
+								offsetTest = 584;
+								timeEnd = 684;
 								break;
 							case '6':
-								offsetTest = 691;
-								timeEnd = 1100;
+								offsetTest = 685;
+								timeEnd = 1095;
 								break;
 							case '7':
-								offsetTest = 1103;
-								timeEnd = 1322;
+								offsetTest = 1096;
+								timeEnd = 1316;
 								break;
 							case '8':
-								offsetTest = 1325;
-								timeEnd = 1589;
+								offsetTest = 1317;
+								timeEnd = 1582;
 								break;
 							case '9':
 								system("cls");
@@ -861,14 +861,14 @@ int main(int argc, char* argv[])
 						}
 
 						offsetTest += delta;
-						soundFFT.eng2_obor = getParameterFromFile("test/mi_8/Standart/eng2_p.txt", offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
-						soundFFT.eng1_obor = getParameterFromFile("test/mi_8/Standart/eng1_p.txt", offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
-						soundFFT.reduktor_gl_obor = getParameterFromFile("test/mi_8/Standart/red_p.txt", offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
-						soundFFT.styk_hv = getParameterFromFile("test/mi_8/Standart/h_p.txt", offsetTest);//
+						soundFFT.eng2_obor = getParameterFromFile("test/mi_8_amtsh/Standart/eng2_p.txt", offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
+						soundFFT.eng1_obor = getParameterFromFile("test/mi_8_amtsh/Standart/eng1_p.txt", offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
+						soundFFT.reduktor_gl_obor = getParameterFromFile("test/mi_8_amtsh/Standart/red_p.txt", offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
+						soundFFT.styk_hv = getParameterFromFile("test/mi_8_amtsh/Standart/h_p.txt", offsetTest);//
 						soundFFT.styk_hv = (soundFFT.styk_hv < 0) ? 0 : soundFFT.styk_hv;
-						soundFFT.osadki = getParameterFromFile("test/mi_8/Standart/tangaz_p.txt", offsetTest);
-						soundFFT.ny = getParameterFromFile("test/mi_8/Standart/step_p.txt", offsetTest);//
-						soundFFT.v = getParameterFromFile("test/mi_8/Standart/v_p.txt", offsetTest) * 0.2777;//
+						soundFFT.osadki = getParameterFromFile("test/mi_8_amtsh/Standart/tangaz_p.txt", offsetTest);
+						soundFFT.ny = getParameterFromFile("test/mi_8_amtsh/Standart/step_p.txt", offsetTest);//
+						soundFFT.v = getParameterFromFile("test/mi_8_amtsh/Standart/v_p.txt", offsetTest);//
 						//Признак работы теста
 						soundFFT.p_model_stop = 0;
 					}
@@ -1024,7 +1024,7 @@ int main(int argc, char* argv[])
 							offsetTest += delta;
 							soundFFT.eng1_obor = getParameterFromFile("test/mi_28/Standart/eng1_8.txt", offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
 							soundFFT.eng2_obor = getParameterFromFile("test/mi_28/Standart/eng2_8.txt", offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
-							soundFFT.reduktor_gl_obor = getParameterFromFile("test/Standart/mi_28/red_8.txt", offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
+							soundFFT.reduktor_gl_obor = getParameterFromFile("test/mi_28/Standart/red_8.txt", offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
 							soundFFT.styk_hv = getParameterFromFile("test/mi_28/Standart/h_8.txt", offsetTest);//
 							soundFFT.styk_hv = (soundFFT.styk_hv < 0) ? 0 : soundFFT.styk_hv;
 							soundFFT.osadki = getParameterFromFile("test/mi_28/Standart/tangaz_8.txt", offsetTest);
