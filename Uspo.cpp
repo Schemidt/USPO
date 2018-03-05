@@ -21,9 +21,9 @@ void kbHit();
 
 double getTimeMs();
 
-double lineInterpolation(double x0, double fx0, double x1, double fx1, double x);
+double interpolation(double x0, double fx0, double x1, double fx1, double x);
 
-double squareInterpolation(double x0, double fx0, double x1, double fx1, double x2, double fx2, double x);
+double interpolation(double x0, double fx0, double x1, double fx1, double x2, double fx2, double x);
 
 float getOffset(string filename, float parameter);
 
@@ -861,14 +861,14 @@ int main(int argc, char* argv[])
 						}
 
 						offsetTest += delta;
-						soundFFT.eng2_obor = getParameterFromFile("test/mi_8_amtsh/Standart/eng2_p.txt", offsetTest);//функци€ выбирающа€ обороты дв относительно времени от начала разгона
-						soundFFT.eng1_obor = getParameterFromFile("test/mi_8_amtsh/Standart/eng1_p.txt", offsetTest);//функци€ выбирающа€ обороты дв относительно времени от начала разгона
-						soundFFT.reduktor_gl_obor = getParameterFromFile("test/mi_8_amtsh/Standart/red_p.txt", offsetTest);//функци€ выбирающа€ обороты дв относительно времени от начала разгона
-						soundFFT.styk_hv = getParameterFromFile("test/mi_8_amtsh/Standart/h_p.txt", offsetTest);//
+						soundFFT.eng2_obor = getParameterFromFile("test/mi_8_amtsh/Standart/eng2.txt", offsetTest);//функци€ выбирающа€ обороты дв относительно времени от начала разгона
+						soundFFT.eng1_obor = getParameterFromFile("test/mi_8_amtsh/Standart/eng1.txt", offsetTest);//функци€ выбирающа€ обороты дв относительно времени от начала разгона
+						soundFFT.reduktor_gl_obor = getParameterFromFile("test/mi_8_amtsh/Standart/red.txt", offsetTest);//функци€ выбирающа€ обороты дв относительно времени от начала разгона
+						soundFFT.styk_hv = getParameterFromFile("test/mi_8_amtsh/Standart/h.txt", offsetTest);//
 						soundFFT.styk_hv = (soundFFT.styk_hv < 0) ? 0 : soundFFT.styk_hv;
-						soundFFT.osadki = getParameterFromFile("test/mi_8_amtsh/Standart/tangaz_p.txt", offsetTest);
-						soundFFT.ny = getParameterFromFile("test/mi_8_amtsh/Standart/step_p.txt", offsetTest);//
-						soundFFT.v = getParameterFromFile("test/mi_8_amtsh/Standart/v_p.txt", offsetTest);//
+						soundFFT.osadki = getParameterFromFile("test/mi_8_amtsh/Standart/tangaz.txt", offsetTest);
+						soundFFT.ny = getParameterFromFile("test/mi_8_amtsh/Standart/step.txt", offsetTest);//
+						soundFFT.v = getParameterFromFile("test/mi_8_amtsh/Standart/v.txt", offsetTest);//
 						//ѕризнак работы теста
 						soundFFT.p_model_stop = 0;
 					}
@@ -1872,9 +1872,8 @@ void kbHit()
 	};
 }
 
-double lineInterpolation(double x0, double fx0, double x1, double fx1, double x)
+double interpolation(double x0, double fx0, double x1, double fx1, double x)
 {
-	double fx, a0, a1, a2;
 	if (x0<x1 && x>x1)
 	{
 		return fx1;
@@ -1892,12 +1891,11 @@ double lineInterpolation(double x0, double fx0, double x1, double fx1, double x)
 		return fx0;
 	}
 
-	return	fx = fx0 + ((fx1 - fx0) / (x1 - x0))*(x - x0);
+	return	fx0 + ((fx1 - fx0) / (x1 - x0))*(x - x0);
 }
 
-double squareInterpolation(double x0, double fx0, double x1, double fx1, double x2, double fx2, double x)
+double interpolation(double x0, double fx0, double x1, double fx1, double x2, double fx2, double x)
 {
-	double fx, a0, a1, a2;
 	if (x0<x2 && x>x2)
 	{
 		return fx2;
@@ -1918,11 +1916,12 @@ double squareInterpolation(double x0, double fx0, double x1, double fx1, double 
 	//если квадратична€ интерпол€ци€ не работает - берем линейную
 	if (x1 == x0 | x2 == x1)
 	{
-		return	lineInterpolation(x0, fx0, x1, fx1, x);
+		return	interpolation(x0, fx0, x1, fx1, x);
 
 	}
 	else
 	{
+		double fx, a0, a1, a2;
 		a2 = ((fx2 - fx0) / ((x2 - x0)*(x2 - x1))) - ((fx1 - fx0) / ((x1 - x0)*(x2 - x1)));
 		a1 = ((fx1 - fx0) / (x1 - x0)) - (a2*(x1 + x0));
 		a0 = fx0 - a1 * x0 - a2 * x0*x0;
@@ -2018,11 +2017,11 @@ float getPitch(float offset, string filename, float parameter)
 			//если квадратична€ интерпол€ци€ не работает - берем линейную
 			if (x1 == x0 | x2 == x1)
 			{
-				turn = lineInterpolation(x0, fx0, x1, fx1, x);
+				turn = interpolation(x0, fx0, x1, fx1, x);
 			}
 			else
 			{
-				turn = squareInterpolation(x0, fx0, x1, fx1, x2, fx2, x);
+				turn = interpolation(x0, fx0, x1, fx1, x2, fx2, x);
 			}
 		}
 	}
@@ -2103,7 +2102,7 @@ float getOffset(string filename, float parameter)
 					x = turn; x0 = value[i]; fx0 = time[i]; x1 = value[i + 1]; fx1 = time[i + 1]; x2 = value[i + 2]; fx2 = time[i + 2];
 				}
 
-				new_offset = squareInterpolation(x0, fx0, x1, fx1, x2, fx2, x);
+				new_offset = interpolation(x0, fx0, x1, fx1, x2, fx2, x);
 			}
 
 		}
@@ -2148,7 +2147,7 @@ float getOffset(string filename, float parameter)
 					x = turn; x0 = value[i]; fx0 = time[i]; x1 = value[i + 1]; fx1 = time[i + 1]; x2 = value[i + 2]; fx2 = time[i + 2];
 				}
 
-				new_offset = squareInterpolation(x0, fx0, x1, fx1, x2, fx2, x);
+				new_offset = interpolation(x0, fx0, x1, fx1, x2, fx2, x);
 			}
 
 		}
@@ -2209,11 +2208,11 @@ double getParameterFromVector(vector<double> value, vector<double> time, double 
 	//если квадратична€ интерпол€ци€ не работает - берем линейную
 	if (x1 == x0 | x2 == x1)
 	{
-		turn = lineInterpolation(x0, fx0, x1, fx1, x);
+		turn = interpolation(x0, fx0, x1, fx1, x);
 	}
 	else
 	{
-		turn = squareInterpolation(x0, fx0, x1, fx1, x2, fx2, x);
+		turn = interpolation(x0, fx0, x1, fx1, x2, fx2, x);
 	}
 
 	return turn;
