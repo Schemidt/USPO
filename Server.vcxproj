@@ -90,6 +90,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Helicopter.cpp" />
     <ClCompile Include="Memory.cpp" />
     <ClCompile Include="Net.cpp" />
     <ClCompile Include="RealTime.cpp" />

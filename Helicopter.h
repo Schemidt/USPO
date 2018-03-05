@@ -44,13 +44,5 @@ public:
 			(*num1).second = pathToFile + (*num).second;
 		}
 	}
+	void setParam(string model);
 };
-
-extern Helicopter mi_8_mtv5{ "mi_8_mtv5",75, 88, 50, 63 , 96};
-extern Helicopter mi_8_amtsh{ "mi_8_amtsh",75, 88, 50, 63, 96};
-extern Helicopter mi_26{  "mi_26",69, 84, 37, 47, 85};
-extern Helicopter mi_28{"mi_28",73, 86, 48, 60, 93};
-extern Helicopter ka_226{ "ka_226",61, 79, 49, 62, 99};
-extern Helicopter ansat{ "ansat",65, 80, 65, 65, 100};
-extern Helicopter ka_27{ "ka_27",75, 85, 44, 60, 90};
-extern Helicopter ka_29{ "ka_29",75, 85, 44, 60, 90};

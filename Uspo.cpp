@@ -67,29 +67,35 @@ double offsetMg1 = 0;
 double offsetMg2 = 0;
 double offsetAvt = 0;
 double offsetAnsatRev = 0;
+bool standAlone = 0;//По умолчанию - ждем данных от модели
 
 int main(int argc, char* argv[])
 {
-	if (argc > 1)// если передаем аргументы, то argc будет больше 1(в зависимости от кол-ва аргументов)
+	vector <string> helicoptersNames = { "mi_8_mtv5","mi_8_amtsh","mi_26","mi_28","ka_226","ansat","ka_27","ka_29" };
+	string model;
+	for (size_t i = 1; i < argc; i++)// если передаем аргументы, то argc будет больше 1(в зависимости от кол-ва аргументов)
 	{
-		if (argv[1] == mi_8_mtv5.modelName) { helicopter = mi_8_mtv5; }
-		else if (argv[1] == mi_8_amtsh.modelName) { helicopter = mi_8_amtsh; }
-		else if (argv[1] == mi_26.modelName) { helicopter = mi_26; }
-		else if (argv[1] == mi_28.modelName) { helicopter = mi_28; }
-		else if (argv[1] == ka_226.modelName) { helicopter = ka_226; }
-		else if (argv[1] == ka_27.modelName) { helicopter = ka_27; }
-		else if (argv[1] == ka_29.modelName) { helicopter = ka_29; }
-		else if (argv[1] == ansat.modelName) { helicopter = ansat; }
-		else
+		for (size_t j = 0; j < helicoptersNames.size(); j++)
 		{
-			cout << " Unknown argument" << endl;
-			helicopter = ka_29;
+			if (regex_match(argv[i], regex("^(" + helicoptersNames[j] + ")")))
+			{
+				model = argv[i];
+				helicopter.setParam(model);
+			}
+		}
+		if (argv[i] == (string)"standalone")
+		{
+			standAlone = 1;
 		}
 	}
-	else
+	if (model.empty())
 	{
-		helicopter = ka_29;
+		helicopter.setParam("ka_29");
 	}
+	system("cls");
+	cout << " Using " << helicopter.modelName << endl;
+	helicopter.setPath(helicopter.modelName + "/");
+
 	//else
 	//{
 	//	string ch;
@@ -158,13 +164,8 @@ int main(int argc, char* argv[])
 	//			break;
 	//		}
 	//	}
-
 	//}
-	system("cls");
-	std::cout << " Using " << helicopter.modelName << std::endl;
-	helicopter.setPath(helicopter.modelName + "/");
 
-	//test = 1;
 	int lg = sizeof(SOUNDFFT);
 	if (!InitNetVoice((void*)&soundFFT, lg)) {
 		cout << "Not InitNetVoice" << endl;
@@ -188,6 +189,7 @@ int main(int argc, char* argv[])
 	InitRealTime(1);
 	bool hovering = 0;
 	bool skv = 0;
+	
 	double currentTime = 0;
 	double output = 0;
 
@@ -198,12 +200,11 @@ int main(int argc, char* argv[])
 		delta = rt.timeS - currentTime;
 		currentTime = rt.timeS;
 		
-
 		if (!rt.pExchOK)
 		{		// Анализ  
 			kbHit();
 		}
-		if (1)
+		if (standAlone)
 		{
 			if (!pause) //Программа не поставлена на паузу
 			{
@@ -213,7 +214,7 @@ int main(int argc, char* argv[])
 				{
 					avtOn = soundFFT.p_eng2_rkorr & soundFFT.p_eng1_rkorr;
 
-					if (helicopter.modelName == ansat.modelName)
+					if (helicopter.modelName == "ansat")
 					{
 						bool case1 = soundFFT.eng1_obor >= ANSAT_ENG_REV_TURN & soundFFT.eng2_obor >= ANSAT_ENG_REV_TURN;//Подъем или спуск
 						bool case2 = soundFFT.eng1_obor < ANSAT_ENG_REV_TURN & soundFFT.eng2_obor < ANSAT_ENG_REV_TURN;//Нормальный подъем
@@ -1573,6 +1574,10 @@ int main(int argc, char* argv[])
 
 			}
 		}
+		else
+		{
+			printf(" Time = %8.3f OffsetTest = %6.3f H = %6.3f VX = %6.3f STEP = %6.3f Rd = %6.3f E1 = %6.3f E2 = %6.3f | For Standalone using push [^]\r", soundFFT.time, offsetTest, soundFFT.styk_hv, soundFFT.v, soundFFT.ny, soundFFT.reduktor_gl_obor, soundFFT.eng1_obor, soundFFT.eng2_obor);
+		}
 		if (rt.pExchOK) 
 		{
 			rt.pExchOK = 0;
@@ -1775,6 +1780,9 @@ void kbHit()
 				break;
 			case '-':
 				soundFFT.rez_7 = !soundFFT.rez_7;//бибиби
+				break;
+			case '^':
+				standAlone = !standAlone;
 				break;
 			case '7':
 				soundFFT.rez_5 = !soundFFT.rez_5;//хз 3
