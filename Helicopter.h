@@ -9,11 +9,11 @@ class Helicopter
 public:
 	string modelName;
 
-	float eng_obor_mg; //обороты двигателя на малом газу
-	float eng_obor_avt; //обороты двигателя на режиме автомат
-	float red_obor_mg1; //обороты редуктора с 1им двигателем на малом газу
-	float red_obor_mg2; //обороты редуктора с 2мя двигателями на малом газу
-	float red_obor_avt; //обороты редуктора на режиме автомат
+	double eng_obor_mg; //обороты двигателя на малом газу
+	double eng_obor_avt; //обороты двигателя на режиме автомат
+	double red_obor_mg1; //обороты редуктора с 1им двигателем на малом газу
+	double red_obor_mg2; //обороты редуктора с 2мя двигателями на малом газу
+	double red_obor_avt; //обороты редуктора на режиме автомат
 
 
 	map<string, string> shortName;

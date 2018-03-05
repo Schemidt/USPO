@@ -25,7 +25,7 @@ double interpolation(double x0, double fx0, double x1, double fx1, double x);
 
 double interpolation(double x0, double fx0, double x1, double fx1, double x2, double fx2, double x);
 
-float getOffset(string filename, float parameter);
+double getOffset(string filename, double parameter);
 
 double getParameterFromFile(string filename, double offset);
 
@@ -37,36 +37,36 @@ SOUNDFFT soundFFT;
 RED red;
 Helicopter helicopter;
 
-float test = 0;
+double test = 0;
 bool avtOn = 0;
-float delta = 0;
-float offsetTest = 0;
-float timeEnd = 0;
-float timeStart = 0;
-float pause = 0;
-float timeReset = 0;
+double delta = 0;
+double offsetTest = 0;
+double timeEnd = 0;
+double timeStart = 0;
+double pause = 0;
+double timeReset = 0;
 
 string statusEng1;
 string statusEng2;
 string statusRed;
 
-float turn = 0;
-float turnMg1 = 0;
-float turnMg2 = 0;
-float turnAvt = 0;
-float turnMgEng1 = 0;
-float turnAvtEng1 = 0;
-float turnMgEng2 = 0;
-float turnAvtEng2 = 0;
-float turnRevRedAnsat = 0;
-float offsetMgEng1 = 0;
-float offsetAvtEng1 = 0;
-float offsetMgEng2 = 0;
-float offsetAvtEng2 = 0;
-float offsetMg1 = 0;
-float offsetMg2 = 0;
-float offsetAvt = 0;
-float offsetAnsatRev = 0;
+double turn = 0;
+double turnMg1 = 0;
+double turnMg2 = 0;
+double turnAvt = 0;
+double turnMgEng1 = 0;
+double turnAvtEng1 = 0;
+double turnMgEng2 = 0;
+double turnAvtEng2 = 0;
+double turnRevRedAnsat = 0;
+double offsetMgEng1 = 0;
+double offsetAvtEng1 = 0;
+double offsetMgEng2 = 0;
+double offsetAvtEng2 = 0;
+double offsetMg1 = 0;
+double offsetMg2 = 0;
+double offsetAvt = 0;
+double offsetAnsatRev = 0;
 
 int main(int argc, char* argv[])
 {
@@ -188,8 +188,8 @@ int main(int argc, char* argv[])
 	InitRealTime(1);
 	bool hovering = 0;
 	bool skv = 0;
-	float currentTime = 0;
-	float output = 0;
+	double currentTime = 0;
+	double output = 0;
 
 	vector <double> timeTest, eng1Test, eng2Test, redTest, highTest, velocityTest, tangazTest, stepTest;
 	remove("test.txt");
@@ -1069,8 +1069,8 @@ int main(int argc, char* argv[])
 								while (!base.eof())
 								{
 									string str;
-									float t = 0;
-									float v = 0;
+									double t = 0;
+									double v = 0;
 									getline(base, str);
 									sscanf(str.c_str(), "%f %f", &t, &v);
 									eng1Test.push_back(v);
@@ -1082,8 +1082,8 @@ int main(int argc, char* argv[])
 								while (!base1.eof())
 								{
 									string str;
-									float t = 0;
-									float v = 0;
+									double t = 0;
+									double v = 0;
 									getline(base1, str);
 									sscanf(str.c_str(), "%f %f", &t, &v);
 									eng2Test.push_back(v);
@@ -1095,8 +1095,8 @@ int main(int argc, char* argv[])
 								while (!base2.eof())
 								{
 									string str;
-									float t = 0;
-									float v = 0;
+									double t = 0;
+									double v = 0;
 									getline(base2, str);
 									sscanf(str.c_str(), "%f %f", &t, &v);
 									redTest.push_back(v);
@@ -1108,8 +1108,8 @@ int main(int argc, char* argv[])
 								while (!base3.eof())
 								{
 									string str;
-									float t = 0;
-									float v = 0;
+									double t = 0;
+									double v = 0;
 									getline(base3, str);
 									sscanf(str.c_str(), "%f %f", &t, &v);
 									velocityTest.push_back(v);
@@ -1121,8 +1121,8 @@ int main(int argc, char* argv[])
 								while (!base4.eof())
 								{
 									string str;
-									float t = 0;
-									float v = 0;
+									double t = 0;
+									double v = 0;
 									getline(base4, str);
 									sscanf(str.c_str(), "%f %f", &t, &v);
 									highTest.push_back(v);
@@ -1134,8 +1134,8 @@ int main(int argc, char* argv[])
 								while (!base5.eof())
 								{
 									string str;
-									float t = 0;
-									float v = 0;
+									double t = 0;
+									double v = 0;
 									getline(base5, str);
 									sscanf(str.c_str(), "%f %f", &t, &v);
 									timeTest.push_back(t);
@@ -1147,8 +1147,8 @@ int main(int argc, char* argv[])
 								while (!base7.eof())
 								{
 									string str;
-									float t = 0;
-									float v = 0;
+									double t = 0;
+									double v = 0;
 									getline(base7, str);
 									sscanf(str.c_str(), "%f %f", &t, &v);
 									stepTest.push_back(v);
@@ -1159,8 +1159,8 @@ int main(int argc, char* argv[])
 								while (!base8.eof())
 								{
 									string str;
-									float t = 0;
-									float v = 0;
+									double t = 0;
+									double v = 0;
 									getline(base8, str);
 									sscanf(str.c_str(), "%f %f", &t, &v);
 									tangazTest.push_back(v);
@@ -1287,8 +1287,8 @@ int main(int argc, char* argv[])
 								while (!base.eof())
 								{
 									string str;
-									float t = 0;
-									float v = 0;
+									double t = 0;
+									double v = 0;
 									getline(base, str);
 									sscanf(str.c_str(), "%f %f", &t, &v);
 									eng1Test.push_back(v);
@@ -1300,8 +1300,8 @@ int main(int argc, char* argv[])
 								while (!base1.eof())
 								{
 									string str;
-									float t = 0;
-									float v = 0;
+									double t = 0;
+									double v = 0;
 									getline(base1, str);
 									sscanf(str.c_str(), "%f %f", &t, &v);
 									eng2Test.push_back(v);
@@ -1313,8 +1313,8 @@ int main(int argc, char* argv[])
 								while (!base2.eof())
 								{
 									string str;
-									float t = 0;
-									float v = 0;
+									double t = 0;
+									double v = 0;
 									getline(base2, str);
 									sscanf(str.c_str(), "%f %f", &t, &v);
 									redTest.push_back(v);
@@ -1326,8 +1326,8 @@ int main(int argc, char* argv[])
 								while (!base3.eof())
 								{
 									string str;
-									float t = 0;
-									float v = 0;
+									double t = 0;
+									double v = 0;
 									getline(base3, str);
 									sscanf(str.c_str(), "%f %f", &t, &v);
 									velocityTest.push_back(v);
@@ -1339,8 +1339,8 @@ int main(int argc, char* argv[])
 								while (!base4.eof())
 								{
 									string str;
-									float t = 0;
-									float v = 0;
+									double t = 0;
+									double v = 0;
 									getline(base4, str);
 									sscanf(str.c_str(), "%f %f", &t, &v);
 									highTest.push_back(v);
@@ -1352,8 +1352,8 @@ int main(int argc, char* argv[])
 								while (!base5.eof())
 								{
 									string str;
-									float t = 0;
-									float v = 0;
+									double t = 0;
+									double v = 0;
 									getline(base5, str);
 									sscanf(str.c_str(), "%f %f", &t, &v);
 									timeTest.push_back(t);
@@ -1365,8 +1365,8 @@ int main(int argc, char* argv[])
 								while (!base7.eof())
 								{
 									string str;
-									float t = 0;
-									float v = 0;
+									double t = 0;
+									double v = 0;
 									getline(base7, str);
 									sscanf(str.c_str(), "%f %f", &t, &v);
 									stepTest.push_back(v);
@@ -1377,8 +1377,8 @@ int main(int argc, char* argv[])
 								while (!base8.eof())
 								{
 									string str;
-									float t = 0;
-									float v = 0;
+									double t = 0;
+									double v = 0;
 									getline(base8, str);
 									sscanf(str.c_str(), "%f %f", &t, &v);
 									tangazTest.push_back(v);
@@ -1392,8 +1392,8 @@ int main(int argc, char* argv[])
 								while (!base.eof())
 								{
 									string str;
-									float t = 0;
-									float v = 0;
+									double t = 0;
+									double v = 0;
 									getline(base, str);
 									sscanf(str.c_str(), "%f %f", &t, &v);
 									eng1Test.push_back(v);
@@ -1405,8 +1405,8 @@ int main(int argc, char* argv[])
 								while (!base1.eof())
 								{
 									string str;
-									float t = 0;
-									float v = 0;
+									double t = 0;
+									double v = 0;
 									getline(base1, str);
 									sscanf(str.c_str(), "%f %f", &t, &v);
 									eng2Test.push_back(v);
@@ -1418,8 +1418,8 @@ int main(int argc, char* argv[])
 								while (!base2.eof())
 								{
 									string str;
-									float t = 0;
-									float v = 0;
+									double t = 0;
+									double v = 0;
 									getline(base2, str);
 									sscanf(str.c_str(), "%f %f", &t, &v);
 									redTest.push_back(v);
@@ -1431,8 +1431,8 @@ int main(int argc, char* argv[])
 								while (!base3.eof())
 								{
 									string str;
-									float t = 0;
-									float v = 0;
+									double t = 0;
+									double v = 0;
 									getline(base3, str);
 									sscanf(str.c_str(), "%f %f", &t, &v);
 									velocityTest.push_back(v);
@@ -1444,8 +1444,8 @@ int main(int argc, char* argv[])
 								while (!base4.eof())
 								{
 									string str;
-									float t = 0;
-									float v = 0;
+									double t = 0;
+									double v = 0;
 									getline(base4, str);
 									sscanf(str.c_str(), "%f %f", &t, &v);
 									highTest.push_back(v);
@@ -1457,8 +1457,8 @@ int main(int argc, char* argv[])
 								while (!base5.eof())
 								{
 									string str;
-									float t = 0;
-									float v = 0;
+									double t = 0;
+									double v = 0;
 									getline(base5, str);
 									sscanf(str.c_str(), "%f %f", &t, &v);
 									tangazTest.push_back(v);
@@ -1470,8 +1470,8 @@ int main(int argc, char* argv[])
 								while (!base7.eof())
 								{
 									string str;
-									float t = 0;
-									float v = 0;
+									double t = 0;
+									double v = 0;
 									getline(base7, str);
 									sscanf(str.c_str(), "%f %f", &t, &v);
 									stepTest.push_back(v);
@@ -1483,8 +1483,8 @@ int main(int argc, char* argv[])
 								while (!base6.eof())
 								{
 									string str;
-									float t = 0;
-									float v = 0;
+									double t = 0;
+									double v = 0;
 									getline(base6, str);
 									sscanf(str.c_str(), "%f %f", &t, &v);
 									timeTest.push_back(t);
@@ -1954,14 +1954,14 @@ double getParameterFromFile(string filename, double offset)
 	return turn = getParameterFromVector(value, time, offset);
 }
 
-float getPitch(float offset, string filename, float parameter)
+double getPitch(double offset, string filename, double parameter)
 {
-	float new_pitch;
-	float turn = 0;
-	float t = 0;
-	float v = 0;
+	double new_pitch;
+	double turn = 0;
+	double t = 0;
+	double v = 0;
 	int i = 0;
-	vector <float> time, value;
+	vector <double> time, value;
 
 	//данные в базе должны храниться в строках парами, по паре в каждой строке (не больше)
 	string str;
@@ -1969,13 +1969,13 @@ float getPitch(float offset, string filename, float parameter)
 	while (!base.eof())
 	{
 		getline(base, str);
-		sscanf(str.c_str(), "%f %f", &t, &v);
+		sscanf(str.c_str(), "%lf %lf", &t, &v);
 		time.push_back(t);
 		value.push_back(v);
 	}
 	base.close();
 
-	float x, x0, x1, x2, fx, fx0, fx1, fx2, a0, a1, a2;
+	double x, x0, x1, x2, fx, fx0, fx1, fx2, a0, a1, a2;
 	int n = time.size();
 
 	for (i = 0; i < n; i++)
@@ -2033,15 +2033,15 @@ float getPitch(float offset, string filename, float parameter)
 	return new_pitch;
 }
 
-float getOffset(string filename, float parameter)
+double getOffset(string filename, double parameter)
 {
-	float new_offset = 0;
-	float turn = 0;
+	double new_offset = 0;
+	double turn = 0;
 	int i = 0;
 
-	float t = 0;
-	float v = 0;
-	vector <float> time, value;
+	double t = 0;
+	double v = 0;
+	vector <double> time, value;
 
 	//данные в базе должны храниться в строках парами, по паре в каждой строке (не больше)
 	string str;
@@ -2049,7 +2049,7 @@ float getOffset(string filename, float parameter)
 	while (!base.eof())
 	{
 		getline(base, str);
-		sscanf(str.c_str(), "%f %f", &t, &v);
+		sscanf(str.c_str(), "%lf %lf", &t, &v);
 		time.push_back(t);
 		value.push_back(v);
 	}
@@ -2061,7 +2061,7 @@ float getOffset(string filename, float parameter)
 	else
 		turn = parameter;
 
-	float x, x0, x1, x2, fx, fx0, fx1, fx2, a0, a1, a2;
+	double x, x0, x1, x2, fx, fx0, fx1, fx2, a0, a1, a2;
 
 	if (value[0] <= value[n - 1])
 	{
@@ -2219,11 +2219,11 @@ double getParameterFromVector(vector<double> value, vector<double> time, double 
 }
 //Функция жрущая файл с любым количеством столбцев, записывает их в переданные параметры
 template<typename... T>//WIP
-float getParameterFromFile(string filename, float offset,const T*... args)
+double getParameterFromFile(string filename, double offset,const T*... args)
 {
-	float t = 0;
-	float v = 0;
-	vector <float> time, value;
+	double t = 0;
+	double v = 0;
+	vector <double> time, value;
 
 	//данные в базе должны храниться в строках парами, по паре в каждой строке (не больше)
 	string str;
@@ -2231,13 +2231,13 @@ float getParameterFromFile(string filename, float offset,const T*... args)
 	while (!base.eof())
 	{
 		getline(base, str);
-		sscanf(str.c_str(), "%f %f", &t, &v);
+		sscanf(str.c_str(), "%lf %lf", &t, &v);
 		time.push_back(t);
 		value.push_back(v);
 	}
 	base.close();
 
-	for (auto it : std::initializer_list<float> args)
+	for (auto it : std::initializer_list<double> args)
 	{
 
 	}
