@@ -801,7 +801,83 @@ int main(int argc, char* argv[])
 				else //тестовые циклограммы полеты для некоторых вертолетов
 				{
 					string ch;
-					if (helicopter.modelName == "mi_8_mtv5" || helicopter.modelName == "mi_8_amtsh")
+					if (helicopter.modelName == "mi_8_mtv5")
+					{
+						if (timeReset == 0)
+						{
+							soundFFT.p_model_stop = 1;
+							system("cls");
+							printf(" TEST:\n 1) 0 - 75\n 2) 76 - 276\n 3) 277 - 437\n 4) 438 - 568\n 5) 569 - 689\n 6) 690 - 965\n 7) 966 - 1276\n 8) 1277 - 1587\n 9) 1588 - 1763\n 0)[custom]\n");
+
+							while (!std::regex_match(ch, regex("[0-9]")))//повторяем ввод пока не будет цифра от 1 до 4
+								ch = getch();//считываем буфер ввода
+
+							switch (ch[0])
+							{
+							case '1':
+								offsetTest = 0;
+								timeEnd = 75;
+								break;
+							case '2':
+								offsetTest = 76;
+								timeEnd = 276;
+								break;
+							case '3':
+								offsetTest = 277;
+								timeEnd = 437;
+								break;
+							case '4':
+								offsetTest = 438;
+								timeEnd = 568;
+								break;
+							case '5':
+								offsetTest = 569;
+								timeEnd = 689;
+								break;
+							case '6':
+								offsetTest = 690;
+								timeEnd = 965;
+								break;
+							case '7':
+								offsetTest = 966;
+								timeEnd = 1276;
+								break;
+							case '8':
+								offsetTest = 1277;
+								timeEnd = 1587;
+								break;
+							case '9':
+								offsetTest = 1588;
+								timeEnd = 1763;
+								break;
+							case '0':
+								system("cls");
+								printf(" Enter range (in seconds): [start] [end]\n ");
+								cin >> offsetTest;
+								cin >> timeEnd;
+								break;
+							}
+							timeStart = offsetTest;
+							soundFFT.time = 0;
+							rt.timeS = 0;
+							currentTime = 0;
+							timeReset = 1;
+							system("cls");
+						}
+
+						offsetTest += delta;
+						soundFFT.eng2_obor = getParameterFromFile("test/mi_8_mtv5/Standart/eng2.txt", offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
+						soundFFT.eng1_obor = getParameterFromFile("test/mi_8_mtv5/Standart/eng1.txt", offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
+						soundFFT.reduktor_gl_obor = getParameterFromFile("test/mi_8_mtv5/Standart/red.txt", offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
+						soundFFT.styk_hv = getParameterFromFile("test/mi_8_mtv5/Standart/h.txt", offsetTest);//
+						soundFFT.styk_hv = (soundFFT.styk_hv < 0) ? 0 : soundFFT.styk_hv;
+						soundFFT.osadki = getParameterFromFile("test/mi_8_mtv5/Standart/tangaz.txt", offsetTest);
+						soundFFT.ny = getParameterFromFile("test/mi_8_mtv5/Standart/step.txt", offsetTest);//
+						soundFFT.v = getParameterFromFile("test/mi_8_mtv5/Standart/v.txt", offsetTest);//
+						//Признак работы теста
+						soundFFT.p_model_stop = 0;
+					}
+					if (helicopter.modelName == "mi_8_amtsh")
 					{
 						if (timeReset == 0)
 						{
@@ -870,7 +946,7 @@ int main(int argc, char* argv[])
 						soundFFT.osadki = getParameterFromFile("test/mi_8_amtsh/Standart/tangaz.txt", offsetTest);
 						soundFFT.ny = getParameterFromFile("test/mi_8_amtsh/Standart/step.txt", offsetTest);//
 						soundFFT.v = getParameterFromFile("test/mi_8_amtsh/Standart/v.txt", offsetTest);//
-						//Признак работы теста
+																										//Признак работы теста
 						soundFFT.p_model_stop = 0;
 					}
 					if (helicopter.modelName == "mi_28")
