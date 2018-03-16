@@ -201,15 +201,18 @@ int main(int argc, char* argv[])
 		currentTime = rt.timeS;
 		
 		if (!rt.pExchOK)
-		{		// Анализ  
+		{	
+			//Функция обработки нажатий клавиш	  
 			kbHit();
 		}
+
+		//Код для автономных тестов - без модели вертолета 
 		if (standAlone)
-		{
-			if (!pause) //Программа не поставлена на паузу
+		{	
+			//Программа не поставлена на паузу
+			if (!pause) 
 			{
-				
-				//Блок штатной работы программы
+				//Блок проверки запуска (и холодной прокрутки) двигателей, редуктора, всу
 				if (!test)
 				{
 					avtOn = soundFFT.p_eng2_rkorr & soundFFT.p_eng1_rkorr;
@@ -757,10 +760,9 @@ int main(int argc, char* argv[])
 						//Обороты ВСУ не должны падать ниже 0
 						soundFFT.vsu_obor = (soundFFT.vsu_obor < 0) ? 0 : soundFFT.vsu_obor;
 					}
-					//
+					//Возвращение в исходное состояние всу
 					if (soundFFT.vsu_obor == 0)
 						soundFFT.p_vsu_ostanov = 0;
-
 
 					//Холодная прокрутка двигателя 1
 					if (soundFFT.p_eng1_hp && soundFFT.eng1_obor < 20 && !soundFFT.p_eng1_ostanov && !soundFFT.p_eng1_zap)
@@ -788,7 +790,7 @@ int main(int argc, char* argv[])
 						soundFFT.eng2_obor -= (helicopter.eng_obor_mg * 0.3) / 35.*(delta);
 						soundFFT.eng2_obor = (soundFFT.eng2_obor < 0) ? 0 : soundFFT.eng2_obor;
 					}
-					//Возвращение в исходное состояние
+					//Возвращение в исходное состояние двигателей
 					if (soundFFT.eng1_obor == 0)
 					{
 						soundFFT.p_eng1_ostanov = 0;
@@ -798,7 +800,8 @@ int main(int argc, char* argv[])
 						soundFFT.p_eng2_ostanov = 0;
 					}
 				}
-				else //тестовые циклограммы полеты для некоторых вертолетов
+				//тестовые циклограммы полетов для некоторых вертолетов
+				else 
 				{
 					string ch;
 					if (helicopter.modelName == "mi_8_mtv5")
@@ -874,6 +877,7 @@ int main(int argc, char* argv[])
 						soundFFT.osadki = getParameterFromFile("test/mi_8_mtv5/Standart/tangaz.txt", offsetTest);
 						soundFFT.ny = getParameterFromFile("test/mi_8_mtv5/Standart/step.txt", offsetTest);//
 						soundFFT.v = getParameterFromFile("test/mi_8_mtv5/Standart/v.txt", offsetTest);//
+						
 						//Признак работы теста
 						soundFFT.p_model_stop = 0;
 					}
@@ -1647,13 +1651,17 @@ int main(int argc, char* argv[])
 				}
 				soundFFT.time = currentTime;
 				printf(" Time = %8.3f OffsetTest = %6.3f H = %6.3f VX = %6.3f STEP = %6.3f Rd = %6.3f E1 = %6.3f E2 = %6.3f\t\t\t\t\t\r", soundFFT.time, offsetTest, soundFFT.styk_hv, soundFFT.v, soundFFT.ny, soundFFT.reduktor_gl_obor, soundFFT.eng1_obor, soundFFT.eng2_obor);
-
+			}
+			else
+			{
+				cout << " Paused...\t\t\t\t\r";
 			}
 		}
 		else
 		{
 			printf(" Time = %8.3f OffsetTest = %6.3f H = %6.3f VX = %6.3f STEP = %6.3f Rd = %6.3f E1 = %6.3f E2 = %6.3f | For Standalone using push [^]\r", soundFFT.time, offsetTest, soundFFT.styk_hv, soundFFT.v, soundFFT.ny, soundFFT.reduktor_gl_obor, soundFFT.eng1_obor, soundFFT.eng2_obor);
 		}
+
 		if (rt.pExchOK) 
 		{
 			rt.pExchOK = 0;
