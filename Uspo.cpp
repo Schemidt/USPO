@@ -189,7 +189,7 @@ int main(int argc, char* argv[])
 	InitRealTime(1);
 	bool hovering = 0;
 	bool skv = 0;
-	
+
 	double currentTime = 0;
 	double output = 0;
 
@@ -199,18 +199,18 @@ int main(int argc, char* argv[])
 	{
 		delta = rt.timeS - currentTime;
 		currentTime = rt.timeS;
-		
+
 		if (!rt.pExchOK)
-		{	
+		{
 			//Функция обработки нажатий клавиш	  
 			kbHit();
 		}
 
 		//Код для автономных тестов - без модели вертолета 
 		if (standAlone)
-		{	
+		{
 			//Программа не поставлена на паузу
-			if (!pause) 
+			if (!pause)
 			{
 				//Блок проверки запуска (и холодной прокрутки) двигателей, редуктора, всу
 				if (!test)
@@ -736,7 +736,7 @@ int main(int argc, char* argv[])
 					{
 						if (soundFFT.vsu_obor < (VSU_MAX_TURN * 0.35))
 							soundFFT.vsu_obor += (VSU_MAX_TURN * 0.35) / 5. * (delta);
-						soundFFT.vsu_obor = (soundFFT.vsu_obor >(VSU_MAX_TURN * 0.35)) ? (VSU_MAX_TURN * 0.35) : soundFFT.vsu_obor;
+						soundFFT.vsu_obor = (soundFFT.vsu_obor > (VSU_MAX_TURN * 0.35)) ? (VSU_MAX_TURN * 0.35) : soundFFT.vsu_obor;
 					}
 					//Холодная прокрутка ВСУ выкл
 					if (!soundFFT.p_vsu_hp & !soundFFT.p_vsu_zap)
@@ -801,7 +801,7 @@ int main(int argc, char* argv[])
 					}
 				}
 				//тестовые циклограммы полетов для некоторых вертолетов
-				else 
+				else
 				{
 					string ch;
 					if (helicopter.modelName == "mi_8_mtv5")
@@ -877,7 +877,7 @@ int main(int argc, char* argv[])
 						soundFFT.osadki = getParameterFromFile("test/mi_8_mtv5/Standart/tangaz.txt", offsetTest);
 						soundFFT.ny = getParameterFromFile("test/mi_8_mtv5/Standart/step.txt", offsetTest);//
 						soundFFT.v = getParameterFromFile("test/mi_8_mtv5/Standart/v.txt", offsetTest);//
-						
+
 						//Признак работы теста
 						soundFFT.p_model_stop = 0;
 					}
@@ -989,7 +989,7 @@ int main(int argc, char* argv[])
 								cin >> timeStart;
 								cin >> timeEnd;
 
-								
+
 							}
 							else if (skv)
 							{
@@ -1096,7 +1096,7 @@ int main(int argc, char* argv[])
 							soundFFT.osadki = getParameterFromFile("test/mi_28/SKV/tangaz_8s.txt", offsetTest);
 							soundFFT.ny = getParameterFromFile("test/mi_28/SKV/step_8s.txt", offsetTest);//
 							soundFFT.v = getParameterFromFile("test/mi_28/SKV/v_8s.txt", offsetTest);//
-							soundFFT.p_vu3 = 1;									  
+							soundFFT.p_vu3 = 1;
 							soundFFT.p_model_stop = 0;//Признак работы теста
 						}
 						else
@@ -1360,7 +1360,7 @@ int main(int argc, char* argv[])
 							printf(" Enter range (in seconds): [start] [end]\n ");
 							cin >> timeStart;
 							cin >> timeEnd;
-							
+
 							if (hovering)
 							{
 								//ДВ1
@@ -1585,7 +1585,7 @@ int main(int argc, char* argv[])
 						{
 							//Передача данных теста
 							offsetTest += delta;
-							soundFFT.eng1_obor = getParameterFromVector(eng1Test,timeTest, offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
+							soundFFT.eng1_obor = getParameterFromVector(eng1Test, timeTest, offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
 							soundFFT.eng2_obor = getParameterFromVector(eng2Test, timeTest, offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
 							soundFFT.reduktor_gl_obor = getParameterFromVector(redTest, timeTest, offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
 							soundFFT.styk_hv = getParameterFromVector(highTest, timeTest, offsetTest);//
@@ -1608,11 +1608,11 @@ int main(int argc, char* argv[])
 							soundFFT.ny = getParameterFromVector(stepTest, timeTest, offsetTest);//шаг
 							soundFFT.v = getParameterFromVector(velocityTest, timeTest, offsetTest) * 0.28;//										  
 							soundFFT.p_model_stop = 0;//Признак работы теста
-							
+
 						}
 
 						output += delta;
-						if (output>=0.01)
+						if (output >= 0.01)
 						{
 							FILE* test = fopen("test.txt", "at");
 							fprintf(test, "%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\n", soundFFT.eng1_obor, soundFFT.eng2_obor, soundFFT.reduktor_gl_obor, soundFFT.styk_hv, soundFFT.osadki, soundFFT.ny, soundFFT.v, soundFFT.time);
@@ -1634,7 +1634,7 @@ int main(int argc, char* argv[])
 						//Признак работы теста
 						soundFFT.p_model_stop = 1;
 						system("cls");
-						cout << "Test ended..."<< endl;
+						cout << "Test ended..." << endl;
 						cout << "Continue? [y/n]" << endl;
 						while (!std::regex_match(ch, regex("[yn]")))//повторяем ввод пока не будет цифра от 1 до 4
 							ch = getch();//считываем буфер ввода
@@ -1662,7 +1662,7 @@ int main(int argc, char* argv[])
 			printf(" Time = %8.3f OffsetTest = %6.3f H = %6.3f VX = %6.3f STEP = %6.3f Rd = %6.3f E1 = %6.3f E2 = %6.3f | For Standalone using push [^]\r", soundFFT.time, offsetTest, soundFFT.styk_hv, soundFFT.v, soundFFT.ny, soundFFT.reduktor_gl_obor, soundFFT.eng1_obor, soundFFT.eng2_obor);
 		}
 
-		if (rt.pExchOK) 
+		if (rt.pExchOK)
 		{
 			rt.pExchOK = 0;
 		}
@@ -1676,290 +1676,290 @@ int main(int argc, char* argv[])
 void kbHit()
 {
 	unsigned char c = ' ';
-	if(_kbhit()){
+	if (_kbhit()) {
 		c = _getch_nolock();
 
-		switch(c)
+		switch (c)
 		{
-			case '0':		
-				soundFFT.p_crash = !soundFFT.p_crash;//Столкновение с препятствием
-				break;		
-			case '1':		
-				soundFFT.obj_nos = !soundFFT.obj_nos;//Обжатие левой передней стойки шасси
-				soundFFT.obj_hv = !soundFFT.obj_hv;//Обжатие правой передней стойки шасси
-				soundFFT.obj_l = !soundFFT.obj_l;//Обжатие левой стойки шасси
-				soundFFT.obj_r = !soundFFT.obj_r;//Обжатие правой стойки шасси
-				break;		
-			case '2':
-				soundFFT.p_eng1_pomp = !soundFFT.p_eng1_pomp;//Помпаж 1го двигателя
-				break;		
-			case '3':
-				soundFFT.p_eng2_pomp = !soundFFT.p_eng2_pomp;//Помпаж 2го двигателя
-				break;		
-			case '4':
-				soundFFT.p_ur_ataka = !soundFFT.p_ur_ataka;//Признак применения УР
-				break;		
-			case '5':
-				soundFFT.p_spo_upk = !soundFFT.p_spo_upk;//Признак применения СПО УПК
-				break;		
-			case 'q':		
-				soundFFT.p_pts = !soundFFT.p_pts;//ПТС
-				break;	
-			case 'J':
-				soundFFT.p_vu1 = !soundFFT.p_vu1;//ВУ
-				break;
-			case 'S':
-				soundFFT.p_vu3 = !soundFFT.p_vu3;//Свист опционально
-				break;
-			case 'w':		
-				//
-				break;		
-			case 'e':		//ВСУ запуск
-				soundFFT.p_vsu_hp = 0;
-				soundFFT.p_vsu_zap = 1;
-				soundFFT.p_vsu_ostanov = 0;
-				break;		
-			case 'r':		//ВСУ останов
-				soundFFT.p_vsu_ostanov = 1;
-				soundFFT.p_vsu_zap = 0;
-				soundFFT.p_vsu_hp = 0;
-				break;		
-			case 'd':		//ВСУ ХП
-				//soundFFT.p_vsu_zap = 0;
-				soundFFT.p_vsu_hp = !soundFFT.p_vsu_hp;
-				//soundFFT.p_vsu_ostanov = 0;
-				break;		
-			case 'y':		//Дв1 запуск
-				soundFFT.p_eng1_zap = 1;
-				soundFFT.p_eng1_hp = 0;
-				soundFFT.p_eng1_ostanov = 0;
-				break;
-			case 't':		//Дв1 hp
-				soundFFT.p_eng1_hp = !soundFFT.p_eng1_hp;
-				//soundFFT.p_eng1_hp = 1;
-				//soundFFT.p_eng1_zap = 0;
-				//soundFFT.p_eng1_ostanov = 0;
-				break;
-			case 'u':		//Дв1 останов
-				soundFFT.p_eng1_ostanov = 1;
-				soundFFT.p_eng1_zap = 0;
-				soundFFT.p_eng1_hp = 0;
-				break;
-			case 'g':		//Дв2 hp
-				soundFFT.p_eng2_hp = !soundFFT.p_eng2_hp;
-				//soundFFT.p_eng2_hp = 1;
-				//soundFFT.p_eng2_zap = 0;
-				//soundFFT.p_eng2_ostanov = 0;
-				break;
-			case 'h':		//Дв2 запуск
-				soundFFT.p_eng2_zap = 1;
-				soundFFT.p_eng2_hp = 0;
-				soundFFT.p_eng2_ostanov = 0;
-				break;
-			case 'j':		//Дв2 останов
-				soundFFT.p_eng2_ostanov = 1;
-				soundFFT.p_eng2_zap = 0;
-				soundFFT.p_eng2_hp = 0;
-				break;
-			case 'a':
-				soundFFT.eng1_obor += .5;//Ручное регулирование оборотов двигателей (временно не работает)
-				soundFFT.eng2_obor += .5;
-				break;
-			case 'z':
-				soundFFT.eng1_obor -= .5;//Ручное регулирование оборотов двигателей (временно не работает)
-				soundFFT.eng2_obor -= .5;
-				break;
-			case 'c':
-				soundFFT.master_gain -= .01f;//Уменьшить громкость
-				break;
-			case 'v':
-				soundFFT.master_gain += .01f;//Прибавить громкость
-				break;
-			case 'n':
-				soundFFT.master_gain = 0;//Убрать звук
-				break;
-			case 'm':
-				soundFFT.master_gain = 1;//Звук на максимум
-				break;
-			case 'b':
-				soundFFT.tormoz_vint = !soundFFT.tormoz_vint;//Тормоз винта
-				break;
-			case 'B':
-				soundFFT.rez_10 = !soundFFT.rez_10;//Хлопки винта 
-				break;
-			case 'K':
-				soundFFT.rez_9 = !soundFFT.rez_9;//КО-50(обогреватель)
-				break;
-			case 'o':
-				soundFFT.p_kran_perekr_1 = !soundFFT.p_kran_perekr_1;//Левый кран
-				break;
-			case 'p':
-				soundFFT.p_kran_perekr_2 = !soundFFT.p_kran_perekr_2;//Правый кран
-				break;
-			case 's':
-				soundFFT.v += 3.;//Увеличить скорость
-				soundFFT.v = (soundFFT.v > 100.)? 100.:soundFFT.v;
-				break;
-			case 'x':
-				soundFFT.v -= 3.;//Уменьшить скорость
-				soundFFT.v = (soundFFT.v < 0.)? 0.:soundFFT.v;
-				break;
-			case 'k':
-				soundFFT.p_reduktor_gl_crash = !soundFFT.p_reduktor_gl_crash;//Неисправность главного редуктора
-				break;
-			case ';':
-				soundFFT.p_nar_s8 = !soundFFT.p_nar_s8;//НАР 8
-				break;
-			case 'l':
-				soundFFT.p_nar_c13 = !soundFFT.p_nar_c13;//НАР 13
-				break;
-			case '[':
-				soundFFT.p_spo_ppu = !soundFFT.p_spo_ppu;//СПО ППУ
-				break;
-			case ']':
-				soundFFT.p_tormoz = !soundFFT.p_tormoz;//Признак тормоз шасси
-				break;
-			case 'f':
-				soundFFT.p_rocket_hit = !soundFFT.p_rocket_hit;//Признак попадания ракетой
-				break;
-			case '6':
-				soundFFT.p_eng1_lkorr = !soundFFT.p_eng1_lkorr;//Правая - левая коррекция
-				soundFFT.p_eng2_lkorr = !soundFFT.p_eng2_lkorr;
-				soundFFT.p_eng1_rkorr = !soundFFT.p_eng1_lkorr;
-				soundFFT.p_eng2_rkorr = !soundFFT.p_eng2_lkorr;
-				break;
-			case '&':
-				soundFFT.p_nasos_podk_1= !soundFFT.p_nasos_podk_1;//Топливный насос левый
-				break;
-			case '*':
-				soundFFT.p_nasos_podk_2 = !soundFFT.p_nasos_podk_2;//Топливный насос правый
-				break;
-			case 'Z':
-				soundFFT.p_rain = !soundFFT.p_rain;//Дождь
-				break;
-			case '/':
-				soundFFT.rez_2 = !soundFFT.rez_2;//Аккумулятор
-				break;
-			case 'Q':
-				soundFFT.p_trans_36_osn = !soundFFT.p_trans_36_osn;//36В
-				break;
-			case 'W':
-				soundFFT.p_po500 = !soundFFT.p_po500;//115В
-				break;
-			case 'N':
-				soundFFT.rez_3 = !soundFFT.rez_3;//НИП
-				break;
-			case 'T':
-				soundFFT.rez_4 = !soundFFT.rez_4;//Насос расходного бака
-				break;
-			case '{':
-				soundFFT.p_kran_poj_l = !soundFFT.p_kran_poj_l;//ПОЖ кран л
-				break;
-			case '}':
-				soundFFT.p_kran_poj_r = !soundFFT.p_kran_poj_r;//ПОЖ кран п
-				break;
-			case '9':
-				soundFFT.p_skv_on = !soundFFT.p_skv_on;//СКВ
-				soundFFT.rez_8 = !soundFFT.rez_8;//СКВ
-				break;
-			case '-':
-				soundFFT.rez_7 = !soundFFT.rez_7;//бибиби
-				break;
-			case '^':
-				standAlone = !standAlone;
-				break;
-			case '7':
-				soundFFT.rez_5 = !soundFFT.rez_5;//хз 3
-				break;
-			case '8':
-				soundFFT.rez_6 = !soundFFT.rez_6;//хз 2
-				break;
-			case 'V':
-				soundFFT.p_nasos = !soundFFT.p_nasos;//Насосная станция
-				break;
-			case 'i':
-				soundFFT.rez_1 = !soundFFT.rez_1;//потребитель
-				break;
-			case 'I':
-				soundFFT.p_kran_kolcev = !soundFFT.p_kran_kolcev;//потребитель
-				break;
-			case '$':
-				soundFFT.p_ur_igla = !soundFFT.p_ur_igla;//потребитель
-				break;
-			case 'F':
-				test = !test;//Полет
-				break;
-			case 'P'://пауза (shift + s)
-				pause = !pause;
-				/*if (pause)
-					PauseRealTime();
-				else
-					RewindRealTime();*/
-				break;
-			case 'M'://вернуться в начало (shift + m)
-				soundFFT.reduktor_gl_obor = 0;
-				soundFFT.eng1_obor = 0;
-				soundFFT.eng2_obor = 0;
-				soundFFT.p_eng1_zap = 0;
-				soundFFT.p_eng2_zap = 0;
-				soundFFT.p_eng1_ostanov = 0;
-				soundFFT.p_eng2_ostanov = 0;
-				soundFFT.p_eng1_lkorr = 1;//Правая - левая коррекция
-				soundFFT.p_eng2_lkorr = 1;
-				soundFFT.p_eng1_rkorr = 0;
-				soundFFT.p_eng2_rkorr = 0;
-				statusEng1 = "NULL";
-				statusEng2 = "NULL";
-				statusRed = "NULL";
-				break;
-			case '<'://режим мг - редуктора на 1 дв (shift + ,)
-				soundFFT.reduktor_gl_obor = helicopter.red_obor_mg1;
-				soundFFT.eng1_obor = helicopter.eng_obor_mg;
-				soundFFT.eng2_obor = 0;
-				soundFFT.p_eng1_zap = 1;
-				soundFFT.p_eng2_zap = 0;
-				soundFFT.p_eng1_ostanov = 0;
-				soundFFT.p_eng2_ostanov = 0;
-				soundFFT.p_eng1_lkorr = 1;//Правая - левая коррекция
-				soundFFT.p_eng2_lkorr = 1;
-				soundFFT.p_eng1_rkorr = 0;
-				soundFFT.p_eng2_rkorr = 0;
-				statusEng1 = "NULL";
-				statusEng2 = "NULL";
-				statusRed = "NULL";
-				break;
-			case '>'://режим мг - редуктора на 2 дв(shift + .)
-				soundFFT.reduktor_gl_obor = helicopter.red_obor_mg2;
-				soundFFT.eng1_obor = helicopter.eng_obor_mg;
-				soundFFT.eng2_obor = helicopter.eng_obor_mg;
-				soundFFT.p_eng1_zap = 1;
-				soundFFT.p_eng2_zap = 1;
-				soundFFT.p_eng1_ostanov = 0;
-				soundFFT.p_eng2_ostanov = 0;
-				soundFFT.p_eng1_lkorr = 1;//Правая - левая коррекция
-				soundFFT.p_eng2_lkorr = 1;
-				soundFFT.p_eng1_rkorr = 0;
-				soundFFT.p_eng2_rkorr = 0;
-				statusEng1 = "NULL";
-				statusEng2 = "NULL";
-				statusRed = "NULL";
-				break;
-			case '?'://режим автомат - редуктора на 2 дв(shift + /)
-				soundFFT.reduktor_gl_obor = helicopter.red_obor_avt;
-				soundFFT.eng1_obor = helicopter.eng_obor_avt;
-				soundFFT.eng2_obor = helicopter.eng_obor_avt;
-				soundFFT.p_eng1_zap = 1;
-				soundFFT.p_eng2_zap = 1;
-				soundFFT.p_eng1_ostanov = 0;
-				soundFFT.p_eng2_ostanov = 0;
-				soundFFT.p_eng1_lkorr = 0;//Правая - левая коррекция
-				soundFFT.p_eng2_lkorr = 0;
-				soundFFT.p_eng1_rkorr = 1;
-				soundFFT.p_eng2_rkorr = 1;
-				statusEng1 = "NULL";
-				statusEng2 = "NULL";
-				statusRed = "NULL";
-				break;
+		case '0':
+			soundFFT.p_crash = !soundFFT.p_crash;//Столкновение с препятствием
+			break;
+		case '1':
+			soundFFT.obj_nos = !soundFFT.obj_nos;//Обжатие левой передней стойки шасси
+			soundFFT.obj_hv = !soundFFT.obj_hv;//Обжатие правой передней стойки шасси
+			soundFFT.obj_l = !soundFFT.obj_l;//Обжатие левой стойки шасси
+			soundFFT.obj_r = !soundFFT.obj_r;//Обжатие правой стойки шасси
+			break;
+		case '2':
+			soundFFT.p_eng1_pomp = !soundFFT.p_eng1_pomp;//Помпаж 1го двигателя
+			break;
+		case '3':
+			soundFFT.p_eng2_pomp = !soundFFT.p_eng2_pomp;//Помпаж 2го двигателя
+			break;
+		case '4':
+			soundFFT.p_ur_ataka = !soundFFT.p_ur_ataka;//Признак применения УР
+			break;
+		case '5':
+			soundFFT.p_spo_upk = !soundFFT.p_spo_upk;//Признак применения СПО УПК
+			break;
+		case 'q':
+			soundFFT.p_pts = !soundFFT.p_pts;//ПТС
+			break;
+		case 'J':
+			soundFFT.p_vu1 = !soundFFT.p_vu1;//ВУ
+			break;
+		case 'S':
+			soundFFT.p_vu3 = !soundFFT.p_vu3;//Свист опционально
+			break;
+		case 'w':
+			//
+			break;
+		case 'e':		//ВСУ запуск
+			soundFFT.p_vsu_hp = 0;
+			soundFFT.p_vsu_zap = 1;
+			soundFFT.p_vsu_ostanov = 0;
+			break;
+		case 'r':		//ВСУ останов
+			soundFFT.p_vsu_ostanov = 1;
+			soundFFT.p_vsu_zap = 0;
+			soundFFT.p_vsu_hp = 0;
+			break;
+		case 'd':		//ВСУ ХП
+			//soundFFT.p_vsu_zap = 0;
+			soundFFT.p_vsu_hp = !soundFFT.p_vsu_hp;
+			//soundFFT.p_vsu_ostanov = 0;
+			break;
+		case 'y':		//Дв1 запуск
+			soundFFT.p_eng1_zap = 1;
+			soundFFT.p_eng1_hp = 0;
+			soundFFT.p_eng1_ostanov = 0;
+			break;
+		case 't':		//Дв1 hp
+			soundFFT.p_eng1_hp = !soundFFT.p_eng1_hp;
+			//soundFFT.p_eng1_hp = 1;
+			//soundFFT.p_eng1_zap = 0;
+			//soundFFT.p_eng1_ostanov = 0;
+			break;
+		case 'u':		//Дв1 останов
+			soundFFT.p_eng1_ostanov = 1;
+			soundFFT.p_eng1_zap = 0;
+			soundFFT.p_eng1_hp = 0;
+			break;
+		case 'g':		//Дв2 hp
+			soundFFT.p_eng2_hp = !soundFFT.p_eng2_hp;
+			//soundFFT.p_eng2_hp = 1;
+			//soundFFT.p_eng2_zap = 0;
+			//soundFFT.p_eng2_ostanov = 0;
+			break;
+		case 'h':		//Дв2 запуск
+			soundFFT.p_eng2_zap = 1;
+			soundFFT.p_eng2_hp = 0;
+			soundFFT.p_eng2_ostanov = 0;
+			break;
+		case 'j':		//Дв2 останов
+			soundFFT.p_eng2_ostanov = 1;
+			soundFFT.p_eng2_zap = 0;
+			soundFFT.p_eng2_hp = 0;
+			break;
+		case 'a':
+			soundFFT.eng1_obor += .5;//Ручное регулирование оборотов двигателей (временно не работает)
+			soundFFT.eng2_obor += .5;
+			break;
+		case 'z':
+			soundFFT.eng1_obor -= .5;//Ручное регулирование оборотов двигателей (временно не работает)
+			soundFFT.eng2_obor -= .5;
+			break;
+		case 'c':
+			soundFFT.master_gain -= .01f;//Уменьшить громкость
+			break;
+		case 'v':
+			soundFFT.master_gain += .01f;//Прибавить громкость
+			break;
+		case 'n':
+			soundFFT.master_gain = 0;//Убрать звук
+			break;
+		case 'm':
+			soundFFT.master_gain = 1;//Звук на максимум
+			break;
+		case 'b':
+			soundFFT.tormoz_vint = !soundFFT.tormoz_vint;//Тормоз винта
+			break;
+		case 'B':
+			soundFFT.rez_10 = !soundFFT.rez_10;//Хлопки винта 
+			break;
+		case 'K':
+			soundFFT.rez_9 = !soundFFT.rez_9;//КО-50(обогреватель)
+			break;
+		case 'o':
+			soundFFT.p_kran_perekr_1 = !soundFFT.p_kran_perekr_1;//Левый кран
+			break;
+		case 'p':
+			soundFFT.p_kran_perekr_2 = !soundFFT.p_kran_perekr_2;//Правый кран
+			break;
+		case 's':
+			soundFFT.v += 3.;//Увеличить скорость
+			soundFFT.v = (soundFFT.v > 100.) ? 100. : soundFFT.v;
+			break;
+		case 'x':
+			soundFFT.v -= 3.;//Уменьшить скорость
+			soundFFT.v = (soundFFT.v < 0.) ? 0. : soundFFT.v;
+			break;
+		case 'k':
+			soundFFT.p_reduktor_gl_crash = !soundFFT.p_reduktor_gl_crash;//Неисправность главного редуктора
+			break;
+		case ';':
+			soundFFT.p_nar_s8 = !soundFFT.p_nar_s8;//НАР 8
+			break;
+		case 'l':
+			soundFFT.p_nar_c13 = !soundFFT.p_nar_c13;//НАР 13
+			break;
+		case '[':
+			soundFFT.p_spo_ppu = !soundFFT.p_spo_ppu;//СПО ППУ
+			break;
+		case ']':
+			soundFFT.p_tormoz = !soundFFT.p_tormoz;//Признак тормоз шасси
+			break;
+		case 'f':
+			soundFFT.p_rocket_hit = !soundFFT.p_rocket_hit;//Признак попадания ракетой
+			break;
+		case '6':
+			soundFFT.p_eng1_lkorr = !soundFFT.p_eng1_lkorr;//Правая - левая коррекция
+			soundFFT.p_eng2_lkorr = !soundFFT.p_eng2_lkorr;
+			soundFFT.p_eng1_rkorr = !soundFFT.p_eng1_lkorr;
+			soundFFT.p_eng2_rkorr = !soundFFT.p_eng2_lkorr;
+			break;
+		case '&':
+			soundFFT.p_nasos_podk_1 = !soundFFT.p_nasos_podk_1;//Топливный насос левый
+			break;
+		case '*':
+			soundFFT.p_nasos_podk_2 = !soundFFT.p_nasos_podk_2;//Топливный насос правый
+			break;
+		case 'Z':
+			soundFFT.p_rain = !soundFFT.p_rain;//Дождь
+			break;
+		case '/':
+			soundFFT.rez_2 = !soundFFT.rez_2;//Аккумулятор
+			break;
+		case 'Q':
+			soundFFT.p_trans_36_osn = !soundFFT.p_trans_36_osn;//36В
+			break;
+		case 'W':
+			soundFFT.p_po500 = !soundFFT.p_po500;//115В
+			break;
+		case 'N':
+			soundFFT.rez_3 = !soundFFT.rez_3;//НИП
+			break;
+		case 'T':
+			soundFFT.rez_4 = !soundFFT.rez_4;//Насос расходного бака
+			break;
+		case '{':
+			soundFFT.p_kran_poj_l = !soundFFT.p_kran_poj_l;//ПОЖ кран л
+			break;
+		case '}':
+			soundFFT.p_kran_poj_r = !soundFFT.p_kran_poj_r;//ПОЖ кран п
+			break;
+		case '9':
+			soundFFT.p_skv_on = !soundFFT.p_skv_on;//СКВ
+			soundFFT.rez_8 = !soundFFT.rez_8;//СКВ
+			break;
+		case '-':
+			soundFFT.rez_7 = !soundFFT.rez_7;//бибиби
+			break;
+		case '^':
+			standAlone = !standAlone;
+			break;
+		case '7':
+			soundFFT.rez_5 = !soundFFT.rez_5;//хз 3
+			break;
+		case '8':
+			soundFFT.rez_6 = !soundFFT.rez_6;//хз 2
+			break;
+		case 'V':
+			soundFFT.p_nasos = !soundFFT.p_nasos;//Насосная станция
+			break;
+		case 'i':
+			soundFFT.rez_1 = !soundFFT.rez_1;//потребитель
+			break;
+		case 'I':
+			soundFFT.p_kran_kolcev = !soundFFT.p_kran_kolcev;//потребитель
+			break;
+		case '$':
+			soundFFT.p_ur_igla = !soundFFT.p_ur_igla;//потребитель
+			break;
+		case 'F':
+			test = !test;//Полет
+			break;
+		case 'P'://пауза (shift + s)
+			pause = !pause;
+			/*if (pause)
+				PauseRealTime();
+			else
+				RewindRealTime();*/
+			break;
+		case 'M'://вернуться в начало (shift + m)
+			soundFFT.reduktor_gl_obor = 0;
+			soundFFT.eng1_obor = 0;
+			soundFFT.eng2_obor = 0;
+			soundFFT.p_eng1_zap = 0;
+			soundFFT.p_eng2_zap = 0;
+			soundFFT.p_eng1_ostanov = 0;
+			soundFFT.p_eng2_ostanov = 0;
+			soundFFT.p_eng1_lkorr = 1;//Правая - левая коррекция
+			soundFFT.p_eng2_lkorr = 1;
+			soundFFT.p_eng1_rkorr = 0;
+			soundFFT.p_eng2_rkorr = 0;
+			statusEng1 = "NULL";
+			statusEng2 = "NULL";
+			statusRed = "NULL";
+			break;
+		case '<'://режим мг - редуктора на 1 дв (shift + ,)
+			soundFFT.reduktor_gl_obor = helicopter.red_obor_mg1;
+			soundFFT.eng1_obor = helicopter.eng_obor_mg;
+			soundFFT.eng2_obor = 0;
+			soundFFT.p_eng1_zap = 1;
+			soundFFT.p_eng2_zap = 0;
+			soundFFT.p_eng1_ostanov = 0;
+			soundFFT.p_eng2_ostanov = 0;
+			soundFFT.p_eng1_lkorr = 1;//Правая - левая коррекция
+			soundFFT.p_eng2_lkorr = 1;
+			soundFFT.p_eng1_rkorr = 0;
+			soundFFT.p_eng2_rkorr = 0;
+			statusEng1 = "NULL";
+			statusEng2 = "NULL";
+			statusRed = "NULL";
+			break;
+		case '>'://режим мг - редуктора на 2 дв(shift + .)
+			soundFFT.reduktor_gl_obor = helicopter.red_obor_mg2;
+			soundFFT.eng1_obor = helicopter.eng_obor_mg;
+			soundFFT.eng2_obor = helicopter.eng_obor_mg;
+			soundFFT.p_eng1_zap = 1;
+			soundFFT.p_eng2_zap = 1;
+			soundFFT.p_eng1_ostanov = 0;
+			soundFFT.p_eng2_ostanov = 0;
+			soundFFT.p_eng1_lkorr = 1;//Правая - левая коррекция
+			soundFFT.p_eng2_lkorr = 1;
+			soundFFT.p_eng1_rkorr = 0;
+			soundFFT.p_eng2_rkorr = 0;
+			statusEng1 = "NULL";
+			statusEng2 = "NULL";
+			statusRed = "NULL";
+			break;
+		case '?'://режим автомат - редуктора на 2 дв(shift + /)
+			soundFFT.reduktor_gl_obor = helicopter.red_obor_avt;
+			soundFFT.eng1_obor = helicopter.eng_obor_avt;
+			soundFFT.eng2_obor = helicopter.eng_obor_avt;
+			soundFFT.p_eng1_zap = 1;
+			soundFFT.p_eng2_zap = 1;
+			soundFFT.p_eng1_ostanov = 0;
+			soundFFT.p_eng2_ostanov = 0;
+			soundFFT.p_eng1_lkorr = 0;//Правая - левая коррекция
+			soundFFT.p_eng2_lkorr = 0;
+			soundFFT.p_eng1_rkorr = 1;
+			soundFFT.p_eng2_rkorr = 1;
+			statusEng1 = "NULL";
+			statusEng2 = "NULL";
+			statusRed = "NULL";
+			break;
 		};
 	};
 }
@@ -1970,15 +1970,15 @@ double interpolation(double x0, double fx0, double x1, double fx1, double x)
 	{
 		return fx1;
 	}
-	if (x0<x1 && x<x0)
+	if (x0 < x1 && x < x0)
 	{
 		return fx0;
 	}
-	if (x0>x1 && x<x1)
+	if (x0 > x1 && x < x1)
 	{
 		return fx1;
 	}
-	if (x0>x1 && x>x0)
+	if (x0 > x1 && x > x0)
 	{
 		return fx0;
 	}
@@ -1992,15 +1992,15 @@ double interpolation(double x0, double fx0, double x1, double fx1, double x2, do
 	{
 		return fx2;
 	}
-	if (x0<x2 && x<x0)
+	if (x0 < x2 && x < x0)
 	{
 		return fx0;
 	}
-	if (x0>x2 && x<x2)
+	if (x0 > x2 && x < x2)
 	{
 		return fx2;
 	}
-	if (x0>x2 && x>x0)
+	if (x0 > x2 && x > x0)
 	{
 		return fx0;
 	}
@@ -2268,7 +2268,7 @@ double getParameterFromVector(vector<double> value, vector<double> time, double 
 	}
 	else
 	{
-		n = binSer(value,time,offset);
+		n = binSer(value, time, offset);
 	}
 	//Выбираем 3 точки (вариант -1 0 +1)
 	if (n - 1 == -1)
@@ -2279,7 +2279,7 @@ double getParameterFromVector(vector<double> value, vector<double> time, double 
 	{
 		x = offset; x0 = time[n - 2]; fx0 = value[n - 2]; x1 = time[n - 1]; fx1 = value[n - 1]; x2 = time[n]; fx2 = value[n];
 	}
-	else 
+	else
 	{
 		x = offset; x0 = time[n - 1]; fx0 = value[n - 1]; x1 = time[n]; fx1 = value[n]; x2 = time[n + 1]; fx2 = value[n + 1];
 	}
@@ -2296,7 +2296,7 @@ double getParameterFromVector(vector<double> value, vector<double> time, double 
 	//{
 	//	x = offset; x0 = time[n]; fx0 = value[n]; x1 = time[n + 1]; fx1 = value[n + 1]; x2 = time[n + 2]; fx2 = value[n + 2];
 	//}
-	
+
 	//если квадратичная интерполяция не работает - берем линейную
 	if (x1 == x0 | x2 == x1)
 	{
@@ -2311,7 +2311,7 @@ double getParameterFromVector(vector<double> value, vector<double> time, double 
 }
 //Функция жрущая файл с любым количеством столбцев, записывает их в переданные параметры
 template<typename... T>//WIP
-double getParameterFromFile(string filename, double offset,const T*... args)
+double getParameterFromFile(string filename, double offset, const T*... args)
 {
 	double t = 0;
 	double v = 0;

@@ -36,7 +36,7 @@ public:
 		shortName["red_avt_mg"] = "red_avt_mg.txt"; //!<имя файла c переходной функцией замедления редуктора до режима мг
 		shortName["red_off"] = "red_off.txt"; //!<имя файла c переходной функцией остановки редуктора ниже режима мг
 		shortName["ansatRed"] = "red_mg.txt"; //!<
-			
+
 		fullName = shortName;
 		std::map<std::string, string> ::iterator num, num1;
 		for (num = shortName.begin(), num1 = fullName.begin(); num != shortName.end(); num++, num1++)
