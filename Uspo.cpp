@@ -15,23 +15,41 @@
 
 using namespace std;
 
+class point {
+public:
+	double x;
+	double y;
+
+	point()
+	{
+		x = 0;
+		y = 0;
+	}
+
+	point(double x, double y)
+	{
+		this->x = x;
+		this->y = y;
+	}
+};
+
 void delayMs(double ms);
 
 void kbHit();
 
 double getTimeMs();
 
-double interpolation(double x0, double fx0, double x1, double fx1, double x);
+double interpolation(point p1, point p2, double x);
 
-double interpolation(double x0, double fx0, double x1, double fx1, double x2, double fx2, double x);
+double interpolation(point p1, point p2, point p3, double x);
 
 double getOffset(string filename, double parameter);
 
 double getParameterFromFile(string filename, double offset);
 
-double getParameterFromVector(double *value, double *time, int size, double offset);
+double getParameterFromVector(vector<double> &value, vector<double> &time, double offset);
 
-int binSer(double *time, int size, double offset);
+int binSer(vector<double> &time, double offset);
 
 SOUNDFFT soundFFT;
 RED red;
@@ -44,6 +62,7 @@ double timeEnd = 0;
 double timeStart = 0;
 double pause = 0;
 double timeReset = 0;
+int vectload = 0;
 
 string statusEng1;
 string statusEng2;
@@ -192,6 +211,10 @@ int main(int argc, char* argv[])
 
 	double currentTime = 0;
 	double output = 0;
+
+	vector<vector <double>> vectorPar(7);
+	vector<double> vecTime;
+	string filename[7];
 
 	while (true)
 	{
@@ -802,9 +825,11 @@ int main(int argc, char* argv[])
 				else
 				{
 					string ch;
-					if (helicopter.modelName == "mi_8_mtv5")
+
+					//Сброс параметров в начале теста
+					if (timeReset == 0)
 					{
-						if (timeReset == 0)
+						if (helicopter.modelName == "mi_8_mtv5")
 						{
 							soundFFT.p_model_stop = 1;
 							system("cls");
@@ -864,24 +889,9 @@ int main(int argc, char* argv[])
 							currentTime = 0;
 							timeReset = 1;
 							system("cls");
+
 						}
-
-						offsetTest += delta;
-						soundFFT.eng2_obor = getParameterFromFile("test/mi_8_mtv5/Standart/eng2.txt", offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
-						soundFFT.eng1_obor = getParameterFromFile("test/mi_8_mtv5/Standart/eng1.txt", offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
-						soundFFT.reduktor_gl_obor = getParameterFromFile("test/mi_8_mtv5/Standart/red.txt", offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
-						soundFFT.styk_hv = getParameterFromFile("test/mi_8_mtv5/Standart/h.txt", offsetTest);//
-						soundFFT.styk_hv = (soundFFT.styk_hv < 0) ? 0 : soundFFT.styk_hv;
-						soundFFT.osadki = getParameterFromFile("test/mi_8_mtv5/Standart/tangaz.txt", offsetTest);
-						soundFFT.ny = getParameterFromFile("test/mi_8_mtv5/Standart/step.txt", offsetTest);//
-						soundFFT.v = getParameterFromFile("test/mi_8_mtv5/Standart/v.txt", offsetTest);//
-
-						//Признак работы теста
-						soundFFT.p_model_stop = 0;
-					}
-					if (helicopter.modelName == "mi_8_amtsh")
-					{
-						if (timeReset == 0)
+						if (helicopter.modelName == "mi_8_amtsh")
 						{
 							soundFFT.p_model_stop = 1;
 							system("cls");
@@ -938,25 +948,8 @@ int main(int argc, char* argv[])
 							timeReset = 1;
 							system("cls");
 						}
-
-						offsetTest += delta;
-						soundFFT.eng2_obor = getParameterFromFile("test/mi_8_amtsh/Standart/eng2.txt", offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
-						soundFFT.eng1_obor = getParameterFromFile("test/mi_8_amtsh/Standart/eng1.txt", offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
-						soundFFT.reduktor_gl_obor = getParameterFromFile("test/mi_8_amtsh/Standart/red.txt", offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
-						soundFFT.styk_hv = getParameterFromFile("test/mi_8_amtsh/Standart/h.txt", offsetTest);//
-						soundFFT.styk_hv = (soundFFT.styk_hv < 0) ? 0 : soundFFT.styk_hv;
-						soundFFT.osadki = getParameterFromFile("test/mi_8_amtsh/Standart/tangaz.txt", offsetTest);
-						soundFFT.ny = getParameterFromFile("test/mi_8_amtsh/Standart/step.txt", offsetTest);//
-						soundFFT.v = getParameterFromFile("test/mi_8_amtsh/Standart/v.txt", offsetTest);//
-																										//Признак работы теста
-						soundFFT.p_model_stop = 0;
-					}
-					if (helicopter.modelName == "mi_28")
-					{
-						//Сброс параметров в начале теста
-						if (timeReset == 0)
+						if (helicopter.modelName == "mi_28")
 						{
-
 							string ch1;
 							system("cls");
 							printf(" Choose type:\n 1) Standart\n 2) Hovering\n 3) SKV\n");
@@ -986,8 +979,6 @@ int main(int argc, char* argv[])
 								printf(" Enter range (in seconds): [start] [end]\n ");
 								cin >> timeStart;
 								cin >> timeEnd;
-
-
 							}
 							else if (skv)
 							{
@@ -1067,58 +1058,8 @@ int main(int argc, char* argv[])
 							timeReset = 1;
 							system("cls");
 						}
-						if (hovering)
+						if (helicopter.modelName == "mi_26")
 						{
-							//Передача данных теста
-							offsetTest += delta;
-							soundFFT.eng1_obor = getParameterFromFile("test/mi_28/Hovering/eng1.txt", offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
-							soundFFT.eng2_obor = getParameterFromFile("test/mi_28/Hovering/eng2.txt", offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
-							soundFFT.reduktor_gl_obor = getParameterFromFile("test/mi_28/Hovering/red.txt", offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
-							soundFFT.styk_hv = getParameterFromFile("test/mi_28/Hovering/h.txt", offsetTest);//
-							soundFFT.styk_hv = (soundFFT.styk_hv < 0) ? 0 : soundFFT.styk_hv;
-							soundFFT.osadki = getParameterFromFile("test/mi_28/Hovering/tangaz.txt", offsetTest);
-							soundFFT.ny = getParameterFromFile("test/mi_28/Hovering/step.txt", offsetTest);//
-							soundFFT.v = getParameterFromFile("test/mi_28/Hovering/v.txt", offsetTest);//
-							soundFFT.p_vu3 = 1;
-							soundFFT.p_model_stop = 0;//Признак работы теста
-						}
-						else if (skv)
-						{
-							//Передача данных теста
-							offsetTest += delta;
-							soundFFT.eng1_obor = getParameterFromFile("test/mi_28/SKV/eng1_8s.txt", offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
-							soundFFT.eng2_obor = getParameterFromFile("test/mi_28/SKV/eng2_8s.txt", offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
-							soundFFT.reduktor_gl_obor = getParameterFromFile("test/mi_28/SKV/red_8s.txt", offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
-							soundFFT.styk_hv = getParameterFromFile("test/mi_28/SKV/h_8s.txt", offsetTest);//
-							soundFFT.styk_hv = (soundFFT.styk_hv < 0) ? 0 : soundFFT.styk_hv;
-							soundFFT.osadki = getParameterFromFile("test/mi_28/SKV/tangaz_8s.txt", offsetTest);
-							soundFFT.ny = getParameterFromFile("test/mi_28/SKV/step_8s.txt", offsetTest);//
-							soundFFT.v = getParameterFromFile("test/mi_28/SKV/v_8s.txt", offsetTest);//
-							soundFFT.p_vu3 = 1;
-							soundFFT.p_model_stop = 0;//Признак работы теста
-						}
-						else
-						{
-							//Передача данных теста
-							offsetTest += delta;
-							soundFFT.eng1_obor = getParameterFromFile("test/mi_28/Standart/eng1_8.txt", offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
-							soundFFT.eng2_obor = getParameterFromFile("test/mi_28/Standart/eng2_8.txt", offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
-							soundFFT.reduktor_gl_obor = getParameterFromFile("test/mi_28/Standart/red_8.txt", offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
-							soundFFT.styk_hv = getParameterFromFile("test/mi_28/Standart/h_8.txt", offsetTest);//
-							soundFFT.styk_hv = (soundFFT.styk_hv < 0) ? 0 : soundFFT.styk_hv;
-							soundFFT.osadki = getParameterFromFile("test/mi_28/Standart/tangaz_8.txt", offsetTest);
-							soundFFT.ny = getParameterFromFile("test/mi_28/Standart/step_8.txt", offsetTest);//
-							soundFFT.v = getParameterFromFile("test/mi_28/Standart/v_8.txt", offsetTest);//
-							soundFFT.p_vu3 = 1;
-							soundFFT.p_model_stop = 0;//Признак работы теста
-						}
-					}
-					if (helicopter.modelName == "mi_26")
-					{
-						//Сброс параметров в начале теста
-						if (timeReset == 0)
-						{
-
 							string ch1;
 							system("cls");
 							printf(" Choose type:\n 1) Standart\n 2) Hovering\n 3) SKV\n");
@@ -1186,17 +1127,14 @@ int main(int argc, char* argv[])
 							{
 								soundFFT.p_model_stop = 1;
 								system("cls");
-								
-								cout << " TEST:\n 1) 21 - 649\n 2) 650 - 760\n 3) 761 - 906\n 4) 907 - 1062\n" ;
+
+								cout << " TEST:\n 1) 21 - 649\n 2) 650 - 760\n 3) 761 - 906\n 4) 907 - 1062\n";
 								cout << " 5) 1063 - 1383\n 6) 1384 - 1914\n 7) 1915 - 2175\n 8) 2176 - 2366\n";
 								cout << " 9) 2367 - 2647\n 10) 2648 - 3018\n 11) 3019 - 3179\n 12) 3180 - 3300\n 13) 3301 - 3641\n";
 								cout << " 0) [custom time]\n";
 								int num;
 								cout << " Enter test number: ";
 								cin >> num;
-
-								//while (!std::regex_match(ch, regex("[0-9]")))//повторяем ввод пока не будет цифра от 0-9
-								//	ch = getch();//считываем буфер ввода
 
 								switch (num)
 								{
@@ -1268,58 +1206,8 @@ int main(int argc, char* argv[])
 							timeReset = 1;
 							system("cls");
 						}
-						if (hovering)
+						if (helicopter.modelName == "ka_29")
 						{
-							//Передача данных теста
-							offsetTest += delta;
-							soundFFT.eng1_obor = getParameterFromFile("test/mi_26/Hovering/eng1.txt", offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
-							soundFFT.eng2_obor = getParameterFromFile("test/mi_26/Hovering/eng2.txt", offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
-							soundFFT.reduktor_gl_obor = getParameterFromFile("test/mi_26/Hovering/red.txt", offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
-							soundFFT.styk_hv = getParameterFromFile("test/mi_26/Hovering/h.txt", offsetTest);//
-							soundFFT.styk_hv = (soundFFT.styk_hv < 0) ? 0 : soundFFT.styk_hv;
-							soundFFT.osadki = getParameterFromFile("test/mi_26/Hovering/tangaz.txt", offsetTest);
-							soundFFT.ny = getParameterFromFile("test/mi_26/Hovering/step.txt", offsetTest);//
-							soundFFT.v = getParameterFromFile("test/mi_26/Hovering/v.txt", offsetTest);//
-							//soundFFT.p_vu3 = 1;
-							soundFFT.p_model_stop = 0;//Признак работы теста
-						}
-						else if (skv)
-						{
-							//Передача данных теста
-							offsetTest += delta;
-							soundFFT.eng1_obor = getParameterFromFile("test/mi_26/SKV/eng1.txt", offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
-							soundFFT.eng2_obor = getParameterFromFile("test/mi_26/SKV/eng2.txt", offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
-							soundFFT.reduktor_gl_obor = getParameterFromFile("test/mi_26/SKV/red.txt", offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
-							soundFFT.styk_hv = getParameterFromFile("test/mi_26/SKV/h.txt", offsetTest);//
-							soundFFT.styk_hv = (soundFFT.styk_hv < 0) ? 0 : soundFFT.styk_hv;
-							soundFFT.osadki = getParameterFromFile("test/mi_26/SKV/tangaz.txt", offsetTest);
-							soundFFT.ny = getParameterFromFile("test/mi_26/SKV/step.txt", offsetTest);//
-							soundFFT.v = getParameterFromFile("test/mi_26/SKV/v.txt", offsetTest);//
-							//soundFFT.p_vu3 = 1;
-							soundFFT.p_model_stop = 0;//Признак работы теста
-						}
-						else
-						{
-							//Передача данных теста
-							offsetTest += delta;
-							soundFFT.eng1_obor = getParameterFromFile("test/mi_26/Standart/eng1.txt", offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
-							soundFFT.eng2_obor = getParameterFromFile("test/mi_26/Standart/eng2.txt", offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
-							soundFFT.reduktor_gl_obor = getParameterFromFile("test/mi_26/Standart/red.txt", offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
-							soundFFT.styk_hv = getParameterFromFile("test/mi_26/Standart/h.txt", offsetTest);//
-							soundFFT.styk_hv = (soundFFT.styk_hv < 0) ? 0 : soundFFT.styk_hv;
-							soundFFT.osadki = getParameterFromFile("test/mi_26/Standart/tangaz.txt", offsetTest);
-							soundFFT.ny = getParameterFromFile("test/mi_26/Standart/step.txt", offsetTest);//
-							soundFFT.v = getParameterFromFile("test/mi_26/Standart/v.txt", offsetTest) * 0.28;//
-							//soundFFT.p_vu3 = 1;
-							soundFFT.p_model_stop = 0;//Признак работы теста
-						}
-					}
-					if (helicopter.modelName == "ka_29")
-					{
-						//Сброс параметров в начале теста
-						if (timeReset == 0)
-						{
-
 							string ch1;
 							system("cls");
 							printf(" Choose type:\n 1) Standart\n 2) Hovering\n");
@@ -1396,41 +1284,7 @@ int main(int argc, char* argv[])
 							timeReset = 1;
 							system("cls");
 						}
-						if (hovering)
-						{
-							//Передача данных теста
-							offsetTest += delta;
-							soundFFT.eng1_obor = getParameterFromFile("test/ka_27/hovering/eng1_7h.txt", offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
-							soundFFT.eng2_obor = getParameterFromFile("test/ka_27/hovering/eng2_7h.txt", offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
-							soundFFT.reduktor_gl_obor = getParameterFromFile("test/ka_27/hovering/red_7h.txt", offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
-							soundFFT.styk_hv = getParameterFromFile("test/ka_27/hovering/h_7h.txt", offsetTest);//
-							soundFFT.styk_hv = (soundFFT.styk_hv < 0) ? 0 : soundFFT.styk_hv;
-							soundFFT.osadki = getParameterFromFile("test/ka_27/hovering/tangaz_7h.txt", offsetTest);//тангаж
-							soundFFT.ny = getParameterFromFile("test/ka_27/hovering/step_7h.txt", offsetTest);//
-							soundFFT.v = getParameterFromFile("test/ka_27/hovering/v_7h.txt", offsetTest);//									  
-							soundFFT.p_model_stop = 0;//Признак работы теста
-						}
-						else
-						{
-
-							//Передача данных теста
-							offsetTest += delta;
-							soundFFT.eng1_obor = getParameterFromFile("test/ka_29/Standart/eng1_k.txt", offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
-							soundFFT.eng2_obor = getParameterFromFile("test/ka_29/Standart/eng2_k.txt", offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
-							soundFFT.reduktor_gl_obor = getParameterFromFile("test/Standart/red_k.txt", offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
-							soundFFT.styk_hv = getParameterFromFile("test/ka_29/Standart/h_k.txt", offsetTest);//
-							soundFFT.styk_hv = (soundFFT.styk_hv < 0) ? 0 : soundFFT.styk_hv;
-							soundFFT.osadki = getParameterFromFile("test/ka_29/Standart/tangaz_k.txt", offsetTest);
-							soundFFT.ny = getParameterFromFile("test/ka_29/Standart/step_k.txt", offsetTest);//
-							soundFFT.v = getParameterFromFile("test/ka_29/Standart/v_k.txt", offsetTest);//
-							//Признак работы теста
-							soundFFT.p_model_stop = 0;
-						}
-					}
-					if (helicopter.modelName == "ka_27")
-					{
-						//Сброс параметров в начале теста
-						if (timeReset == 0)
+						if (helicopter.modelName == "ka_27")
 						{
 							soundFFT.p_model_stop = 1;
 							system("cls");
@@ -1461,38 +1315,76 @@ int main(int argc, char* argv[])
 							delta = 0;
 							timeReset = 1;
 							system("cls");
-						}
-
-						if (hovering)
-						{
-							//Передача данных теста
-							offsetTest += delta;
-							soundFFT.eng1_obor = getParameterFromFile("test/ka_27/hovering/eng1_7h.txt", offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
-							soundFFT.eng2_obor = getParameterFromFile("test/ka_27/hovering/eng2_7h.txt", offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
-							soundFFT.reduktor_gl_obor = getParameterFromFile("test/ka_27/hovering/red_7h.txt", offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
-							soundFFT.styk_hv = getParameterFromFile("test/ka_27/hovering/h_7h.txt", offsetTest);//
-							soundFFT.styk_hv = (soundFFT.styk_hv < 0) ? 0 : soundFFT.styk_hv;
-							soundFFT.osadki = getParameterFromFile("test/ka_27/hovering/tangaz_7h.txt", offsetTest);//тангаж
-							soundFFT.ny = getParameterFromFile("test/ka_27/hovering/step_7h.txt", offsetTest);//
-							soundFFT.v = getParameterFromFile("test/ka_27/hovering/v_7h.txt", offsetTest);//									  
-							soundFFT.p_model_stop = 0;//Признак работы теста
-						}
-						else
-						{
-							//Передача данных теста
-							offsetTest += delta;
-							soundFFT.eng1_obor = getParameterFromFile("test/ka_27/Standart/eng1_7.txt", offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
-							soundFFT.eng2_obor = getParameterFromFile("test/ka_27/Standart/eng2_7.txt", offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
-							soundFFT.reduktor_gl_obor = getParameterFromFile("test/ka_27/Standart/red_7.txt", offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
-							soundFFT.styk_hv = getParameterFromFile("test/ka_27/Standart/h_7.txt", offsetTest);//
-							soundFFT.styk_hv = (soundFFT.styk_hv < 0) ? 0 : soundFFT.styk_hv;
-							soundFFT.osadki = getParameterFromFile("test/ka_27/Standart/tangaz_7.txt", offsetTest);//тангаж
-							soundFFT.ny = getParameterFromFile("test/ka_27/Standart/step_7.txt", offsetTest);//
-							soundFFT.v = getParameterFromFile("test/ka_27/Standart/v_7.txt", offsetTest);//									  
-							soundFFT.p_model_stop = 0;//Признак работы теста
 
 						}
+						vectload = 0;
 					}
+
+					if (hovering)
+					{
+						filename[0] = "test/" + helicopter.modelName + "/Hovering/eng1.txt";
+						filename[1] = "test/" + helicopter.modelName + "/Hovering/eng2.txt";
+						filename[2] = "test/" + helicopter.modelName + "/Hovering/red.txt";
+						filename[3] = "test/" + helicopter.modelName + "/Hovering/h.txt";
+						filename[4] = "test/" + helicopter.modelName + "/Hovering/tangaz.txt";
+						filename[5] = "test/" + helicopter.modelName + "/Hovering/step.txt";
+						filename[6] = "test/" + helicopter.modelName + "/Hovering/v.txt";
+					}
+					else if (skv)
+					{
+						filename[0] = "test/" + helicopter.modelName + "/SKV/eng1.txt";
+						filename[1] = "test/" + helicopter.modelName + "/SKV/eng2.txt";
+						filename[2] = "test/" + helicopter.modelName + "/SKV/red.txt";
+						filename[3] = "test/" + helicopter.modelName + "/SKV/h.txt";
+						filename[4] = "test/" + helicopter.modelName + "/SKV/tangaz.txt";
+						filename[5] = "test/" + helicopter.modelName + "/SKV/step.txt";
+						filename[6] = "test/" + helicopter.modelName + "/SKV/v.txt";
+					}
+					else
+					{
+						filename[0] = "test/" + helicopter.modelName + "/Standart/eng1.txt";
+						filename[1] = "test/" + helicopter.modelName + "/Standart/eng2.txt";
+						filename[2] = "test/" + helicopter.modelName + "/Standart/red.txt";
+						filename[3] = "test/" + helicopter.modelName + "/Standart/h.txt";
+						filename[4] = "test/" + helicopter.modelName + "/Standart/tangaz.txt";
+						filename[5] = "test/" + helicopter.modelName + "/Standart/step.txt";
+						filename[6] = "test/" + helicopter.modelName + "/Standart/v.txt";
+					}
+
+					if (vectload == 0)
+					{
+						//данные в базе должны храниться в строках парами, по паре в каждой строке (не больше)
+						for (size_t i = 0; i < 7; i++)
+						{
+							ifstream base(filename[i]);
+							while (!base.eof())
+							{
+								string str;
+								double t = 0;
+								double v = 0;
+								getline(base, str);
+								sscanf(str.c_str(), "%lf %lf", &t, &v);
+								vecTime.push_back(t);
+								vectorPar[i].push_back(v);
+							}
+							base.close();
+						}
+						vectload = 1;
+					}
+					
+					//Признак работы теста
+					soundFFT.p_model_stop = 0;
+
+					offsetTest += delta;
+					soundFFT.eng2_obor = getParameterFromVector(vectorPar[0], vecTime, offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
+					soundFFT.eng1_obor = getParameterFromVector(vectorPar[1], vecTime, offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
+					soundFFT.reduktor_gl_obor = getParameterFromVector(vectorPar[2], vecTime, offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
+					soundFFT.styk_hv = getParameterFromVector(vectorPar[3], vecTime, offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
+					soundFFT.styk_hv = (soundFFT.styk_hv < 0) ? 0 : soundFFT.styk_hv;
+					soundFFT.osadki = getParameterFromVector(vectorPar[4], vecTime, offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
+					soundFFT.ny = getParameterFromVector(vectorPar[5], vecTime, offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
+					soundFFT.v = getParameterFromVector(vectorPar[6], vecTime, offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
+
 					//Тест закончился
 					if (soundFFT.time + timeStart > timeEnd)
 					{
@@ -1507,6 +1399,8 @@ int main(int argc, char* argv[])
 						{
 						case 'y':
 							timeReset = 0;
+							timeEnd = 0;
+							offsetTest = 0;
 							break;
 						case 'n':
 							StopRealTime();
@@ -1831,59 +1725,59 @@ void kbHit()
 	};
 }
 
-double interpolation(double x0, double fx0, double x1, double fx1, double x)
+double interpolation(point p1, point p2, double x)
 {
-	if (x0<x1 && x>x1)
+	if (p1.x < p2.x && x > p2.x)
 	{
-		return fx1;
+		return p2.y;
 	}
-	if (x0 < x1 && x < x0)
+	if (p1.x < p2.x && x < p1.x)
 	{
-		return fx0;
+		return p1.y;
 	}
-	if (x0 > x1 && x < x1)
+	if (p1.x > p2.x && x < p2.x)
 	{
-		return fx1;
+		return p2.y;
 	}
-	if (x0 > x1 && x > x0)
+	if (p1.x > p2.x && x > p1.x)
 	{
-		return fx0;
+		return p1.y;
 	}
 
-	return	fx0 + ((fx1 - fx0) / (x1 - x0))*(x - x0);
+	return	p1.y + ((p2.y - p1.y) / (p2.x - p1.x))*(x - p1.x);
 }
 
-double interpolation(double x0, double fx0, double x1, double fx1, double x2, double fx2, double x)
+double interpolation(point p1, point p2, point p3, double x)
 {
-	if (x0<x2 && x>x2)
+	if (p1.x < p3.x && x > p3.x)
 	{
-		return fx2;
+		return p3.y;
 	}
-	if (x0 < x2 && x < x0)
+	if (p1.x < p3.x && x < p1.x)
 	{
-		return fx0;
+		return p1.y;
 	}
-	if (x0 > x2 && x < x2)
+	if (p1.x > p3.x && x < p3.x)
 	{
-		return fx2;
+		return p3.y;
 	}
-	if (x0 > x2 && x > x0)
+	if (p1.x > p3.x && x > p1.x)
 	{
-		return fx0;
+		return p1.y;
 	}
 
 	//если квадратичная интерполяция не работает - берем линейную
-	if (x1 == x0 | x2 == x1)
+	if (p2.x == p1.x | p3.x == p2.x)
 	{
-		return	interpolation(x0, fx0, x1, fx1, x);
+		return	interpolation(p1, p2, x);
 
 	}
 	else
 	{
 		double fx, a0, a1, a2;
-		a2 = ((fx2 - fx0) / ((x2 - x0)*(x2 - x1))) - ((fx1 - fx0) / ((x1 - x0)*(x2 - x1)));
-		a1 = ((fx1 - fx0) / (x1 - x0)) - (a2*(x1 + x0));
-		a0 = fx0 - a1 * x0 - a2 * x0*x0;
+		a2 = ((p3.y - p1.y) / ((p3.x - p1.x)*(p3.x - p2.x))) - ((p2.y - p1.y) / ((p2.x - p1.x)*(p3.x - p2.x)));
+		a1 = ((p2.y - p1.y) / (p2.x - p1.x)) - (a2*(p2.x + p1.x));
+		a0 = p1.y - a1 * p1.x - a2 * p1.x*p1.x;
 		return fx = a0 + a1 * x + a2*x*x;
 
 	}
@@ -1892,17 +1786,15 @@ double interpolation(double x0, double fx0, double x1, double fx1, double x2, do
 
 double getParameterFromFile(string filename, double offset)
 {
-	double turn = 0;
-	double t = 0;
-	double v = 0;
-	int i = 0;
 	vector <double> time, value;
 
 	//данные в базе должны храниться в строках парами, по паре в каждой строке (не больше)
-	string str;
 	ifstream base(filename);
 	while (!base.eof())
 	{
+		string str;
+		double t = 0;
+		double v = 0;
 		getline(base, str);
 		sscanf(str.c_str(), "%lf %lf", &t, &v);
 		time.push_back(t);
@@ -1910,23 +1802,22 @@ double getParameterFromFile(string filename, double offset)
 	}
 	base.close();
 
-	return turn = getParameterFromVector(value.data(), time.data(), time.size(), offset);
+	return getParameterFromVector(value, time, offset);
 }
 
 double getPitch(double offset, string filename, double parameter)
 {
-	double new_pitch;
 	double turn = 0;
-	double t = 0;
-	double v = 0;
-	int i = 0;
 	vector <double> time, value;
 
 	//данные в базе должны храниться в строках парами, по паре в каждой строке (не больше)
-	string str;
+
 	ifstream base(filename);
 	while (!base.eof())
 	{
+		double t = 0;
+		double v = 0;
+		string str;
 		getline(base, str);
 		sscanf(str.c_str(), "%lf %lf", &t, &v);
 		time.push_back(t);
@@ -1934,10 +1825,11 @@ double getPitch(double offset, string filename, double parameter)
 	}
 	base.close();
 
-	double x, x0, x1, x2, fx, fx0, fx1, fx2, a0, a1, a2;
+	double x, a0, a1, a2;
+	point p1, p2, p3;
 	int n = time.size();
 
-	for (i = 0; i < n; i++)
+	for (int i = 0; i < n; i++)
 	{
 		if (offset < time[0])
 		{
@@ -1962,51 +1854,38 @@ double getPitch(double offset, string filename, double parameter)
 			{
 				if (i - 1 == -1)
 				{
-					x = offset; x0 = time[i]; fx0 = value[i]; x1 = time[i + 1]; fx1 = value[i + 1]; x2 = time[i + 2]; fx2 = value[i + 2];
+					p1.x = time[i]; p1.y = value[i]; p2.x = time[i + 1]; p2.y = value[i + 1]; p3.x = time[i + 2]; p3.y = value[i + 2];
 				}
 				if (i + 1 == n)
 				{
-					x = offset; x0 = time[i - 2]; fx0 = value[i - 2]; x1 = time[i - 1]; fx1 = value[i - 1]; x2 = time[i]; fx2 = value[i];
+					p1.x = time[i - 2]; p1.y = value[i - 2]; p2.x = time[i - 1]; p2.y = value[i - 1]; p3.x = time[i]; p3.y = value[i];
 				}
 			}
 			else
 			{
-				x = offset; x0 = time[i - 1]; fx0 = value[i - 1]; x1 = time[i]; fx1 = value[i]; x2 = time[i + 1]; fx2 = value[i + 1];
+				p1.x = time[i - 1]; p1.y = value[i - 1]; p2.x = time[i]; p2.y = value[i]; p3.x = time[i + 1]; p3.y = value[i + 1];
 			}
-			//если квадратичная интерполяция не работает - берем линейную
-			if (x1 == x0 | x2 == x1)
-			{
-				turn = interpolation(x0, fx0, x1, fx1, x);
-			}
-			else
-			{
-				turn = interpolation(x0, fx0, x1, fx1, x2, fx2, x);
-			}
+
+			turn = interpolation(p1, p2, p3, offset);
 		}
 	}
-	if (turn <= 0)
-		new_pitch = 1;
-	else
-		new_pitch = parameter / turn;	//вычисляем результирующий Pitch на основе отношениz настоящего уровня оборотов к базовому (получен при записи аудио-файла)
 
-	return new_pitch;
+	return  (turn <= 0) ? 1 : parameter / turn;	//вычисляем результирующий Pitch на основе отношениz настоящего уровня оборотов к базовому (получен при записи аудио-файла)
 }
 
 double getOffset(string filename, double parameter)
 {
 	double new_offset = 0;
 	double turn = 0;
-	int i = 0;
 
-	double t = 0;
-	double v = 0;
 	vector <double> time, value;
-
 	//данные в базе должны храниться в строках парами, по паре в каждой строке (не больше)
-	string str;
 	ifstream base(filename);
 	while (!base.eof())
 	{
+		string str;
+		double t = 0;
+		double v = 0;
 		getline(base, str);
 		sscanf(str.c_str(), "%lf %lf", &t, &v);
 		time.push_back(t);
@@ -2020,11 +1899,13 @@ double getOffset(string filename, double parameter)
 	else
 		turn = parameter;
 
-	double x, x0, x1, x2, fx, fx0, fx1, fx2, a0, a1, a2;
+	double x, a0, a1, a2;
+
+	point p1, p2, p3;
 
 	if (value[0] <= value[n - 1])
 	{
-		for (i = 0; i < n; i++)
+		for (int i = 0; i < n; i++)
 		{
 			if (turn < value[0])
 			{
@@ -2049,19 +1930,19 @@ double getOffset(string filename, double parameter)
 				{
 					if (i + 2 == n)
 					{
-						x = turn; x0 = value[i - 1]; fx0 = time[i - 1]; x1 = value[i]; fx1 = time[i]; x2 = value[i + 1]; fx2 = time[i + 1];
+						p1.x = value[i - 1]; p1.y = time[i - 1]; p2.x = value[i]; p2.y = time[i]; p3.x = value[i + 1]; p3.y = time[i + 1];
 					}
 					if (i + 1 == n)
 					{
-						x = turn; x0 = value[i - 2]; fx0 = time[i - 2]; x1 = value[i - 1]; fx1 = time[i - 1]; x2 = value[i]; fx2 = time[i];
+						p1.x = value[i - 2]; p1.y = time[i - 2]; p2.x = value[i - 1]; p2.y = time[i - 1]; p3.x = value[i]; p3.y = time[i];
 					}
 				}
 				else
 				{
-					x = turn; x0 = value[i]; fx0 = time[i]; x1 = value[i + 1]; fx1 = time[i + 1]; x2 = value[i + 2]; fx2 = time[i + 2];
+					p1.x = value[i]; p1.y = time[i]; p2.x = value[i + 1]; p2.y = time[i + 1]; p3.x = value[i + 2]; p3.y = time[i + 2];
 				}
 
-				new_offset = interpolation(x0, fx0, x1, fx1, x2, fx2, x);
+				new_offset = interpolation(p1, p2, p3, turn);
 			}
 
 		}
@@ -2069,7 +1950,7 @@ double getOffset(string filename, double parameter)
 	}
 	else
 	{
-		for (i = 0; i < n; i++)
+		for (int i = 0; i < n; i++)
 		{
 			if (turn > value[0])
 			{
@@ -2094,93 +1975,66 @@ double getOffset(string filename, double parameter)
 				{
 					if (i + 2 == n)
 					{
-						x = turn; x0 = value[i - 1]; fx0 = time[i - 1]; x1 = value[i]; fx1 = time[i]; x2 = value[i + 1]; fx2 = time[i + 1];
+						p1.x = value[i - 1]; p1.y = time[i - 1]; p2.x = value[i]; p2.y = time[i]; p3.x = value[i + 1]; p3.y = time[i + 1];
 					}
 					if (i + 1 == n)
 					{
-						x = turn; x0 = value[i - 2]; fx0 = time[i - 2]; x1 = value[i - 1]; fx1 = time[i - 1]; x2 = value[i]; fx2 = time[i];
+						p1.x = value[i - 2]; p1.y = time[i - 2]; p2.x = value[i - 1]; p2.y = time[i - 1]; p3.x = value[i]; p3.y = time[i];
 					}
 				}
 				else
 				{
-					x = turn; x0 = value[i]; fx0 = time[i]; x1 = value[i + 1]; fx1 = time[i + 1]; x2 = value[i + 2]; fx2 = time[i + 2];
+					p1.x = value[i]; p1.y = time[i]; p2.x = value[i + 1]; p2.y = time[i + 1]; p3.x = value[i + 2]; p3.y = time[i + 2];
 				}
 
-				new_offset = interpolation(x0, fx0, x1, fx1, x2, fx2, x);
+				new_offset = interpolation(p1, p2, p3, turn);
 			}
 
 		}
 	}
 
-	if (new_offset <= 0)
-		new_offset = 0;
-
-	return new_offset;
-
+	return (new_offset <= 0) ? 0 : new_offset;
 }
 
-double getParameterFromVector(double *value, double *time, int size, double offset)
+double getParameterFromVector(vector<double> &value, vector<double> &time, double offset)
 {
-	double turn = 0;
-	int n = size;
-	double x, x0, x1, x2, fx, fx0, fx1, fx2, a0, a1, a2;
+	int n = time.size();
+	point p1, p2, p3;
+	double x, a0, a1, a2;
 
 	if (offset < time[0])
 	{
-		return turn = value[0];//достаем обороты из базы
+		return value[0];//достаем обороты из базы
 	}
 	else if (offset > time[n - 1])//отметка не совпала с базой
 	{
-		return turn = value[n - 1];//достаем обороты из базы
+		return value[n - 1];//достаем обороты из базы
 	}
 	else
 	{
-		n = binSer(time, size, offset);
+		n = binSer(time, offset);
 	}
 	//Выбираем 3 точки (вариант -1 0 +1)
 	if (n - 1 == -1)
 	{
-		x = offset; x0 = time[n]; fx0 = value[n]; x1 = time[n + 1]; fx1 = value[n + 1]; x2 = time[n + 2]; fx2 = value[n + 2];
+		p1.x = time[n]; p1.y = value[n]; p2.x = time[n + 1]; p2.y = value[n + 1]; p3.x = time[n + 2]; p3.y = value[n + 2];
 	}
-	else if (n + 1 == size)
+	else if (n + 1 == time.size())
 	{
-		x = offset; x0 = time[n - 2]; fx0 = value[n - 2]; x1 = time[n - 1]; fx1 = value[n - 1]; x2 = time[n]; fx2 = value[n];
+		p1.x = time[n - 2]; p1.y = value[n - 2]; p2.x = time[n - 1]; p2.y = value[n - 1]; p3.x = time[n]; p3.y = value[n];
 	}
 	else
 	{
-		x = offset; x0 = time[n - 1]; fx0 = value[n - 1]; x1 = time[n]; fx1 = value[n]; x2 = time[n + 1]; fx2 = value[n + 1];
-	}
-	////Выбираем 3 точки (вариант 0 +1 +2)
-	//if (n + 1 == time.size())
-	//{
-	//	x = offset; x0 = time[n - 2]; fx0 = value[n - 2]; x1 = time[n - 1]; fx1 = value[n - 1]; x2 = time[n]; fx2 = value[n];
-	//}
-	//else if (n + 2 == time.size())
-	//{
-	//	x = offset; x0 = time[n - 1]; fx0 = value[n - 1]; x1 = time[n]; fx1 = value[n]; x2 = time[n + 1]; fx2 = value[n + 1];
-	//}
-	//else 
-	//{
-	//	x = offset; x0 = time[n]; fx0 = value[n]; x1 = time[n + 1]; fx1 = value[n + 1]; x2 = time[n + 2]; fx2 = value[n + 2];
-	//}
-
-	//если квадратичная интерполяция не работает - берем линейную
-	if (x1 == x0 | x2 == x1)
-	{
-		turn = interpolation(x0, fx0, x1, fx1, x);
-	}
-	else
-	{
-		turn = interpolation(x0, fx0, x1, fx1, x2, fx2, x);
+		p1.x = time[n - 1]; p1.y = value[n - 1]; p2.x = time[n]; p2.y = value[n]; p3.x = time[n + 1]; p3.y = value[n + 1];
 	}
 
-	return turn;
+	return interpolation(p1, p2, p3, offset);
 }
 
-int binSer(double *time, int size, double offset)
+int binSer(vector<double> &time, double offset)
 {
 	int l = 0;
-	int n = size - 1;
+	int n = time.size() - 1;
 	int r = n;
 	while (abs(l - r) >= 2)
 	{
