@@ -49,7 +49,11 @@ double getParameterFromFile(string filename, double offset);
 
 double getParameterFromVector(vector<double> &value, vector<double> &time, double offset);
 
+double getParameterFromVector(vector<point> &value, double offset);
+
 int binSer(vector<double> &time, double offset);
+
+int binSer(vector<point> &time, double offset);
 
 SOUNDFFT soundFFT;
 RED red;
@@ -212,8 +216,7 @@ int main(int argc, char* argv[])
 	double currentTime = 0;
 	double output = 0;
 
-	vector<vector <double>> vectorPar(7);
-	vector<double> vecTime;
+	vector<vector <point>> vectorPar(7);
 	string filename[7];
 
 	while (true)
@@ -1364,26 +1367,26 @@ int main(int argc, char* argv[])
 								double v = 0;
 								getline(base, str);
 								sscanf(str.c_str(), "%lf %lf", &t, &v);
-								vecTime.push_back(t);
-								vectorPar[i].push_back(v);
+								vectorPar[i].push_back({ t,v });
 							}
 							base.close();
 						}
 						vectload = 1;
 					}
-					
+
 					//Признак работы теста
 					soundFFT.p_model_stop = 0;
 
 					offsetTest += delta;
-					soundFFT.eng2_obor = getParameterFromVector(vectorPar[0], vecTime, offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
-					soundFFT.eng1_obor = getParameterFromVector(vectorPar[1], vecTime, offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
-					soundFFT.reduktor_gl_obor = getParameterFromVector(vectorPar[2], vecTime, offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
-					soundFFT.styk_hv = getParameterFromVector(vectorPar[3], vecTime, offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
+					soundFFT.eng2_obor = getParameterFromVector(vectorPar[0], offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
+					soundFFT.eng1_obor = getParameterFromVector(vectorPar[1], offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
+					soundFFT.reduktor_gl_obor = getParameterFromVector(vectorPar[2], offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
+					soundFFT.styk_hv = getParameterFromVector(vectorPar[3], offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
 					soundFFT.styk_hv = (soundFFT.styk_hv < 0) ? 0 : soundFFT.styk_hv;
-					soundFFT.osadki = getParameterFromVector(vectorPar[4], vecTime, offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
-					soundFFT.ny = getParameterFromVector(vectorPar[5], vecTime, offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
-					soundFFT.v = getParameterFromVector(vectorPar[6], vecTime, offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
+					soundFFT.osadki = getParameterFromVector(vectorPar[4], offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
+					soundFFT.ny = getParameterFromVector(vectorPar[5], offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
+					soundFFT.v = getParameterFromVector(vectorPar[6], offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
+					soundFFT.p_vu3 = 1;
 
 					//Тест закончился
 					if (soundFFT.time + timeStart > timeEnd)
@@ -2031,6 +2034,41 @@ double getParameterFromVector(vector<double> &value, vector<double> &time, doubl
 	return interpolation(p1, p2, p3, offset);
 }
 
+double getParameterFromVector(vector<point> &value, double offset)
+{
+	int n = value.size();
+	point p1, p2, p3;
+	double x, a0, a1, a2;
+
+	if (offset < value[0].x)
+	{
+		return value[0].y;//достаем обороты из базы
+	}
+	else if (offset > value[n - 1].x)//отметка не совпала с базой
+	{
+		return value[n - 1].y;//достаем обороты из базы
+	}
+	else
+	{
+		n = binSer(value, offset);
+	}
+	//Выбираем 3 точки (вариант -1 0 +1)
+	if (n - 1 == -1)
+	{
+		p1 = value[n]; p2 = value[n + 1]; p3 = value[n + 2];
+	}
+	else if (n + 1 == value.size())
+	{
+		p1 = value[n - 2]; p2 = value[n - 1]; p3 = value[n];
+	}
+	else
+	{
+		p1 = value[n - 1]; p2 = value[n]; p3 = value[n + 1];
+	}
+
+	return interpolation(p1, p2, p3, offset);
+}
+
 int binSer(vector<double> &time, double offset)
 {
 	int l = 0;
@@ -2043,6 +2081,30 @@ int binSer(vector<double> &time, double offset)
 			return n;
 		}
 		else if (offset < time[n])
+		{
+			r = n;
+		}
+		else
+		{
+			l = n;
+		}
+		n = (l + r) / 2;
+	}
+	return n;
+}
+
+int binSer(vector<point> &time, double offset)
+{
+	int l = 0;
+	int n = time.size() - 1;
+	int r = n;
+	while (abs(l - r) >= 2)
+	{
+		if (offset == time[n].x)
+		{
+			return n;
+		}
+		else if (offset < time[n].x)
 		{
 			r = n;
 		}
