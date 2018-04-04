@@ -56,7 +56,6 @@ int binSer(vector<double> &time, double offset);
 int binSer(vector<point> &time, double offset);
 
 SOUNDFFT soundFFT;
-RED red;
 Helicopter helicopter;
 
 double test = 0;

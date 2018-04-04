@@ -118,13 +118,6 @@ struct SOUNDFFT {
 };
 #pragma pack ( pop )
 
-struct RED {
-	float cnt;
-	float time_gash_nar;
-};
-
-
 extern SOUNDFFT soundFFT;
-extern RED red;
 
 #endif
