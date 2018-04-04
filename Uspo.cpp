@@ -1378,15 +1378,15 @@ int main(int argc, char* argv[])
 					soundFFT.p_model_stop = 0;
 
 					offsetTest += delta;
-					soundFFT.eng2_obor = getParameterFromVector(vectorPar[0], offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
-					soundFFT.eng1_obor = getParameterFromVector(vectorPar[1], offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
-					soundFFT.reduktor_gl_obor = getParameterFromVector(vectorPar[2], offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
-					soundFFT.styk_hv = getParameterFromVector(vectorPar[3], offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
+					soundFFT.eng1_obor = getParameterFromVector(vectorPar[0], offsetTest);//дв1
+					soundFFT.eng2_obor = getParameterFromVector(vectorPar[1], offsetTest);//дв2
+					soundFFT.reduktor_gl_obor = getParameterFromVector(vectorPar[2], offsetTest);//редуктор
+					soundFFT.styk_hv = getParameterFromVector(vectorPar[3], offsetTest);//высота
 					soundFFT.styk_hv = (soundFFT.styk_hv < 0) ? 0 : soundFFT.styk_hv;
-					soundFFT.osadki = getParameterFromVector(vectorPar[4], offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
-					soundFFT.ny = getParameterFromVector(vectorPar[5], offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
-					soundFFT.v = getParameterFromVector(vectorPar[6], offsetTest);//функция выбирающая обороты дв относительно времени от начала разгона
-					soundFFT.p_vu3 = 1;
+					soundFFT.osadki = getParameterFromVector(vectorPar[4], offsetTest);//тангаж
+					soundFFT.ny = getParameterFromVector(vectorPar[5], offsetTest);//шаг
+					soundFFT.v = getParameterFromVector(vectorPar[6], offsetTest);//скорость
+					soundFFT.p_vu3 = 1;//Cвист винта
 
 					//Тест закончился
 					if (soundFFT.time + timeStart > timeEnd)
