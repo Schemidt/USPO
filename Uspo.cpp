@@ -1319,6 +1319,48 @@ int main(int argc, char* argv[])
 							system("cls");
 
 						}
+						if (helicopter.modelName == "ka_226")
+						{
+							soundFFT.p_model_stop = 1;
+							system("cls");
+							printf(" TEST:\n 1) 0 - 120\n 2) 121 - 271\n 3) 272 - 442\n 4) 443 - 553\n 0) [custom]\n");
+
+							while (!std::regex_match(ch, regex("[0-4]")))//повторяем ввод пока не будет цифра от 1 до 4
+								ch = getch();//считываем буфер ввода
+
+							switch (ch[0])
+							{
+							case '1':
+								offsetTest = 0;
+								timeEnd = 120;
+								break;
+							case '2':
+								offsetTest = 121;
+								timeEnd = 271;
+								break;
+							case '3':
+								offsetTest = 272;
+								timeEnd = 442;
+								break;
+							case '4':
+								offsetTest = 443;
+								timeEnd = 553;
+								break;
+							case '0':
+								system("cls");
+								printf(" Enter range (in seconds): [start] [end]\n ");
+								cin >> offsetTest;
+								cin >> timeEnd;
+								break;
+							}
+							timeStart = offsetTest;
+							soundFFT.time = 0;
+							rt.timeS = 0;
+							currentTime = 0;
+							timeReset = 1;
+							system("cls");
+
+						}
 						vectload = 0;
 					}
 
