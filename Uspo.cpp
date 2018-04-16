@@ -9,6 +9,7 @@
 #include "regex"
 #include "iostream"
 #include "string.h"
+#include "tlhelp32.h"
 
 #define ANSAT_ENG_REV_TURN 54.00
 #define VSU_MAX_TURN 100.00
@@ -55,6 +56,8 @@ int binSer(vector<double> &time, double offset);
 
 int binSer(vector<point> &time, double offset);
 
+bool IsProcessPresent(wchar_t * szExe);
+
 SOUNDFFT soundFFT;
 Helicopter helicopter;
 
@@ -92,6 +95,24 @@ bool standAlone = 0;//По умолчанию - ждем данных от модели
 
 int main(int argc, char* argv[])
 {
+	//Только 1на копия приложения может быть запусщена одновременно
+	HANDLE hMutex = OpenMutex(
+		MUTEX_ALL_ACCESS, 0, L"USPO");
+
+	if (!hMutex)
+		// Mutex doesn’t exist. This is
+		// the first instance so create
+		// the mutex.
+		hMutex =
+		CreateMutex(0, 0, L"USPO");
+	else
+		// The mutex exists so this is the
+		// the second instance so return.
+	{
+		cout << "Application already exist!" << endl;
+		return 1;
+	}
+
 	vector <string> helicoptersNames = { "mi_8_mtv5","mi_8_amtsh","mi_26","mi_28","ka_226","ansat","ka_27","ka_29" };
 	string model;
 	for (size_t i = 1; i < argc; i++)// если передаем аргументы, то argc будет больше 1(в зависимости от кол-ва аргументов)
@@ -2157,3 +2178,4 @@ int binSer(vector<point> &time, double offset)
 	}
 	return n;
 }
+
