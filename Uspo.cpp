@@ -95,7 +95,7 @@ bool standAlone = 0;//По умолчанию - ждем данных от модели
 
 int main(int argc, char* argv[])
 {
-	//Только 1на копия приложения может быть запусщена одновременно
+	//Только 1на копия приложения может быть запущена одновременно
 	HANDLE hMutex = OpenMutex(
 		MUTEX_ALL_ACCESS, 0, L"USPO");
 
@@ -1344,9 +1344,9 @@ int main(int argc, char* argv[])
 						{
 							soundFFT.p_model_stop = 1;
 							system("cls");
-							printf(" TEST:\n 1) 0 - 120\n 2) 121 - 271\n 3) 272 - 442\n 4) 443 - 553\n 0) [custom]\n");
+							printf(" TEST:\n 1) 0 - 120\n 2) 121 - 271\n 3) 272 - 442\n 4) 443 - 553\n 5) 554 - 814\n 6) 815 - 985\n 0) [custom]\n");
 
-							while (!std::regex_match(ch, regex("[0-4]")))//повторяем ввод пока не будет цифра от 1 до 4
+							while (!std::regex_match(ch, regex("[0-6]")))//повторяем ввод пока не будет цифра от 1 до 4
 								ch = getch();//считываем буфер ввода
 
 							switch (ch[0])
@@ -1366,6 +1366,14 @@ int main(int argc, char* argv[])
 							case '4':
 								offsetTest = 443;
 								timeEnd = 553;
+								break;
+							case '5':
+								offsetTest = 554;
+								timeEnd = 814;
+								break;
+							case '6':
+								offsetTest = 815;
+								timeEnd = 985;
 								break;
 							case '0':
 								system("cls");
