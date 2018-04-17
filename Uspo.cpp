@@ -1344,38 +1344,54 @@ int main(int argc, char* argv[])
 						{
 							soundFFT.p_model_stop = 1;
 							system("cls");
-							printf(" TEST:\n 1) 0 - 120\n 2) 121 - 271\n 3) 272 - 442\n 4) 443 - 553\n 5) 554 - 814\n 6) 815 - 985\n 0) [custom]\n");
+							printf(" TEST:\n 1) 0 - 120\n 2) 121 - 271\n 3) 272 - 442\n 4) 443 - 553\n 5) 554 - 814\n 6) 815 - 985\n 7) 815 - 1136\n 8) 1137 - 1377\n 9) 1378 - 1728\n 10) 1729 - 1879\n 0) [custom]\n ");
 
-							while (!std::regex_match(ch, regex("[0-6]")))//повторяем ввод пока не будет цифра от 1 до 4
-								ch = getch();//считываем буфер ввода
+							int d;
+							cin >> d;//считываем буфер ввода
 
-							switch (ch[0])
+							switch (d)
 							{
-							case '1':
+							case 1:
 								offsetTest = 0;
 								timeEnd = 120;
 								break;
-							case '2':
+							case 2:
 								offsetTest = 121;
 								timeEnd = 271;
 								break;
-							case '3':
+							case 3:
 								offsetTest = 272;
 								timeEnd = 442;
 								break;
-							case '4':
+							case 4:
 								offsetTest = 443;
 								timeEnd = 553;
 								break;
-							case '5':
+							case 5:
 								offsetTest = 554;
 								timeEnd = 814;
 								break;
-							case '6':
+							case 6:
 								offsetTest = 815;
 								timeEnd = 985;
 								break;
-							case '0':
+							case 7:
+								offsetTest = 986;
+								timeEnd = 1136;
+								break;
+							case 8:
+								offsetTest = 1137;
+								timeEnd = 1377;
+								break;
+							case 9:
+								offsetTest = 1378;
+								timeEnd = 1728;
+								break;
+							case 10:
+								offsetTest = 1729;
+								timeEnd = 1879;
+								break;
+							case 0:
 								system("cls");
 								printf(" Enter range (in seconds): [start] [end]\n ");
 								cin >> offsetTest;
