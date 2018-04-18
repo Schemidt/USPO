@@ -56,8 +56,6 @@ int binSer(vector<double> &time, double offset);
 
 int binSer(vector<point> &time, double offset);
 
-bool IsProcessPresent(wchar_t * szExe);
-
 SOUNDFFT soundFFT;
 Helicopter helicopter;
 
@@ -1344,7 +1342,7 @@ int main(int argc, char* argv[])
 						{
 							soundFFT.p_model_stop = 1;
 							system("cls");
-							printf(" TEST:\n 1) 0 - 120\n 2) 121 - 271\n 3) 272 - 442\n 4) 443 - 553\n 5) 554 - 814\n 6) 815 - 985\n 7) 815 - 1136\n 8) 1137 - 1377\n 9) 1378 - 1728\n 10) 1729 - 1879\n 0) [custom]\n ");
+							printf(" TEST:\n 1) 0 - 120\n 2) 121 - 271\n 3) 272 - 442\n 4) 443 - 553\n 5) 554 - 814\n 6) 815 - 985\n 7) 815 - 1136\n 8) 1137 - 1377\n 9) 1378 - 1728\n 10) 1729 - 1879\n 11) 1880 - 2080\n 0) [custom]\n ");
 
 							int d;
 							cin >> d;//считываем буфер ввода
@@ -1390,6 +1388,10 @@ int main(int argc, char* argv[])
 							case 10:
 								offsetTest = 1729;
 								timeEnd = 1879;
+								break;
+							case 11:
+								offsetTest = 1880;
+								timeEnd = 2080;
 								break;
 							case 0:
 								system("cls");
