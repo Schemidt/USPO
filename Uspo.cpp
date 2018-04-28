@@ -34,6 +34,14 @@ public:
 	}
 };
 
+class testChunk
+{
+public:
+	int number;
+	double start;
+	double end;
+};
+
 void delayMs(double ms);
 
 void kbHit();
@@ -1407,6 +1415,66 @@ int main(int argc, char* argv[])
 							timeReset = 1;
 							system("cls");
 
+						}
+						if (helicopter.modelName == "ansat")
+						{
+							vector <testChunk> tests =
+							{
+								{ 1, 0, 180 },
+								{ 2, 181, 341 },
+								{ 3, 342, 682 },
+								{ 4, 683, 823 },
+								{ 5, 824, 1014 },
+								{ 6, 1015, 1145 },
+								{ 7, 1146, 1326 },
+								{ 8, 1327, 1447 },
+								{ 9, 1448, 1709 },
+								{ 10, 1710, 1820 },
+								{ 11, 1821, 1961 },
+								{ 12, 1962, 2082 },
+								{ 13, 2083, 2228 },
+								{ 14, 2229, 2559 },
+								{ 15, 2560, 2880 },
+								{ 16, 2881, 3172 },
+								{ 17, 3173, 3253 },
+								{ 18, 3254, 3504 },
+								{ 19, 3505, 3845 },
+								{ 20, 3846, 4046 }
+							};
+
+							soundFFT.p_model_stop = 1;
+							system("cls");
+
+							for (int i = 0; i < tests.size(); i++)
+							{
+								cout << tests[i].number << ": " << tests[i].start << " - " << tests[i].end << endl;
+							}
+
+							int d;
+							cin >> d;//считываем буфер ввода
+
+							for (int i = 0; i < tests.size(); i++)
+							{
+								if (d == tests[i].number)
+								{
+									offsetTest = tests[i].start;
+									timeEnd = tests[i].end;
+								}
+							}
+							if (d == 0)
+							{
+								system("cls");
+								printf(" Enter range (in seconds): [start] [end]\n ");
+								cin >> offsetTest;
+								cin >> timeEnd;
+							}
+
+							timeStart = offsetTest;
+							soundFFT.time = 0;
+							rt.timeS = 0;
+							currentTime = 0;
+							timeReset = 1;
+							system("cls");
 						}
 						vectload = 0;
 					}
