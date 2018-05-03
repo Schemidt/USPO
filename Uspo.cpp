@@ -1543,6 +1543,14 @@ int main(int argc, char* argv[])
 					soundFFT.ny = getParameterFromVector(vectorPar[5], offsetTest);//шаг
 					soundFFT.v = getParameterFromVector(vectorPar[6], offsetTest);//скорость
 					soundFFT.p_vu3 = 1;//Cвист винта
+					soundFFT.p_eng1_zap = 1;
+					soundFFT.p_eng2_zap = 1;
+					soundFFT.p_eng1_ostanov = 0;
+					soundFFT.p_eng2_ostanov = 0;
+					soundFFT.p_eng1_lkorr = 0;//Правая - левая коррекция
+					soundFFT.p_eng2_lkorr = 0;
+					soundFFT.p_eng1_rkorr = 1;
+					soundFFT.p_eng2_rkorr = 1;
 
 					//Тест закончился
 					if (soundFFT.time + timeStart > timeEnd)
