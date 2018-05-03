@@ -144,76 +144,6 @@ int main(int argc, char* argv[])
 	cout << " Using " << helicopter.modelName << endl;
 	helicopter.setPath(helicopter.modelName + "/");
 
-	/*else
-	{
-		string ch;
-		string Type;
-		printf(" Types of Armed Forces:\n 1) VVS\n 2) VMF\n");
-
-		while (!std::regex_match(ch, regex("[1-2]")))//повторяем ввод пока не будет цифра от 1 до 4
-			ch = getch();//считываем буфер ввода
-
-		switch (ch[0])
-		{
-		case '1':
-			Type = "VVS";
-			break;
-		case '2':
-			Type = "VMF";
-			break;
-		}
-		//Type = "VVS";
-		system("cls");
-		if (Type == "VVS")
-		{
-			ch = "NULL";
-			printf(" Choose Helicopter:\n 1) Mi-8 MTV-5\n 2) Mi-8 AMTSH\n 3) Mi-26\n 4) Mi-28\n 5) Ka-226\n 6) ANSAT\n");
-
-			while (!std::regex_match(ch, regex("[1-6]")))//повторяем ввод пока не будет цифра от 1 до 4
-				ch = getch();//считываем буфер ввода
-
-			switch (ch[0])
-			{
-			case '1':
-				helicopter = mi_8_mtv5;
-				break;
-			case '2':
-				helicopter = mi_8_amtsh;
-				break;
-			case '3':
-				helicopter = mi_26;
-				break;
-			case '4':
-				helicopter = mi_28;
-				break;
-			case '5':
-				helicopter = ka_226;
-				break;
-			case '6':
-				helicopter = ansat;
-				break;
-			}
-		}
-		else if (Type == "VMF")
-		{
-			ch = "NULL";
-			printf(" Choose Helicopter:\n 1) Ka-27M\n 2) Ka-29\n");
-
-			while (!std::regex_match(ch, regex("[1-2]")))//повторяем ввод пока не будет цифра от 1 до 4
-				ch = getch();//считываем буфер ввода
-
-			switch (ch[0])
-			{
-			case '1':
-				helicopter = ka_27;
-				break;
-			case '2':
-				helicopter = ka_29;
-				break;
-			}
-		}
-	}*/
-
 	int lg = sizeof(SOUNDFFT);
 	if (!InitNetVoice((void*)&soundFFT, lg)) {
 		cout << "Not InitNetVoice" << endl;
@@ -279,7 +209,7 @@ int main(int argc, char* argv[])
 						{
 							if (!avtOn)
 							{
-								if (soundFFT.eng1_obor > helicopter.eng_obor_mg)
+								if (soundFFT.eng1_obor > helicopter.engTurnoverMg)
 								{
 									if ((statusEng1 != "eng_mg_avt") && (statusEng1 != "eng_avt_mg"))
 									{
@@ -349,7 +279,7 @@ int main(int argc, char* argv[])
 								}
 								turnMgEng1 = getParameterFromFile(helicopter.fullName["ansatSecondEng"], offsetMgEng1);
 								offsetMgEng1 += delta;
-								turnAvtEng1 = getParameterFromFile(helicopter.fullName["eng_mg_avt"], offsetAvtEng1) * turnMgEng1 / helicopter.eng_obor_mg;
+								turnAvtEng1 = getParameterFromFile(helicopter.fullName["eng_mg_avt"], offsetAvtEng1) * turnMgEng1 / helicopter.engTurnoverMg;
 								offsetAvtEng1 += delta;
 							}
 						}
@@ -363,7 +293,7 @@ int main(int argc, char* argv[])
 							}
 							turnAvtEng1 = getParameterFromFile(helicopter.fullName["eng_avt_mg"], offsetAvtEng1);
 							offsetAvtEng1 += delta;
-							turnMgEng1 = getParameterFromFile(helicopter.fullName["eng_off"], offsetMgEng1) * turnAvtEng1 / helicopter.eng_obor_mg;
+							turnMgEng1 = getParameterFromFile(helicopter.fullName["eng_off"], offsetMgEng1) * turnAvtEng1 / helicopter.engTurnoverMg;
 							offsetMgEng1 += delta;
 						}
 						//Двигатель 2
@@ -371,7 +301,7 @@ int main(int argc, char* argv[])
 						{
 							if (!avtOn)
 							{
-								if (soundFFT.eng2_obor > helicopter.eng_obor_mg)
+								if (soundFFT.eng2_obor > helicopter.engTurnoverMg)
 								{
 									if ((statusEng2 != "eng_mg_avt") && (statusEng2 != "eng_avt_mg"))
 									{
@@ -442,7 +372,7 @@ int main(int argc, char* argv[])
 								}
 								turnMgEng2 = getParameterFromFile(helicopter.fullName["ansatSecondEng"], offsetMgEng2);
 								offsetMgEng2 += delta;
-								turnAvtEng2 = getParameterFromFile(helicopter.fullName["eng_mg_avt"], offsetAvtEng2) * turnMgEng2 / helicopter.eng_obor_mg;
+								turnAvtEng2 = getParameterFromFile(helicopter.fullName["eng_mg_avt"], offsetAvtEng2) * turnMgEng2 / helicopter.engTurnoverMg;
 								offsetAvtEng2 += delta;
 							}
 						}
@@ -456,7 +386,7 @@ int main(int argc, char* argv[])
 							}
 							turnAvtEng2 = getParameterFromFile(helicopter.fullName["eng_avt_mg"], offsetAvtEng2);
 							offsetAvtEng2 += delta;
-							turnMgEng2 = getParameterFromFile(helicopter.fullName["eng_off"], offsetMgEng2) * turnAvtEng2 / helicopter.eng_obor_mg;
+							turnMgEng2 = getParameterFromFile(helicopter.fullName["eng_off"], offsetMgEng2) * turnAvtEng2 / helicopter.engTurnoverMg;
 							offsetMgEng2 += delta;
 						}
 
@@ -473,7 +403,7 @@ int main(int argc, char* argv[])
 								}
 								turnMg1 = getParameterFromFile(helicopter.fullName["red_on"], offsetMg1);
 								offsetMg1 += delta;
-								turnAvt = getParameterFromFile(helicopter.fullName["red_mg_avt"], offsetAvt) * turnMg1 / helicopter.red_obor_mg1;
+								turnAvt = getParameterFromFile(helicopter.fullName["red_mg_avt"], offsetAvt) * turnMg1 / helicopter.redTurnoverMg1;
 								offsetAvt += delta;
 							}
 							else
@@ -490,7 +420,7 @@ int main(int argc, char* argv[])
 											statusRed = "ansatRed";
 										}
 										turnRevRedAnsat = getParameterFromFile(helicopter.fullName["ansatRed"], offsetAnsatRev);
-										turnMg1 = getParameterFromFile(helicopter.fullName["red_on"], offsetMg1) / helicopter.red_obor_mg1 * turnRevRedAnsat;
+										turnMg1 = getParameterFromFile(helicopter.fullName["red_on"], offsetMg1) / helicopter.redTurnoverMg1 * turnRevRedAnsat;
 										offsetAnsatRev += delta;
 										offsetMg1 += delta;
 									}
@@ -527,7 +457,7 @@ int main(int argc, char* argv[])
 							}
 							turnAvt = getParameterFromFile(helicopter.fullName["red_avt_mg"], offsetAvt);
 							offsetAvt += delta;
-							turnMg1 = getParameterFromFile(helicopter.fullName["red_off"], offsetMg1) * turnAvt / helicopter.red_obor_mg1;
+							turnMg1 = getParameterFromFile(helicopter.fullName["red_off"], offsetMg1) * turnAvt / helicopter.redTurnoverMg1;
 							offsetMg1 += delta;
 						}
 
@@ -554,13 +484,13 @@ int main(int argc, char* argv[])
 
 						bool oneEng = (((soundFFT.p_eng1_zap & (!soundFFT.p_eng2_zap | soundFFT.p_eng2_ostanov))
 							^ (soundFFT.p_eng2_zap & (!soundFFT.p_eng1_zap | soundFFT.p_eng1_ostanov)))
-							| (soundFFT.p_eng1_zap & soundFFT.p_eng2_zap & soundFFT.eng1_obor < (helicopter.eng_obor_mg - 15)
-								& soundFFT.eng2_obor < (helicopter.eng_obor_mg - 15)) | (((soundFFT.eng1_obor >= (helicopter.eng_obor_mg - 15)
-									&& soundFFT.eng2_obor < (helicopter.eng_obor_mg / 2.5)) | (soundFFT.eng2_obor >= (helicopter.eng_obor_mg - 15)
-										&& soundFFT.eng1_obor < (helicopter.eng_obor_mg / 2.5))) & soundFFT.p_eng1_zap & soundFFT.p_eng2_zap));
-						bool twoEng = (((soundFFT.eng1_obor >= (helicopter.eng_obor_mg - 15)
-							&& soundFFT.eng2_obor >= (helicopter.eng_obor_mg / 2.5)) | (soundFFT.eng2_obor >= (helicopter.eng_obor_mg - 15)
-								&& soundFFT.eng1_obor >= (helicopter.eng_obor_mg / 2.5))) & soundFFT.p_eng1_zap & soundFFT.p_eng2_zap);
+							| (soundFFT.p_eng1_zap & soundFFT.p_eng2_zap & soundFFT.eng1_obor < (helicopter.engTurnoverMg - 15)
+								& soundFFT.eng2_obor < (helicopter.engTurnoverMg - 15)) | (((soundFFT.eng1_obor >= (helicopter.engTurnoverMg - 15)
+									&& soundFFT.eng2_obor < (helicopter.engTurnoverMg / 2.5)) | (soundFFT.eng2_obor >= (helicopter.engTurnoverMg - 15)
+										&& soundFFT.eng1_obor < (helicopter.engTurnoverMg / 2.5))) & soundFFT.p_eng1_zap & soundFFT.p_eng2_zap));
+						bool twoEng = (((soundFFT.eng1_obor >= (helicopter.engTurnoverMg - 15)
+							&& soundFFT.eng2_obor >= (helicopter.engTurnoverMg / 2.5)) | (soundFFT.eng2_obor >= (helicopter.engTurnoverMg - 15)
+								&& soundFFT.eng1_obor >= (helicopter.engTurnoverMg / 2.5))) & soundFFT.p_eng1_zap & soundFFT.p_eng2_zap);
 
 						//Двигатель 1
 						if (soundFFT.p_eng1_zap)
@@ -576,12 +506,12 @@ int main(int argc, char* argv[])
 								}
 								turnMgEng1 = getParameterFromFile(helicopter.fullName["eng_on"], offsetMgEng1);
 								offsetMgEng1 += delta;
-								turnAvtEng1 = getParameterFromFile(helicopter.fullName["eng_mg_avt"], offsetAvtEng1) * turnMgEng1 / helicopter.eng_obor_mg;
+								turnAvtEng1 = getParameterFromFile(helicopter.fullName["eng_mg_avt"], offsetAvtEng1) * turnMgEng1 / helicopter.engTurnoverMg;
 								offsetAvtEng1 += delta;
 							}
 							else
 							{
-								if (soundFFT.eng1_obor > helicopter.eng_obor_mg)
+								if (soundFFT.eng1_obor > helicopter.engTurnoverMg)
 								{
 									if (statusEng1 != "eng_avt_mg")
 									{
@@ -613,7 +543,7 @@ int main(int argc, char* argv[])
 							}
 							turnAvtEng1 = getParameterFromFile(helicopter.fullName["eng_avt_mg"], offsetAvtEng1);
 							offsetAvtEng1 += delta;
-							turnMgEng1 = getParameterFromFile(helicopter.fullName["eng_off"], offsetMgEng1) * turnAvtEng1 / helicopter.eng_obor_mg;
+							turnMgEng1 = getParameterFromFile(helicopter.fullName["eng_off"], offsetMgEng1) * turnAvtEng1 / helicopter.engTurnoverMg;
 							offsetMgEng1 += delta;
 						}
 						//Двигатель 2
@@ -630,12 +560,12 @@ int main(int argc, char* argv[])
 								}
 								turnMgEng2 = getParameterFromFile(helicopter.fullName["eng_on"], offsetMgEng2);
 								offsetMgEng2 += delta;
-								turnAvtEng2 = getParameterFromFile(helicopter.fullName["eng_mg_avt"], offsetAvtEng2) * turnMgEng2 / helicopter.eng_obor_mg;
+								turnAvtEng2 = getParameterFromFile(helicopter.fullName["eng_mg_avt"], offsetAvtEng2) * turnMgEng2 / helicopter.engTurnoverMg;
 								offsetAvtEng2 += delta;
 							}
 							else
 							{
-								if (soundFFT.eng2_obor > helicopter.eng_obor_mg)
+								if (soundFFT.eng2_obor > helicopter.engTurnoverMg)
 								{
 									if (statusEng2 != "eng_avt_mg")
 									{
@@ -667,7 +597,7 @@ int main(int argc, char* argv[])
 							}
 							turnAvtEng2 = getParameterFromFile(helicopter.fullName["eng_avt_mg"], offsetAvtEng2);
 							offsetAvtEng2 += delta;
-							turnMgEng2 = getParameterFromFile(helicopter.fullName["eng_off"], offsetMgEng2) * turnAvtEng2 / helicopter.eng_obor_mg;
+							turnMgEng2 = getParameterFromFile(helicopter.fullName["eng_off"], offsetMgEng2) * turnAvtEng2 / helicopter.engTurnoverMg;
 							offsetMgEng2 += delta;
 						}
 
@@ -685,14 +615,14 @@ int main(int argc, char* argv[])
 								}
 								turnMg1 = getParameterFromFile(helicopter.fullName["red_on"], offsetMg1);
 								offsetMg1 += delta;
-								turnMg2 = getParameterFromFile(helicopter.fullName["red_on_mg"], offsetMg2) * (turnMg1 / helicopter.red_obor_mg1);
+								turnMg2 = getParameterFromFile(helicopter.fullName["red_on_mg"], offsetMg2) * (turnMg1 / helicopter.redTurnoverMg1);
 								offsetMg2 += delta;
-								turnAvt = getParameterFromFile(helicopter.fullName["red_mg_avt"], offsetAvt) * (turnMg2 / helicopter.red_obor_mg2);
+								turnAvt = getParameterFromFile(helicopter.fullName["red_mg_avt"], offsetAvt) * (turnMg2 / helicopter.redTurnoverMg2);
 								offsetAvt += delta;
 							}
 							else
 							{
-								if (soundFFT.reduktor_gl_obor > helicopter.red_obor_mg2)
+								if (soundFFT.reduktor_gl_obor > helicopter.redTurnoverMg2)
 								{
 									if (statusRed != "red_avt_mg")
 									{
@@ -714,12 +644,12 @@ int main(int argc, char* argv[])
 										}
 										turnMg1 = getParameterFromFile(helicopter.fullName["red_on"], offsetMg1);
 										offsetMg1 += delta;
-										turnMg2 = getParameterFromFile(helicopter.fullName["red_on_mg"], offsetMg2) * (turnMg1 / helicopter.red_obor_mg1);
+										turnMg2 = getParameterFromFile(helicopter.fullName["red_on_mg"], offsetMg2) * (turnMg1 / helicopter.redTurnoverMg1);
 										offsetMg2 += delta;
 									}
 									else if (oneEng)
 									{
-										if (soundFFT.reduktor_gl_obor > helicopter.red_obor_mg1)
+										if (soundFFT.reduktor_gl_obor > helicopter.redTurnoverMg1)
 										{
 											if (statusRed != "red_off")
 											{
@@ -729,7 +659,7 @@ int main(int argc, char* argv[])
 											}
 											turnAvt = getParameterFromFile(helicopter.fullName["red_avt_mg"], offsetAvt);
 											offsetAvt += delta;
-											turnMg1 = getParameterFromFile(helicopter.fullName["red_off"], offsetMg1) * turnAvt / helicopter.red_obor_mg2;
+											turnMg1 = getParameterFromFile(helicopter.fullName["red_off"], offsetMg1) * turnAvt / helicopter.redTurnoverMg2;
 											offsetMg1 += delta;
 										}
 										else
@@ -756,7 +686,7 @@ int main(int argc, char* argv[])
 							}
 							turnAvt = getParameterFromFile(helicopter.fullName["red_avt_mg"], offsetAvt);
 							offsetAvt += delta;
-							turnMg1 = getParameterFromFile(helicopter.fullName["red_off"], offsetMg1) * turnAvt / helicopter.red_obor_mg2;
+							turnMg1 = getParameterFromFile(helicopter.fullName["red_off"], offsetMg1) * turnAvt / helicopter.redTurnoverMg2;
 							offsetMg1 += delta;
 						}
 
@@ -818,26 +748,26 @@ int main(int argc, char* argv[])
 					if (soundFFT.p_eng1_hp && soundFFT.eng1_obor < 20 && !soundFFT.p_eng1_ostanov && !soundFFT.p_eng1_zap)
 					{
 						statusEng1 = "eng_hp";
-						soundFFT.eng1_obor += (helicopter.eng_obor_mg * 0.3) / 23.*(delta);
+						soundFFT.eng1_obor += (helicopter.engTurnoverMg * 0.3) / 23.*(delta);
 					}
 					//Холодная прокрутка двигателя 1 выкл
 					if (!soundFFT.p_eng1_hp && soundFFT.eng1_obor > 0 && !soundFFT.p_eng1_ostanov && !soundFFT.p_eng1_zap)
 					{
 						statusEng1 = "eng_hp";
-						soundFFT.eng1_obor -= (helicopter.eng_obor_mg * 0.3) / 35.*(delta);
+						soundFFT.eng1_obor -= (helicopter.engTurnoverMg * 0.3) / 35.*(delta);
 						soundFFT.eng1_obor = (soundFFT.eng1_obor < 0) ? 0 : soundFFT.eng1_obor;
 					}
 					//Холодная прокрутка двигателя 2
 					if (soundFFT.p_eng2_hp && soundFFT.eng2_obor < 20 && !soundFFT.p_eng2_ostanov && !soundFFT.p_eng2_zap)
 					{
 						statusEng2 = "eng_hp";
-						soundFFT.eng2_obor += (helicopter.eng_obor_mg * 0.3) / 23.*(delta);
+						soundFFT.eng2_obor += (helicopter.engTurnoverMg * 0.3) / 23.*(delta);
 					}
 					//Холодная прокрутка двигателя 2 выкл
 					if (!soundFFT.p_eng2_hp && soundFFT.eng2_obor > 0 && !soundFFT.p_eng2_ostanov && !soundFFT.p_eng2_zap)
 					{
 						statusEng2 = "eng_hp";
-						soundFFT.eng2_obor -= (helicopter.eng_obor_mg * 0.3) / 35.*(delta);
+						soundFFT.eng2_obor -= (helicopter.engTurnoverMg * 0.3) / 35.*(delta);
 						soundFFT.eng2_obor = (soundFFT.eng2_obor < 0) ? 0 : soundFFT.eng2_obor;
 					}
 					//Возвращение в исходное состояние двигателей
@@ -1841,8 +1771,8 @@ void kbHit()
 			statusRed = "NULL";
 			break;
 		case '<'://режим мг - редуктора на 1 дв (shift + ,)
-			soundFFT.reduktor_gl_obor = helicopter.red_obor_mg1;
-			soundFFT.eng1_obor = helicopter.eng_obor_mg;
+			soundFFT.reduktor_gl_obor = helicopter.redTurnoverMg1;
+			soundFFT.eng1_obor = helicopter.engTurnoverMg;
 			soundFFT.eng2_obor = 0;
 			soundFFT.p_eng1_zap = 1;
 			soundFFT.p_eng2_zap = 0;
@@ -1857,9 +1787,9 @@ void kbHit()
 			statusRed = "NULL";
 			break;
 		case '>'://режим мг - редуктора на 2 дв(shift + .)
-			soundFFT.reduktor_gl_obor = helicopter.red_obor_mg2;
-			soundFFT.eng1_obor = helicopter.eng_obor_mg;
-			soundFFT.eng2_obor = helicopter.eng_obor_mg;
+			soundFFT.reduktor_gl_obor = helicopter.redTurnoverMg2;
+			soundFFT.eng1_obor = helicopter.engTurnoverMg;
+			soundFFT.eng2_obor = helicopter.engTurnoverMg;
 			soundFFT.p_eng1_zap = 1;
 			soundFFT.p_eng2_zap = 1;
 			soundFFT.p_eng1_ostanov = 0;
@@ -1873,9 +1803,9 @@ void kbHit()
 			statusRed = "NULL";
 			break;
 		case '?'://режим автомат - редуктора на 2 дв(shift + /)
-			soundFFT.reduktor_gl_obor = helicopter.red_obor_avt;
-			soundFFT.eng1_obor = helicopter.eng_obor_avt;
-			soundFFT.eng2_obor = helicopter.eng_obor_avt;
+			soundFFT.reduktor_gl_obor = helicopter.redTurnoverAvt;
+			soundFFT.eng1_obor = helicopter.engTurnoverAvt;
+			soundFFT.eng2_obor = helicopter.engTurnoverAvt;
 			soundFFT.p_eng1_zap = 1;
 			soundFFT.p_eng2_zap = 1;
 			soundFFT.p_eng1_ostanov = 0;

@@ -10,87 +10,87 @@ void Helicopter::setParam(string model)
 	if (model == "mi_8_mtv5")
 	{
 		//Константы
-		eng_obor_mg = 75;
-		eng_obor_avt = 88;
-		red_obor_mg1 = 50;
-		red_obor_mg2 = 63;
-		red_obor_avt = 96;
+		engTurnoverMg = 75;
+		engTurnoverAvt = 88;
+		redTurnoverMg1 = 50;
+		redTurnoverMg2 = 63;
+		redTurnoverAvt = 96;
 	}
 	else if (model == "mi_8_amtsh")
 	{
 		//Константы		
 
-		eng_obor_mg = 75;
-		eng_obor_avt = 88;
-		red_obor_mg1 = 50;
-		red_obor_mg2 = 63;
-		red_obor_avt = 96;
+		engTurnoverMg = 75;
+		engTurnoverAvt = 88;
+		redTurnoverMg1 = 50;
+		redTurnoverMg2 = 63;
+		redTurnoverAvt = 96;
 
 	}
 	else if (model == "mi_26")
 	{
 		//Константы		
 
-		eng_obor_mg = 69;
-		eng_obor_avt = 84;
-		red_obor_mg1 = 37;
-		red_obor_mg2 = 47;
-		red_obor_avt = 85;
+		engTurnoverMg = 69;
+		engTurnoverAvt = 84;
+		redTurnoverMg1 = 37;
+		redTurnoverMg2 = 47;
+		redTurnoverAvt = 85;
 
 	}
 	else if (model == "mi_28")
 	{
 		//Константы		
 
-		eng_obor_mg = 73;
-		eng_obor_avt = 86;
-		red_obor_mg1 = 48;
-		red_obor_mg2 = 60;
-		red_obor_avt = 93;
+		engTurnoverMg = 73;
+		engTurnoverAvt = 86;
+		redTurnoverMg1 = 48;
+		redTurnoverMg2 = 60;
+		redTurnoverAvt = 93;
 
 	}
 	else if (model == "ka_226")
 	{
 		//Константы		
 
-		eng_obor_mg = 61;
-		eng_obor_avt = 79;
-		red_obor_mg1 = 49;
-		red_obor_mg2 = 62;
-		red_obor_avt = 99;
+		engTurnoverMg = 61;
+		engTurnoverAvt = 79;
+		redTurnoverMg1 = 49;
+		redTurnoverMg2 = 62;
+		redTurnoverAvt = 99;
 
 	}
 	else if (model == "ansat")
 	{
 		//Константы		
 
-		eng_obor_mg = 65;
-		eng_obor_avt = 80;
-		red_obor_mg1 = 65;
-		red_obor_mg2 = 65;
-		red_obor_avt = 100;
+		engTurnoverMg = 65;
+		engTurnoverAvt = 80;
+		redTurnoverMg1 = 65;
+		redTurnoverMg2 = 65;
+		redTurnoverAvt = 100;
 
 	}
 	else if (model == "ka_27")
 	{
 		//Константы		
 
-		eng_obor_mg = 75;
-		eng_obor_avt = 85;
-		red_obor_mg1 = 44;
-		red_obor_mg2 = 60;
-		red_obor_avt = 90;
+		engTurnoverMg = 75;
+		engTurnoverAvt = 85;
+		redTurnoverMg1 = 44;
+		redTurnoverMg2 = 60;
+		redTurnoverAvt = 90;
 
 	}
 	else if (model == "ka_29")
 	{
 		//Константы		
 
-		eng_obor_mg = 75;
-		eng_obor_avt = 85;
-		red_obor_mg1 = 44;
-		red_obor_mg2 = 60;
-		red_obor_avt = 90;
+		engTurnoverMg = 75;
+		engTurnoverAvt = 85;
+		redTurnoverMg1 = 44;
+		redTurnoverMg2 = 60;
+		redTurnoverAvt = 90;
 
 	}
 	else
