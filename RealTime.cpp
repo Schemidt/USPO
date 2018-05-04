@@ -4,11 +4,6 @@
 #include "RealTime.h"
 #include "Net.h"
 #include "Memory.h"
-//#include <windows.h>
-//#include <windowsx.h>
-
-void DelayMs(int ms);
-
 
 REALTIME rt;
 
@@ -45,9 +40,9 @@ void CALLBACK RealTimeFunc(UINT,UINT,DWORD st,DWORD,DWORD)
 	crts.Lock();
 
 	rt.pExchOK = NetReceiveVoice();
+
 	memcpy(&shaData->sr, (void*)&soundFFT, sizeof(SOUNDFFT));
 
-	//rt.SetEvent = timeSetEvent(rt.step,1,RealTimeFunc,rt.step,TIME_ONESHOT);
 	rt.timeS += rt.Step;
 
 	crts.Unlock();

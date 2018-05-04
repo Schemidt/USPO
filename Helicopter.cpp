@@ -1,6 +1,5 @@
 #include "helicopter.h"
 #include "string.h"
-#include "map"
 #include "iostream"
 
 void Helicopter::setParam(string model)

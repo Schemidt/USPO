@@ -14,7 +14,6 @@
 #define ANSAT_ENG_REV_TURN 54.00
 #define VSU_MAX_TURN 100.00
 
-using namespace std;
 
 class point {
 public:
@@ -63,6 +62,8 @@ double getParameterFromVector(vector<point> &value, double offset);
 int binSer(vector<double> &time, double offset);
 
 int binSer(vector<point> &time, double offset);
+
+using namespace std;
 
 SOUNDFFT soundFFT;
 Helicopter helicopter;
@@ -144,10 +145,9 @@ int main(int argc, char* argv[])
 	cout << " Using " << helicopter.modelName << endl;
 	helicopter.setPath(helicopter.modelName + "/");
 
-	int lg = sizeof(SOUNDFFT);
-	if (!InitNetVoice((void*)&soundFFT, lg)) {
+	if (!InitNetVoice((void*)&soundFFT, sizeof(SOUNDFFT))) 
+	{
 		cout << "Not InitNetVoice" << endl;
-		getch();
 		return 0;
 	}
 
@@ -1655,11 +1655,11 @@ void kbHit()
 			soundFFT.p_kran_perekr_2 = !soundFFT.p_kran_perekr_2;//Правый кран
 			break;
 		case 's':
-			soundFFT.v += 3.;//Увеличить скорость
+			soundFFT.v += 0.277;//Увеличить скорость
 			soundFFT.v = (soundFFT.v > 100.) ? 100. : soundFFT.v;
 			break;
 		case 'x':
-			soundFFT.v -= 3.;//Уменьшить скорость
+			soundFFT.v -= 0.277;//Уменьшить скорость
 			soundFFT.v = (soundFFT.v < 0.) ? 0. : soundFFT.v;
 			break;
 		case 'k':

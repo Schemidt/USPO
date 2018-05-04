@@ -1,6 +1,7 @@
 #ifndef __SERVER_H__
 #define __SERVER_H__
 
+
 const int GUID_STR_SIZE = 38;  // размер GUID (без '\0')
 const int SUBHEADER_SIZE = 7;  // размер подзаголовка (без '\0')
 
