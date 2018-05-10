@@ -29,6 +29,7 @@ public:
 		shortName["eng_avt_mg"] = "eng_avt_mg.txt"; //!<имя файла c переходной функцией остановки до режима малого газа
 		shortName["ansatFirstEng"] = "eng1_mg.txt"; //!<
 		shortName["ansatSecondEng"] = "eng2_mg.txt"; //!<
+		shortName["ansat1EngOff"] = "eng1_off.txt"; //!<
 		//Редуктор
 		shortName["red_on"] = "red_on.txt"; //!<имя файла c переходной функцией разгона редуктора до режима малого газа на 1ом двигателе
 		shortName["red_on_mg"] = "red_on_mg.txt"; //!<имя файла c переходной функцией разгона редуктора до режима малого газа на 2х двигателях

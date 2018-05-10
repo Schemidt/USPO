@@ -12,6 +12,7 @@
 #include "tlhelp32.h"
 
 #define ANSAT_ENG_REV_TURN 54.00
+#define ANSAT_1ENG_TURN 73.00
 #define VSU_MAX_TURN 100.00
 
 
@@ -201,8 +202,8 @@ int main(int argc, char* argv[])
 					if (helicopter.modelName == "ansat")
 					{
 						bool case1 = soundFFT.eng1_obor >= ANSAT_ENG_REV_TURN & soundFFT.eng2_obor >= ANSAT_ENG_REV_TURN;//Подъем или спуск
-						bool case2 = soundFFT.eng1_obor < ANSAT_ENG_REV_TURN & soundFFT.eng2_obor < ANSAT_ENG_REV_TURN;//Нормальный подъем
-						bool case3 = (soundFFT.eng1_obor < ANSAT_ENG_REV_TURN & soundFFT.eng2_obor >= ANSAT_ENG_REV_TURN) | (soundFFT.eng1_obor >= ANSAT_ENG_REV_TURN & soundFFT.eng2_obor < ANSAT_ENG_REV_TURN);//Нормальный подъем
+						//bool case2 = soundFFT.eng1_obor < ANSAT_ENG_REV_TURN & soundFFT.eng2_obor < ANSAT_ENG_REV_TURN;//Нормальный подъем
+						//bool case3 = (soundFFT.eng1_obor < ANSAT_ENG_REV_TURN & soundFFT.eng2_obor >= ANSAT_ENG_REV_TURN) | (soundFFT.eng1_obor >= ANSAT_ENG_REV_TURN & soundFFT.eng2_obor < ANSAT_ENG_REV_TURN);//Нормальный подъем
 
 																																																				 //Двигатель 1
 						if (soundFFT.p_eng1_zap)
@@ -408,7 +409,6 @@ int main(int argc, char* argv[])
 							}
 							else
 							{
-
 								if ((statusRed != "red_mg_avt") && (statusRed != "red_avt_mg"))
 								{
 									if (case1)
@@ -1643,7 +1643,7 @@ void kbHit()
 			soundFFT.tormoz_vint = !soundFFT.tormoz_vint;//Тормоз винта
 			break;
 		case 'B':
-			soundFFT.rez_10 = !soundFFT.rez_10;//Хлопки винта 
+			soundFFT.rez_10 = !soundFFT.rez_10;
 			break;
 		case 'K':
 			soundFFT.rez_9 = !soundFFT.rez_9;//КО-50(обогреватель)
