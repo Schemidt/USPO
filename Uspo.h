@@ -101,21 +101,26 @@ struct SOUNDFFT {
 	bool p_nasos_perek;         // Насос перекачки признак работы, 0-1
 	bool p_rocket_hit;          // Признак попадания ракетой, 0-1
 	bool p_bullet_hit;          // Признак попадания из пулемета, 0-1
-	//float ko50;				// КО-50
-	//float accum;				// Аккумулятор
-	//float cons_tank;          // Насос расходного бака
-	//float vint_flap;          // 
-	//float nip;				// НИП
-	float rez_1;				// Перекрывной кран ВСУ 
-	float rez_2;				// Аккумулятор
-	float rez_3;                // НИП
-	float rez_4;                // Насос расходного бака
-	float rez_5;                // Неопределенный 1 (Ми-28)
-	float rez_6;                // Неопределенный 2 (Ми-28)
-	float rez_7;                // Зуммер
-	float rez_8;                // СКВ
-	float rez_9;                // КО-50
-	float rez_10;               // Хлопки
+	float high;					//Высота (м) (резерв 1)
+	float tangaz;				//Тангаж (градус) (резерв 2)
+	float step;					//Шаг винта (градусы) 3
+	bool accumulator;			// Аккумулятор 4
+	bool ground_power_supply;	// НИП 5
+	bool dis_tank_pump;			// Насос расходного бака 6
+	bool undefined;				// Неопределенный (Ми-28) 7
+	bool zoomer;				// Зуммер (Ми-28) 8
+	bool skv;					// СКВ 9
+	bool stove;  				// КО-50 10
+	//float rez_1;				// Перекрывной кран ВСУ 
+	//float rez_2;				// Аккумулятор
+	//float rez_3;                // НИП
+	//float rez_4;                // Насос расходного бака
+	//float rez_5;                // Неопределенный 1 (Ми-28)
+	//float rez_6;                // Неопределенный 2 (Ми-28)
+	//float rez_7;                // Зуммер
+	//float rez_8;                // СКВ
+	//float rez_9;                // КО-50
+	//float rez_10;               // Хлопки
 };
 #pragma pack ( pop )
 
