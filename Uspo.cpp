@@ -162,6 +162,7 @@ int main(int argc, char* argv[])
 	cout << " Using " << helicopter.modelName << endl;
 	helicopter.setPath(helicopter.modelName + "/");
 
+	//Cетевое взаимодействие
 	if (!InitNetVoice((void*)&soundFFT, sizeof(SOUNDFFT)))
 	{
 		cout << "Not InitNetVoice" << endl;
