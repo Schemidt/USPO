@@ -1797,7 +1797,7 @@ void kbHit()
 			soundFFT.p_nar_s8 = !soundFFT.p_nar_s8;//Õ¿– 8
 			break;
 		case 'l':
-			soundFFT.p_nar_c13 = !soundFFT.p_nar_c13;//Õ¿– 13
+			soundFFT.p_nar_s13 = !soundFFT.p_nar_s13;//Õ¿– 13
 			break;
 		case '[':
 			soundFFT.p_spo_ppu = !soundFFT.p_spo_ppu;//—œŒ œœ”
