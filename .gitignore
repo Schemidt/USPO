@@ -7,7 +7,6 @@
 *.userosscache
 *.sln.docstates
 *.xlsx
-test.txt
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs

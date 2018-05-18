@@ -1291,73 +1291,43 @@ int main(int argc, char* argv[])
 					}
 					if (helicopter.modelName == "ka_29")
 					{
-						string ch1;
+						vector <testChunk> tests =
+						{
+							{ 1, 0, 75 },
+							{ 2, 77, 429 },
+							{ 3, 431, 701 },
+							{ 4, 703, 858 },
+							{ 5, 860, 920 },
+							{ 6, 922, 1387 },
+							{ 7, 1389, 1919 }
+						};
+
+						soundFFT.p_model_stop = 1;
 						system("cls");
-						printf(" Choose type:\n 1) Standart\n 2) Hovering\n");
 
-						while (!std::regex_match(ch1, regex("[1-2]")))//повторяем ввод пока не будет цифра от 1 до 4
-							ch1 = getch();//считываем буфер ввода
-
-						switch (ch1[0])
+						for (int i = 0; i < tests.size(); i++)
 						{
-						case '1':
-							hovering = 0;
-							break;
-						case '2':
-							hovering = 1;
-							break;
+							cout.precision(0);
+							cout << tests[i].number << ": " << tests[i].start << " - " << tests[i].end << endl;
 						}
 
-						if (hovering)
+						int d;
+						cin >> d;//считываем буфер ввода
+
+						for (int i = 0; i < tests.size(); i++)
 						{
-
-						}
-						else
-						{
-							soundFFT.p_model_stop = 1;
-							system("cls");
-							printf(" TEST:\n 1) 0 - 75\n 2) 77 - 429\n 3) 431 - 701\n 4) 703 - 858\n 5) 860 - 920\n 6) 922 - 1387\n 7) 1389 - 1919\n 8) [custom time]\n");
-
-							while (!std::regex_match(ch, regex("[1-8]")))//повторяем ввод пока не будет цифра от 1 до 4
-								ch = getch();//считываем буфер ввода
-
-							switch (ch[0])
+							if (d == tests[i].number)
 							{
-							case '1':
-								offsetTest = 0;
-								timeEnd = 75;
-								break;
-							case '2':
-								offsetTest = 77;
-								timeEnd = 429;
-								break;
-							case '3':
-								offsetTest = 431;
-								timeEnd = 701;
-								break;
-							case '4':
-								offsetTest = 703;
-								timeEnd = 858;
-								break;
-							case '5':
-								offsetTest = 860;
-								timeEnd = 920;
-								break;
-							case '6':
-								offsetTest = 922;
-								timeEnd = 1387;
-								break;
-							case '7':
-								offsetTest = 1389;
-								timeEnd = 1919;
-								break;
-							case '8':
-								system("cls");
-								printf(" Enter range (in seconds): [start] [end]\n ");
-								cin >> offsetTest;
-								cin >> timeEnd;
-								break;
+								offsetTest = tests[i].start;
+								timeEnd = tests[i].end;
 							}
+						}
+						if (d == 0)
+						{
+							system("cls");
+							printf(" Enter range (in seconds): [start] [end]\n ");
+							cin >> offsetTest;
+							cin >> timeEnd;
 						}
 
 						timeStart = offsetTest;
@@ -1501,6 +1471,7 @@ int main(int argc, char* argv[])
 
 						for (int i = 0; i < tests.size(); i++)
 						{
+							cout.precision(0);
 							cout << tests[i].number << ": " << tests[i].start << " - " << tests[i].end << endl;
 						}
 
@@ -1566,20 +1537,49 @@ int main(int argc, char* argv[])
 
 				if (vectload == 0)
 				{
-					//данные в базе должны храниться в строках парами, по паре в каждой строке (не больше)
-					for (size_t i = 0; i < 7; i++)
+					if (helicopter.modelName == "ka_29")
 					{
-						ifstream base(filename[i]);
+						ifstream base("test/ka_29/Standart/test.txt");
 						while (!base.eof())
 						{
 							string str;
-							double t = 0;
-							double v = 0;
+							double timeCol = 0;
+							double HighCol = 0;
+							double tangazCol = 0;
+							double VelocityCol = 0;
+							double StepCol = 0;
+							double Eng1Col = 0;
+							double Eng2Col = 0;
+							double RedCol = 0;
 							getline(base, str);
-							sscanf(str.c_str(), "%lf %lf", &t, &v);
-							vectorPar[i].push_back({ t,v });
+							sscanf(str.c_str(), "%lf %lf %lf %lf %lf %lf %lf %lf", &timeCol, &HighCol, &tangazCol, &VelocityCol, &StepCol, &Eng1Col, &Eng2Col, &RedCol);
+							vectorPar[0].push_back({ timeCol,Eng1Col });
+							vectorPar[1].push_back({ timeCol,Eng2Col });
+							vectorPar[2].push_back({ timeCol,RedCol });
+							vectorPar[3].push_back({ timeCol,HighCol });
+							vectorPar[4].push_back({ timeCol,tangazCol });
+							vectorPar[5].push_back({ timeCol,StepCol });
+							vectorPar[6].push_back({ timeCol,VelocityCol });
 						}
 						base.close();
+					}
+					else
+					{
+						//данные в базе должны храниться в строках парами, по паре в каждой строке (не больше)
+						for (size_t i = 0; i < 7; i++)
+						{
+							ifstream base(filename[i]);
+							while (!base.eof())
+							{
+								string str;
+								double t = 0;
+								double v = 0;
+								getline(base, str);
+								sscanf(str.c_str(), "%lf %lf", &t, &v);
+								vectorPar[i].push_back({ t,v });
+							}
+							base.close();
+						}
 					}
 
 					//Получаем вектор вертикальной скорости из высоты
@@ -1664,8 +1664,6 @@ int main(int argc, char* argv[])
 			}
 			soundFFT.time = currentTime;
 		}
-
-
 
 		if (rt.pExchOK)
 		{
