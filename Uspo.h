@@ -111,7 +111,7 @@ struct SOUNDFFT {
 	bool p_nasos_perek;         // Насос перекачки признак работы, 0-1
 	bool p_rocket_hit;          // Признак попадания ракетой, 0-1
 	bool p_bullet_hit;          // Признак попадания из пулемета, 0-1
-	float high;                 // Высота радио, м
+	float hight;                 // Высота радио, м
 	float tangaz;               // Тангаж фюз, градусы
 	float step;                 // Шаг винта, градусы
 	bool accumulator;           // Аккумулятор

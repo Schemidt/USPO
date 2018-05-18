@@ -193,6 +193,7 @@ int main(int argc, char* argv[])
 	double output = 0;
 
 	vector<vector <point>> vectorPar(7);
+	vector<point> vectorVy;
 	string filename[7];
 
 	while (true)
@@ -884,6 +885,24 @@ int main(int argc, char* argv[])
 						soundFFT.vsu_obor = (soundFFT.vsu_obor < 0) ? 0 : soundFFT.vsu_obor;
 					}
 				}
+
+				cout.precision(3);
+				cout << fixed
+					<< " TIME: " << soundFFT.time
+					<< " VSU(on): " << soundFFT.p_vsu_zap
+					<< " VSU(off): " << soundFFT.p_vsu_ostanov
+					<< " VSU(hp): " << soundFFT.p_vsu_hp
+					<< " VSU(%): " << soundFFT.vsu_obor
+					<< " ENG1(on): " << soundFFT.p_eng1_zap
+					<< " ENG1(off): " << soundFFT.p_eng1_ostanov
+					<< " ENG1(hp): " << soundFFT.p_eng1_hp
+					<< " ENG1(%): " << soundFFT.eng1_obor
+					<< " ENG2(on): " << soundFFT.p_eng2_zap
+					<< " ENG2(off): " << soundFFT.p_eng2_ostanov
+					<< " ENG2(hp): " << soundFFT.p_eng2_hp
+					<< " ENG2(%): " << soundFFT.eng2_obor
+					<< " RED(%): " << soundFFT.reduktor_gl_obor
+					<< "\t\r";
 			}
 			//тестовые циклограммы полетов для некоторых вертолетов
 			else
@@ -1562,25 +1581,61 @@ int main(int argc, char* argv[])
 						}
 						base.close();
 					}
+
+					//Получаем вектор вертикальной скорости из высоты
+					vectorVy = vectorPar[3];
+					for (int i = 1; i < vectorPar[3].size(); i++)
+					{
+						vectorVy[i].y = vectorPar[3][i].y - vectorPar[3][i - 1].y;
+					}
+
 					vectload = 1;
 				}
 
 				//Признак работы теста
 				soundFFT.p_model_stop = 0;
 
+				double spd = 0;
+
 				offsetTest += delta;
 				soundFFT.eng1_obor = getParameterFromVector(vectorPar[0], offsetTest);//дв1
 				soundFFT.eng2_obor = getParameterFromVector(vectorPar[1], offsetTest);//дв2
 				soundFFT.reduktor_gl_obor = getParameterFromVector(vectorPar[2], offsetTest);//редуктор
-				soundFFT.high = getParameterFromVector(vectorPar[3], offsetTest);//высота
-				soundFFT.high = (soundFFT.high < 0) ? 0 : soundFFT.high;
+				soundFFT.vy = getParameterFromVector(vectorVy, offsetTest);//высота
 				soundFFT.tangaz = getParameterFromVector(vectorPar[4], offsetTest);//тангаж
 				soundFFT.step = getParameterFromVector(vectorPar[5], offsetTest);//шаг
-				soundFFT.v = getParameterFromVector(vectorPar[6], offsetTest);//скорость
+				soundFFT.hight = getParameterFromVector(vectorPar[3], offsetTest);//шаг
+				soundFFT.hight = (soundFFT.hight < 0) ? 0 : soundFFT.hight;
+				if (soundFFT.hight == 0)
+				{
+					soundFFT.v_surf_x = getParameterFromVector(vectorPar[6], offsetTest);//скорость
+					soundFFT.v_atm_x = 0;
+					spd = soundFFT.v_surf_x;
+				}
+				else
+				{
+					soundFFT.v_atm_x = getParameterFromVector(vectorPar[6], offsetTest);//скорость
+					soundFFT.v_surf_x = 0;
+					spd = soundFFT.v_atm_x;
+				}
 				soundFFT.p_eng1_lkorr = 0;//Правая - левая коррекция
 				soundFFT.p_eng2_lkorr = 0;
 				soundFFT.p_eng1_rkorr = 1;
 				soundFFT.p_eng2_rkorr = 1;
+
+				cout.precision(3);
+				cout << fixed
+					<< " TIME: " << soundFFT.time
+					<< " OFFS: " << offsetTest
+					<< " ENG1(%): " << soundFFT.eng1_obor
+					<< " ENG2(%): " << soundFFT.eng2_obor
+					<< " REDO(%): " << soundFFT.reduktor_gl_obor
+					<< " VELY(%): " << soundFFT.vy
+					<< " TANG(%): " << soundFFT.tangaz
+					<< " STEP(%): " << soundFFT.step
+					<< " VELX(%): " << spd
+					<< " HIGH(%): " << soundFFT.hight
+					<< "\t\r";
 
 				//Тест закончился
 				if (soundFFT.time + timeStart > timeEnd)
@@ -1609,23 +1664,8 @@ int main(int argc, char* argv[])
 			}
 			soundFFT.time = currentTime;
 		}
-		
-		cout.precision(3);
-		cout << fixed
-			<< " VSU(on): " << soundFFT.p_vsu_zap
-			<< " VSU(off): " << soundFFT.p_vsu_ostanov
-			<< " VSU(hp): " << soundFFT.p_vsu_hp
-			<< " VSU(%): " << soundFFT.vsu_obor
-			<< " ENG1(on): " << soundFFT.p_eng1_zap
-			<< " ENG1(off): " << soundFFT.p_eng1_ostanov
-			<< " ENG1(hp): " << soundFFT.p_eng1_hp
-			<< " ENG1(%): " << soundFFT.eng1_obor
-			<< " ENG2(on): " << soundFFT.p_eng2_zap
-			<< " ENG2(off): " << soundFFT.p_eng2_ostanov
-			<< " ENG2(hp): " << soundFFT.p_eng2_hp
-			<< " ENG2(%): " << soundFFT.eng2_obor
-			<< " RED(%): " << soundFFT.reduktor_gl_obor
-			<< "\t\t\t\r";
+
+
 
 		if (rt.pExchOK)
 		{
