@@ -1,3 +1,14 @@
+#include "stdio.h"
+#include "tchar.h"
+#include "fstream"
+#include "regex"
+#include "iostream"
+#include "string.h"
+
+using namespace std;
+
+#pragma once
+
 #ifndef __SERVER_H__
 #define __SERVER_H__
 
@@ -127,3 +138,51 @@ struct SOUNDFFT {
 extern SOUNDFFT soundFFT;
 
 #endif
+
+class point {
+public:
+	double x;
+	double y;
+
+	point()
+	{
+		x = 0;
+		y = 0;
+	}
+
+	point(double x, double y)
+	{
+		this->x = x;
+		this->y = y;
+	}
+};
+
+class testChunk
+{
+public:
+	int number;
+	double start;
+	double end;
+};
+
+void delayMs(double ms);
+
+void kbHit();
+
+double getTimeMs();
+
+double interpolation(point p1, point p2, double x);
+
+double interpolation(point p1, point p2, point p3, double x);
+
+double getOffset(string filename, double parameter);
+
+double getParameterFromFile(string filename, double offset);
+
+double getParameterFromVector(vector<double> &value, vector<double> &time, double offset);
+
+double getParameterFromVector(vector<point> &value, double offset);
+
+int binSer(vector<double> &time, double offset);
+
+int binSer(vector<point> &time, double offset);

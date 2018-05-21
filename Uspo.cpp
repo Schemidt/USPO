@@ -1,6 +1,5 @@
-#include <stdio.h>
-#include <tchar.h>
-#include "Uspo.h"
+#include "stdio.h"
+#include "tchar.h"
 #include "Memory.h"
 #include "Net.h"
 #include "RealTime.h"
@@ -10,59 +9,11 @@
 #include "iostream"
 #include "string.h"
 #include "tlhelp32.h"
+#include "Uspo.h"
 
 #define ANSAT_ENG_REV_TURN 54.00
 #define ANSAT_1ENG_TURN 73.00
 #define VSU_MAX_TURN 100.00
-
-
-class point {
-public:
-	double x;
-	double y;
-
-	point()
-	{
-		x = 0;
-		y = 0;
-	}
-
-	point(double x, double y)
-	{
-		this->x = x;
-		this->y = y;
-	}
-};
-
-class testChunk
-{
-public:
-	int number;
-	double start;
-	double end;
-};
-
-void delayMs(double ms);
-
-void kbHit();
-
-double getTimeMs();
-
-double interpolation(point p1, point p2, double x);
-
-double interpolation(point p1, point p2, point p3, double x);
-
-double getOffset(string filename, double parameter);
-
-double getParameterFromFile(string filename, double offset);
-
-double getParameterFromVector(vector<double> &value, vector<double> &time, double offset);
-
-double getParameterFromVector(vector<point> &value, double offset);
-
-int binSer(vector<double> &time, double offset);
-
-int binSer(vector<point> &time, double offset);
 
 using namespace std;
 
@@ -70,36 +21,10 @@ SOUNDFFT soundFFT;
 Helicopter helicopter;
 
 double test = 0;
-double delta = 0;
-double offsetTest = 0;
-double testTimeEnd = 0;
-double testTimeStart = 0;
-double pause = 0;
-bool timeReset = 0;
-bool vectload = 0;
 
 string statusEng1;
 string statusEng2;
 string statusRed;
-
-double turn = 0;
-double turnMg1 = 0;
-double turnMg2 = 0;
-double turnAvt = 0;
-double turnMgEng1 = 0;
-double turnAvtEng1 = 0;
-double turnMgEng2 = 0;
-double turnAvtEng2 = 0;
-double turnRevRedAnsat = 0;
-double offsetMgEng1 = 0;
-double offsetAvtEng1 = 0;
-double offsetMgEng2 = 0;
-double offsetAvtEng2 = 0;
-double offsetMg1 = 0;
-double offsetMg2 = 0;
-double offsetAvt = 0;
-double offsetAnsatRev = 0;
-bool standAlone = 0;//По умолчанию - ждем данных от модели
 
 bool vsuOn = 0;
 bool vsuHp = 0;
@@ -136,6 +61,8 @@ int main(int argc, char* argv[])
 		cout << "Application already exist!" << endl;
 		return 1;
 	}
+
+	bool standAlone = 0;//По умолчанию - ждем данных от модели
 
 	vector <string> helicoptersNames = { "mi_8_mtv5","mi_8_amtsh","mi_26","mi_28","ka_226","ansat","ka_27","ka_29" };
 	string model;
@@ -195,9 +122,33 @@ int main(int argc, char* argv[])
 	vector<vector <point>> vectorPar(7);
 	vector<point> vectorVy;
 
+	double offsetTest = 0;
+	double testTimeEnd = 0;
+	double testTimeStart = 0;
+	bool timeReset = 0;
+	bool vectload = 0;
+
+	double turn = 0;
+	double turnMg1 = 0;
+	double turnMg2 = 0;
+	double turnAvt = 0;
+	double turnMgEng1 = 0;
+	double turnAvtEng1 = 0;
+	double turnMgEng2 = 0;
+	double turnAvtEng2 = 0;
+	double turnRevRedAnsat = 0;
+	double offsetMgEng1 = 0;
+	double offsetAvtEng1 = 0;
+	double offsetMgEng2 = 0;
+	double offsetAvtEng2 = 0;
+	double offsetMg1 = 0;
+	double offsetMg2 = 0;
+	double offsetAvt = 0;
+	double offsetAnsatRev = 0;
+
 	while (true)
 	{
-		delta = rt.timeS - currentTime;
+		double delta = rt.timeS - currentTime;
 		currentTime = rt.timeS;
 
 		if (!rt.pExchOK)
@@ -283,7 +234,7 @@ int main(int argc, char* argv[])
 																														 //bool case2 = soundFFT.eng1_obor < ANSAT_ENG_REV_TURN & soundFFT.eng2_obor < ANSAT_ENG_REV_TURN;//Нормальный подъем
 																														 //bool case3 = (soundFFT.eng1_obor < ANSAT_ENG_REV_TURN & soundFFT.eng2_obor >= ANSAT_ENG_REV_TURN) | (soundFFT.eng1_obor >= ANSAT_ENG_REV_TURN & soundFFT.eng2_obor < ANSAT_ENG_REV_TURN);//Нормальный подъем
 
-																														 //Двигатель 1
+						//Двигатель 1
 						if (Eng1On)
 						{
 							if (!avtOn)
@@ -966,34 +917,6 @@ int main(int argc, char* argv[])
 								{ 10, 1588, 1763 }
 							};
 						}
-
-						soundFFT.p_model_stop = 1;
-						system("cls");
-
-						for (int i = 0; i < tests.size(); i++)
-						{
-							cout.precision(0);
-							cout << tests[i].number << ": " << tests[i].start << " - " << tests[i].end << endl;
-						}
-
-						int d;
-						cin >> d;//считываем буфер ввода
-
-						for (int i = 0; i < tests.size(); i++)
-						{
-							if (d == tests[i].number)
-							{
-								testTimeStart = tests[i].start;
-								testTimeEnd = tests[i].end;
-							}
-						}
-						if (d == 0)
-						{
-							system("cls");
-							printf(" Enter range (in seconds): [start] [end]\n ");
-							cin >> testTimeStart;
-							cin >> testTimeEnd;
-						}
 					}
 					if (helicopter.modelName == "mi_8_amtsh")
 					{
@@ -1044,34 +967,6 @@ int main(int argc, char* argv[])
 								{ 7, 1389, 1919 }
 							};
 						}
-
-						soundFFT.p_model_stop = 1;
-						system("cls");
-
-						for (int i = 0; i < tests.size(); i++)
-						{
-							cout.precision(0);
-							cout << tests[i].number << ": " << tests[i].start << " - " << tests[i].end << endl;
-						}
-
-						int d;
-						cin >> d;//считываем буфер ввода
-
-						for (int i = 0; i < tests.size(); i++)
-						{
-							if (d == tests[i].number)
-							{
-								testTimeStart = tests[i].start;
-								testTimeEnd = tests[i].end;
-							}
-						}
-						if (d == 0)
-						{
-							system("cls");
-							printf(" Enter range (in seconds): [start] [end]\n ");
-							cin >> testTimeStart;
-							cin >> testTimeEnd;
-						}
 					}
 					if (helicopter.modelName == "ka_27")
 					{
@@ -1107,33 +1002,35 @@ int main(int argc, char* argv[])
 							{ 20, 3846, 4046 }
 						};
 
-						soundFFT.p_model_stop = 1;
+					}
+
+					soundFFT.p_model_stop = 1;
+					system("cls");
+
+					cout << " 0: custom time"<< endl;
+					for (int i = 0; i < tests.size(); i++)
+					{
+						cout.precision(0);
+						cout <<" "<< tests[i].number << ": " << tests[i].start << " - " << tests[i].end << endl;
+					}
+
+					int d;
+					cin >> d;//считываем буфер ввода
+
+					for (int i = 0; i < tests.size(); i++)
+					{
+						if (d == tests[i].number)
+						{
+							testTimeStart = tests[i].start;
+							testTimeEnd = tests[i].end;
+						}
+					}
+					if (d == 0)
+					{
 						system("cls");
-
-						for (int i = 0; i < tests.size(); i++)
-						{
-							cout.precision(0);
-							cout << tests[i].number << ": " << tests[i].start << " - " << tests[i].end << endl;
-						}
-
-						int d;
-						cin >> d;//считываем буфер ввода
-
-						for (int i = 0; i < tests.size(); i++)
-						{
-							if (d == tests[i].number)
-							{
-								testTimeStart = tests[i].start;
-								testTimeEnd = tests[i].end;
-							}
-						}
-						if (d == 0)
-						{
-							system("cls");
-							printf(" Enter range (in seconds): [start] [end]\n ");
-							cin >> testTimeStart;
-							cin >> testTimeEnd;
-						}
+						printf(" Enter range (in seconds): [start] [end]\n ");
+						cin >> testTimeStart;
+						cin >> testTimeEnd;
 					}
 
 					offsetTest = testTimeStart;
@@ -1499,12 +1396,6 @@ void kbHit()
 		case '-':
 			soundFFT.zoomer = !soundFFT.zoomer;//бибиби
 			break;
-		case '^':
-			standAlone = !standAlone;
-			break;
-			//case '7':
-			//	soundFFT.rez_5 = !soundFFT.rez_5;//хз 3
-			//	break;
 		case '8':
 			soundFFT.undefined = !soundFFT.undefined;//хз 2
 			break;
@@ -1521,14 +1412,7 @@ void kbHit()
 			soundFFT.p_ur_igla = !soundFFT.p_ur_igla;//
 			break;
 		case 'F':
-			test = !test;//Полет
-			break;
-		case 'P'://пауза (shift + s)
-			pause = !pause;
-			/*if (pause)
-				PauseRealTime();
-			else
-				RewindRealTime();*/
+			test = !test;//Тестовые циклограммы
 			break;
 		case 'M'://вернуться в начало (shift + m)
 			soundFFT.reduktor_gl_obor = 0;
