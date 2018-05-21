@@ -72,11 +72,11 @@ Helicopter helicopter;
 double test = 0;
 double delta = 0;
 double offsetTest = 0;
-double timeEnd = 0;
-double timeStart = 0;
+double testTimeEnd = 0;
+double testTimeStart = 0;
 double pause = 0;
-double timeReset = 0;
-int vectload = 0;
+bool timeReset = 0;
+bool vectload = 0;
 
 string statusEng1;
 string statusEng2;
@@ -194,7 +194,6 @@ int main(int argc, char* argv[])
 
 	vector<vector <point>> vectorPar(7);
 	vector<point> vectorVy;
-	string filename[7];
 
 	while (true)
 	{
@@ -907,400 +906,66 @@ int main(int argc, char* argv[])
 			//тестовые циклограммы полетов для некоторых вертолетов
 			else
 			{
-				string ch;
+				vector <testChunk> tests;
 
 				//Сброс параметров в начале теста
-				if (timeReset == 0)
+				if (!timeReset)
 				{
+					string Selector;
+					system("cls");
+					printf(" Choose type:\n 1) Standart\n 2) Hovering\n 3) SKV\n");
+
+					while (!std::regex_match(Selector, regex("[1-3]")))//повторяем ввод пока не будет цифра от 1 до 4
+						Selector = getch();//считываем буфер ввода
+
+					switch (Selector[0])
+					{
+					case '1':
+						hovering = 0;
+						skv = 0;
+						break;
+					case '2':
+						hovering = 1;
+						skv = 0;
+						break;
+					case '3':
+						hovering = 0;
+						skv = 1;
+						break;
+					}
+
 					if (helicopter.modelName == "mi_8_mtv5")
 					{
-						soundFFT.p_model_stop = 1;
-						system("cls");
-						printf(" TEST:\n 1) 0 - 75\n 2) 76 - 276\n 3) 277 - 437\n 4) 438 - 568\n 5) 569 - 689\n 6) 690 - 965\n 7) 966 - 1276\n 8) 1277 - 1587\n 9) 1588 - 1763\n 0) [custom]\n");
-
-						while (!std::regex_match(ch, regex("[0-9]")))//повторяем ввод пока не будет цифра от 1 до 4
-							ch = getch();//считываем буфер ввода
-
-						switch (ch[0])
-						{
-						case '1':
-							offsetTest = 0;
-							timeEnd = 75;
-							break;
-						case '2':
-							offsetTest = 76;
-							timeEnd = 276;
-							break;
-						case '3':
-							offsetTest = 277;
-							timeEnd = 437;
-							break;
-						case '4':
-							offsetTest = 438;
-							timeEnd = 568;
-							break;
-						case '5':
-							offsetTest = 569;
-							timeEnd = 689;
-							break;
-						case '6':
-							offsetTest = 690;
-							timeEnd = 965;
-							break;
-						case '7':
-							offsetTest = 966;
-							timeEnd = 1276;
-							break;
-						case '8':
-							offsetTest = 1277;
-							timeEnd = 1587;
-							break;
-						case '9':
-							offsetTest = 1588;
-							timeEnd = 1763;
-							break;
-						case '0':
-							system("cls");
-							printf(" Enter range (in seconds): [start] [end]\n ");
-							cin >> offsetTest;
-							cin >> timeEnd;
-							break;
-						}
-						timeStart = offsetTest;
-						soundFFT.time = 0;
-						rt.timeS = 0;
-						currentTime = 0;
-						timeReset = 1;
-						system("cls");
-
-					}
-					if (helicopter.modelName == "mi_8_amtsh")
-					{
-						soundFFT.p_model_stop = 1;
-						system("cls");
-						printf(" TEST:\n 1) 0 - 200\n 2) 201 - 291\n 3) 292 - 432\n 4) 433 - 583\n 5) 584 - 684\n 6) 685 - 1095\n 7) 1096 - 1316\n 8) 1317 - 1582\n 9) [custom]\n");
-
-						while (!std::regex_match(ch, regex("[1-9]")))//повторяем ввод пока не будет цифра от 1 до 4
-							ch = getch();//считываем буфер ввода
-
-						switch (ch[0])
-						{
-						case '1':
-							offsetTest = 0;
-							timeEnd = 200;
-							break;
-						case '2':
-							offsetTest = 201;
-							timeEnd = 291;
-							break;
-						case '3':
-							offsetTest = 292;
-							timeEnd = 432;
-							break;
-						case '4':
-							offsetTest = 433;
-							timeEnd = 583;
-							break;
-						case '5':
-							offsetTest = 584;
-							timeEnd = 684;
-							break;
-						case '6':
-							offsetTest = 685;
-							timeEnd = 1095;
-							break;
-						case '7':
-							offsetTest = 1096;
-							timeEnd = 1316;
-							break;
-						case '8':
-							offsetTest = 1317;
-							timeEnd = 1582;
-							break;
-						case '9':
-							system("cls");
-							printf(" Enter range (in seconds): [start] [end]\n ");
-							cin >> offsetTest;
-							cin >> timeEnd;
-							break;
-						}
-						timeStart = offsetTest;
-						soundFFT.time = 0;
-						rt.timeS = 0;
-						currentTime = 0;
-						timeReset = 1;
-						system("cls");
-					}
-					if (helicopter.modelName == "mi_28")
-					{
-						string ch1;
-						system("cls");
-						printf(" Choose type:\n 1) Standart\n 2) Hovering\n 3) SKV\n");
-
-						while (!std::regex_match(ch1, regex("[1-3]")))//повторяем ввод пока не будет цифра от 1 до 4
-							ch1 = getch();//считываем буфер ввода
-
-						switch (ch1[0])
-						{
-						case '1':
-							hovering = 0;
-							skv = 0;
-							break;
-						case '2':
-							hovering = 1;
-							skv = 0;
-							break;
-						case '3':
-							hovering = 0;
-							skv = 1;
-							break;
-						}
-
 						if (hovering)
 						{
-							system("cls");
-							printf(" Enter range (in seconds): [start] [end]\n ");
-							cin >> timeStart;
-							cin >> timeEnd;
+							tests =
+							{
+								{ 1, 0, 0 }
+							};
 						}
 						else if (skv)
 						{
-							soundFFT.p_model_stop = 1;
-							system("cls");
-							printf(" TEST:\n 1) 0 - 260\n 2) 261 - 691\n 3) 692 - 992\n 4) [custom time]\n");
-
-							while (!std::regex_match(ch, regex("[1-4]")))//повторяем ввод пока не будет цифра от 1 до 4
-								ch = getch();//считываем буфер ввода
-
-							switch (ch[0])
+							tests =
 							{
-							case '1':
-								offsetTest = 0;
-								timeEnd = 260;
-								break;
-							case '2':
-								offsetTest = 261;
-								timeEnd = 691;
-								break;
-							case '3':
-								offsetTest = 692;
-								timeEnd = 992;
-								break;
-							case '4':
-								system("cls");
-								printf(" Enter range (in seconds): [start] [end]\n ");
-								cin >> offsetTest;
-								cin >> timeEnd;
-								break;
-							}
+								{ 1, 0, 0 }
+							};
 						}
 						else
 						{
-							soundFFT.p_model_stop = 1;
-							system("cls");
-							printf(" TEST:\n 1) 0 - 100\n 2) 101 - 441\n 3) 442 - 852\n 4) 853 - 1283\n 5) 1284 - 1484\n 6) [custom time]\n");
-
-							while (!std::regex_match(ch, regex("[1-6]")))//повторяем ввод пока не будет цифра от 1 до 4
-								ch = getch();//считываем буфер ввода
-
-							switch (ch[0])
+							tests =
 							{
-							case '1':
-								offsetTest = 0;
-								timeEnd = 100;
-								break;
-							case '2':
-								offsetTest = 101;
-								timeEnd = 441;
-								break;
-							case '3':
-								offsetTest = 442;
-								timeEnd = 852;
-								break;
-							case '4':
-								offsetTest = 853;
-								timeEnd = 1283;
-								break;
-							case '5':
-								offsetTest = 1284;
-								timeEnd = 1484;
-								break;
-							case '6':
-								system("cls");
-								printf(" Enter range (in seconds): [start] [end]\n ");
-								cin >> offsetTest;
-								cin >> timeEnd;
-								break;
-							}
+								{ 1, 0, 75 },
+								{ 2, 76, 276 },
+								{ 3, 277, 437 },
+								{ 4, 438, 568 },
+								{ 5, 569, 689 },
+								{ 6, 690, 965 },
+								{ 7, 966, 1276 },
+								{ 8, 966, 1276 },
+								{ 9, 1277, 1587 },
+								{ 10, 1588, 1763 }
+							};
 						}
-
-						timeStart = offsetTest;
-						soundFFT.time = 0;
-						rt.timeS = 0;
-						currentTime = 0;
-						timeReset = 1;
-						system("cls");
-					}
-					if (helicopter.modelName == "mi_26")
-					{
-						string ch1;
-						system("cls");
-						printf(" Choose type:\n 1) Standart\n 2) Hovering\n 3) SKV\n");
-
-						while (!std::regex_match(ch1, regex("[1-3]")))//повторяем ввод пока не будет цифра от 1 до 4
-							ch1 = getch();//считываем буфер ввода
-
-						switch (ch1[0])
-						{
-						case '1':
-							hovering = 0;
-							skv = 0;
-							break;
-						case '2':
-							hovering = 1;
-							skv = 0;
-							break;
-						case '3':
-							hovering = 0;
-							skv = 1;
-							break;
-						}
-
-						if (hovering)
-						{
-							system("cls");
-							printf(" Enter range (in seconds): [start] [end]\n ");
-							cin >> timeStart;
-							cin >> timeEnd;
-
-
-						}
-						else if (skv)
-						{
-							soundFFT.p_model_stop = 1;
-							system("cls");
-							printf(" TEST:\n 1) 0 - 260\n 2) 261 - 691\n 3) 692 - 992\n 4) [custom time]\n");
-
-							while (!std::regex_match(ch, regex("[1-4]")))//повторяем ввод пока не будет цифра от 1 до 4
-								ch = getch();//считываем буфер ввода
-
-							switch (ch[0])
-							{
-							case '1':
-								offsetTest = 0;
-								timeEnd = 260;
-								break;
-							case '2':
-								offsetTest = 261;
-								timeEnd = 691;
-								break;
-							case '3':
-								offsetTest = 692;
-								timeEnd = 992;
-								break;
-							case '4':
-								system("cls");
-								printf(" Enter range (in seconds): [start] [end]\n ");
-								cin >> offsetTest;
-								cin >> timeEnd;
-								break;
-							}
-						}
-						else
-						{
-							soundFFT.p_model_stop = 1;
-							system("cls");
-
-							cout << " TEST:\n 1) 21 - 649\n 2) 650 - 760\n 3) 761 - 906\n 4) 907 - 1062\n";
-							cout << " 5) 1063 - 1383\n 6) 1384 - 1914\n 7) 1915 - 2175\n 8) 2176 - 2366\n";
-							cout << " 9) 2367 - 2647\n 10) 2648 - 3018\n 11) 3019 - 3179\n 12) 3180 - 3300\n 13) 3301 - 3641\n";
-							cout << " 0) [custom time]\n";
-							int num;
-							cout << " Enter test number: ";
-							cin >> num;
-
-							switch (num)
-							{
-							case 1:
-								offsetTest = 21;
-								timeEnd = 649;
-								break;
-							case 2:
-								offsetTest = 650;
-								timeEnd = 760;
-								break;
-							case 3:
-								offsetTest = 761;
-								timeEnd = 906;
-								break;
-							case 4:
-								offsetTest = 907;
-								timeEnd = 1062;
-								break;
-							case 5:
-								offsetTest = 1063;
-								timeEnd = 1383;
-								break;
-							case 6:
-								offsetTest = 1384;
-								timeEnd = 1914;
-								break;
-							case 7:
-								offsetTest = 1915;
-								timeEnd = 2175;
-								break;
-							case 8:
-								offsetTest = 2176;
-								timeEnd = 2366;
-								break;
-							case 9:
-								offsetTest = 2367;
-								timeEnd = 2647;
-								break;
-							case 10:
-								offsetTest = 2648;
-								timeEnd = 3018;
-								break;
-							case 11:
-								offsetTest = 3019;
-								timeEnd = 3179;
-								break;
-							case 12:
-								offsetTest = 3180;
-								timeEnd = 3300;
-								break;
-							case 13:
-								offsetTest = 3301;
-								timeEnd = 3641;
-								break;
-							case 0:
-								system("cls");
-								printf(" Enter range (in seconds): [start] [end]\n ");
-								cin >> offsetTest;
-								cin >> timeEnd;
-								break;
-							}
-						}
-
-						timeStart = offsetTest;
-						soundFFT.time = 0;
-						rt.timeS = 0;
-						currentTime = 0;
-						timeReset = 1;
-						system("cls");
-					}
-					if (helicopter.modelName == "ka_29")
-					{
-						vector <testChunk> tests =
-						{
-							{ 1, 0, 75 },
-							{ 2, 77, 429 },
-							{ 3, 431, 701 },
-							{ 4, 703, 858 },
-							{ 5, 860, 920 },
-							{ 6, 922, 1387 },
-							{ 7, 1389, 1919 }
-						};
 
 						soundFFT.p_model_stop = 1;
 						system("cls");
@@ -1318,131 +983,107 @@ int main(int argc, char* argv[])
 						{
 							if (d == tests[i].number)
 							{
-								offsetTest = tests[i].start;
-								timeEnd = tests[i].end;
+								testTimeStart = tests[i].start;
+								testTimeEnd = tests[i].end;
 							}
 						}
 						if (d == 0)
 						{
 							system("cls");
 							printf(" Enter range (in seconds): [start] [end]\n ");
-							cin >> offsetTest;
-							cin >> timeEnd;
+							cin >> testTimeStart;
+							cin >> testTimeEnd;
 						}
-
-						timeStart = offsetTest;
-						soundFFT.time = 0;
-						rt.timeS = 0;
-						currentTime = 0;
-						timeReset = 1;
-						system("cls");
 					}
-					if (helicopter.modelName == "ka_27")
+					if (helicopter.modelName == "mi_8_amtsh")
 					{
-						soundFFT.p_model_stop = 1;
-						system("cls");
-						printf(" Choose type:\n 1) Standart\n 2) Hovering\n");
+						//printf(" TEST:\n 1) 0 - 200\n 2) 201 - 291\n 3) 292 - 432\n 4) 433 - 583\n 5) 584 - 684\n 6) 685 - 1095\n 7) 1096 - 1316\n 8) 1317 - 1582\n 9) [custom]\n");
+					}
+					if (helicopter.modelName == "mi_28")
+					{
+						// skv printf(" TEST:\n 1) 0 - 260\n 2) 261 - 691\n 3) 692 - 992\n 4) [custom time]\n");
 
-						while (!std::regex_match(ch, regex("[1-2]")))//повторяем ввод пока не будет цифра от 1 до 4
-							ch = getch();//считываем буфер ввода
+						// std printf(" TEST:\n 1) 0 - 100\n 2) 101 - 441\n 3) 442 - 852\n 4) 853 - 1283\n 5) 1284 - 1484\n 6) [custom time]\n");
+					}
+					if (helicopter.modelName == "mi_26")
+					{
+						// skv printf(" TEST:\n 1) 0 - 260\n 2) 261 - 691\n 3) 692 - 992\n 4) [custom time]\n");
 
-						switch (ch[0])
+							// std
+							//cout << " TEST:\n 1) 21 - 649\n 2) 650 - 760\n 3) 761 - 906\n 4) 907 - 1062\n";
+							//cout << " 5) 1063 - 1383\n 6) 1384 - 1914\n 7) 1915 - 2175\n 8) 2176 - 2366\n";
+							//cout << " 9) 2367 - 2647\n 10) 2648 - 3018\n 11) 3019 - 3179\n 12) 3180 - 3300\n 13) 3301 - 3641\n";
+							//cout << " 0) [custom time]\n";
+					}
+					if (helicopter.modelName == "ka_29")
+					{
+						if (hovering)
 						{
-						case '1':
-							hovering = 0;
-							break;
-						case '2':
-							hovering = 1;
-							break;
+							tests =
+							{
+								{ 1, 0, 540 }
+							};
+						}
+						else if (skv)
+						{
+							tests =
+							{
+								{ 1, 0, 0 }
+							};
+						}
+						else
+						{
+							tests =
+							{
+								{ 1, 0, 75 },
+								{ 2, 77, 429 },
+								{ 3, 431, 701 },
+								{ 4, 703, 858 },
+								{ 5, 860, 920 },
+								{ 6, 922, 1387 },
+								{ 7, 1389, 1919 }
+							};
 						}
 
-						system("cls");
-						printf(" Enter range (in seconds): [start] [end]\n ");
-						cin >> timeStart;
-						cin >> timeEnd;
-
-						offsetTest = timeStart;
-						soundFFT.time = 0;
-						rt.timeS = 0;
-						currentTime = 0;
-						delta = 0;
-						timeReset = 1;
-						system("cls");
-
-					}
-					if (helicopter.modelName == "ka_226")
-					{
 						soundFFT.p_model_stop = 1;
 						system("cls");
-						printf(" TEST:\n 1) 0 - 120\n 2) 121 - 271\n 3) 272 - 442\n 4) 443 - 553\n 5) 554 - 814\n 6) 815 - 985\n 7) 815 - 1136\n 8) 1137 - 1377\n 9) 1378 - 1728\n 10) 1729 - 1879\n 11) 1880 - 2080\n 0) [custom]\n ");
+
+						for (int i = 0; i < tests.size(); i++)
+						{
+							cout.precision(0);
+							cout << tests[i].number << ": " << tests[i].start << " - " << tests[i].end << endl;
+						}
 
 						int d;
 						cin >> d;//считываем буфер ввода
 
-						switch (d)
+						for (int i = 0; i < tests.size(); i++)
 						{
-						case 1:
-							offsetTest = 0;
-							timeEnd = 120;
-							break;
-						case 2:
-							offsetTest = 121;
-							timeEnd = 271;
-							break;
-						case 3:
-							offsetTest = 272;
-							timeEnd = 442;
-							break;
-						case 4:
-							offsetTest = 443;
-							timeEnd = 553;
-							break;
-						case 5:
-							offsetTest = 554;
-							timeEnd = 814;
-							break;
-						case 6:
-							offsetTest = 815;
-							timeEnd = 985;
-							break;
-						case 7:
-							offsetTest = 986;
-							timeEnd = 1136;
-							break;
-						case 8:
-							offsetTest = 1137;
-							timeEnd = 1377;
-							break;
-						case 9:
-							offsetTest = 1378;
-							timeEnd = 1728;
-							break;
-						case 10:
-							offsetTest = 1729;
-							timeEnd = 1879;
-							break;
-						case 11:
-							offsetTest = 1880;
-							timeEnd = 2080;
-							break;
-						case 0:
+							if (d == tests[i].number)
+							{
+								testTimeStart = tests[i].start;
+								testTimeEnd = tests[i].end;
+							}
+						}
+						if (d == 0)
+						{
 							system("cls");
 							printf(" Enter range (in seconds): [start] [end]\n ");
-							cin >> offsetTest;
-							cin >> timeEnd;
-							break;
+							cin >> testTimeStart;
+							cin >> testTimeEnd;
 						}
-						timeStart = offsetTest;
-						soundFFT.time = 0;
-						rt.timeS = 0;
-						currentTime = 0;
-						timeReset = 1;
-						system("cls");
+					}
+					if (helicopter.modelName == "ka_27")
+					{
 
+					}
+					if (helicopter.modelName == "ka_226")
+					{
+						// std printf(" TEST:\n 1) 0 - 120\n 2) 121 - 271\n 3) 272 - 442\n 4) 443 - 553\n 5) 554 - 814\n 6) 815 - 985\n 7) 815 - 1136\n 8) 1137 - 1377\n 9) 1378 - 1728\n 10) 1729 - 1879\n 11) 1880 - 2080\n 0) [custom]\n ");
 					}
 					if (helicopter.modelName == "ansat")
 					{
-						vector <testChunk> tests =
+						tests =
 						{
 							{ 1, 0, 180 },
 							{ 2, 181, 341 },
@@ -1482,105 +1123,68 @@ int main(int argc, char* argv[])
 						{
 							if (d == tests[i].number)
 							{
-								offsetTest = tests[i].start;
-								timeEnd = tests[i].end;
+								testTimeStart = tests[i].start;
+								testTimeEnd = tests[i].end;
 							}
 						}
 						if (d == 0)
 						{
 							system("cls");
 							printf(" Enter range (in seconds): [start] [end]\n ");
-							cin >> offsetTest;
-							cin >> timeEnd;
+							cin >> testTimeStart;
+							cin >> testTimeEnd;
 						}
-
-						timeStart = offsetTest;
-						soundFFT.time = 0;
-						rt.timeS = 0;
-						currentTime = 0;
-						timeReset = 1;
-						system("cls");
 					}
-					vectload = 0;
+
+					offsetTest = testTimeStart;
+					soundFFT.time = 0;
+					rt.timeS = 0;
+					currentTime = 0;
+					delta = 0;
+					system("cls");
+					timeReset = 1;
 				}
 
-				if (hovering)
+				if (!vectload)
 				{
-					filename[0] = "test/" + helicopter.modelName + "/Hovering/eng1.txt";
-					filename[1] = "test/" + helicopter.modelName + "/Hovering/eng2.txt";
-					filename[2] = "test/" + helicopter.modelName + "/Hovering/red.txt";
-					filename[3] = "test/" + helicopter.modelName + "/Hovering/h.txt";
-					filename[4] = "test/" + helicopter.modelName + "/Hovering/tangaz.txt";
-					filename[5] = "test/" + helicopter.modelName + "/Hovering/step.txt";
-					filename[6] = "test/" + helicopter.modelName + "/Hovering/v.txt";
-				}
-				else if (skv)
-				{
-					filename[0] = "test/" + helicopter.modelName + "/SKV/eng1.txt";
-					filename[1] = "test/" + helicopter.modelName + "/SKV/eng2.txt";
-					filename[2] = "test/" + helicopter.modelName + "/SKV/red.txt";
-					filename[3] = "test/" + helicopter.modelName + "/SKV/h.txt";
-					filename[4] = "test/" + helicopter.modelName + "/SKV/tangaz.txt";
-					filename[5] = "test/" + helicopter.modelName + "/SKV/step.txt";
-					filename[6] = "test/" + helicopter.modelName + "/SKV/v.txt";
-				}
-				else
-				{
-					filename[0] = "test/" + helicopter.modelName + "/Standart/eng1.txt";
-					filename[1] = "test/" + helicopter.modelName + "/Standart/eng2.txt";
-					filename[2] = "test/" + helicopter.modelName + "/Standart/red.txt";
-					filename[3] = "test/" + helicopter.modelName + "/Standart/h.txt";
-					filename[4] = "test/" + helicopter.modelName + "/Standart/tangaz.txt";
-					filename[5] = "test/" + helicopter.modelName + "/Standart/step.txt";
-					filename[6] = "test/" + helicopter.modelName + "/Standart/v.txt";
-				}
-
-				if (vectload == 0)
-				{
-					if (helicopter.modelName == "ka_29")
+					string filename;
+					if (hovering)
 					{
-						ifstream base("test/ka_29/Standart/test.txt");
-						while (!base.eof())
-						{
-							string str;
-							double timeCol = 0;
-							double HighCol = 0;
-							double tangazCol = 0;
-							double VelocityCol = 0;
-							double StepCol = 0;
-							double Eng1Col = 0;
-							double Eng2Col = 0;
-							double RedCol = 0;
-							getline(base, str);
-							sscanf(str.c_str(), "%lf %lf %lf %lf %lf %lf %lf %lf", &timeCol, &HighCol, &tangazCol, &VelocityCol, &StepCol, &Eng1Col, &Eng2Col, &RedCol);
-							vectorPar[0].push_back({ timeCol,Eng1Col });
-							vectorPar[1].push_back({ timeCol,Eng2Col });
-							vectorPar[2].push_back({ timeCol,RedCol });
-							vectorPar[3].push_back({ timeCol,HighCol });
-							vectorPar[4].push_back({ timeCol,tangazCol });
-							vectorPar[5].push_back({ timeCol,StepCol });
-							vectorPar[6].push_back({ timeCol,VelocityCol });
-						}
-						base.close();
+						filename = "test/" + helicopter.modelName + "/Hovering/test.txt";
+					}
+					else if (skv)
+					{
+						filename = "test/" + helicopter.modelName + "/Skv/test.txt";
 					}
 					else
 					{
-						//данные в базе должны храниться в строках парами, по паре в каждой строке (не больше)
-						for (size_t i = 0; i < 7; i++)
-						{
-							ifstream base(filename[i]);
-							while (!base.eof())
-							{
-								string str;
-								double t = 0;
-								double v = 0;
-								getline(base, str);
-								sscanf(str.c_str(), "%lf %lf", &t, &v);
-								vectorPar[i].push_back({ t,v });
-							}
-							base.close();
-						}
+						filename = "test/" + helicopter.modelName + "/Standart/test.txt";
 					}
+
+					ifstream base(filename);
+					while (!base.eof())
+					{
+						string str; 
+						double timeCol = 0;
+						double HighCol = 0;
+						double tangazCol = 0;
+						double VelocityCol = 0;
+						double StepCol = 0;
+						double Eng1Col = 0;
+						double Eng2Col = 0;
+						double RedCol = 0;
+						getline(base, str);
+						//T H TNG VELX STEP ENG1 ENG2 RED
+						sscanf(str.c_str(), "%lf %lf %lf %lf %lf %lf %lf %lf", &timeCol, &HighCol, &tangazCol, &VelocityCol, &StepCol, &Eng1Col, &Eng2Col, &RedCol);
+						vectorPar[0].push_back({ timeCol,Eng1Col });
+						vectorPar[1].push_back({ timeCol,Eng2Col });
+						vectorPar[2].push_back({ timeCol,RedCol });
+						vectorPar[3].push_back({ timeCol,HighCol });
+						vectorPar[4].push_back({ timeCol,tangazCol });
+						vectorPar[5].push_back({ timeCol,StepCol });
+						vectorPar[6].push_back({ timeCol,VelocityCol });
+					}
+					base.close();
 
 					//Получаем вектор вертикальной скорости из высоты
 					vectorVy = vectorPar[3];
@@ -1611,12 +1215,20 @@ int main(int argc, char* argv[])
 					soundFFT.v_surf_x = getParameterFromVector(vectorPar[6], offsetTest);//скорость
 					soundFFT.v_atm_x = 0;
 					spd = soundFFT.v_surf_x;
+					soundFFT.obj_hv = 0.5;
+					soundFFT.obj_nos = 0.5;
+					soundFFT.obj_l = 0.75;
+					soundFFT.obj_r = 0.75;
 				}
 				else
 				{
 					soundFFT.v_atm_x = getParameterFromVector(vectorPar[6], offsetTest);//скорость
 					soundFFT.v_surf_x = 0;
 					spd = soundFFT.v_atm_x;
+					soundFFT.obj_hv = 0;
+					soundFFT.obj_nos = 0;
+					soundFFT.obj_l = 0;
+					soundFFT.obj_r = 0;
 				}
 				soundFFT.p_eng1_lkorr = 0;//Правая - левая коррекция
 				soundFFT.p_eng2_lkorr = 0;
@@ -1638,21 +1250,20 @@ int main(int argc, char* argv[])
 					<< "\t\r";
 
 				//Тест закончился
-				if (soundFFT.time + timeStart > timeEnd)
+				if (soundFFT.time + testTimeStart > testTimeEnd)
 				{
 					//Признак работы теста
 					soundFFT.p_model_stop = 1;
 					system("cls");
 					cout << "Test ended..." << endl;
 					cout << "Continue? [y/n]" << endl;
-					while (!std::regex_match(ch, regex("[yn]")))//повторяем ввод пока не будет цифра от 1 до 4
-						ch = getch();//считываем буфер ввода
-					switch (ch[0])
+					string Selector;
+					while (!std::regex_match(Selector, regex("[yn]")))//повторяем ввод пока не будет цифра от 1 до 4
+						Selector = getch();//считываем буфер ввода
+					switch (Selector[0])
 					{
 					case 'y':
 						timeReset = 0;
-						timeEnd = 0;
-						offsetTest = 0;
 						break;
 					case 'n':
 						StopRealTime();
