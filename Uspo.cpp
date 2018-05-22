@@ -1131,6 +1131,10 @@ int main(int argc, char* argv[])
 				soundFFT.p_eng2_lkorr = 0;
 				soundFFT.p_eng1_rkorr = 1;
 				soundFFT.p_eng2_rkorr = 1;
+				soundFFT.p_eng1_ostanov = 0;
+				soundFFT.p_eng2_ostanov = 0;
+				soundFFT.p_eng1_zap = 0;
+				soundFFT.p_eng2_zap = 0;
 
 				cout.precision(3);
 				cout << fixed
