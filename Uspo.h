@@ -43,7 +43,8 @@ struct SOUNDFFT {
 	float h_hv;                 // Высота под хвостовой (правой передней) стойкой шасси, м
 	float h_l;                  // Высота под левой стойкой шасси, м
 	float h_r;                  // Высота под правой стойкой шасси, м
-	bool p_tormoz;              // Признак нажатого тормоза колес, 0-1
+	bool p_tormoz;              // Признак нажатого тормоза колес (скрежет колодок), 0-1
+	bool p_tormoz_press;        // Признак нажатого тормоза колес (давление в системе), 0-1
 	float tormoz;               // Степень торможения колес, 0..1
 	float tormoz_vint;          // Степень зажатия тормоза винта, 0..1
 	bool p_rain;                // Признак дождя, 0-1
@@ -130,8 +131,9 @@ struct SOUNDFFT {
 	bool dis_tank_pump;         // Насос расходного бака
 	bool undefined;             // Неопределенный (Ми-28)
 	bool zoomer;                // Зуммер (Ми-28)
-	bool skv;                   // СКВ
 	bool stove;                 // КО-50
+	bool trim;                  // признак нажатия триммера
+	bool frict;                 // признак нажатия фрикциона
 };
 #pragma pack ( pop )
 
@@ -160,7 +162,7 @@ public:
 class testChunk
 {
 public:
-	int number;
+	
 	double start;
 	double end;
 };
