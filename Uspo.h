@@ -43,7 +43,6 @@ struct SOUNDFFT {
 	float h_hv;                 // Высота под хвостовой (правой передней) стойкой шасси, м
 	float h_l;                  // Высота под левой стойкой шасси, м
 	float h_r;                  // Высота под правой стойкой шасси, м
-	bool p_tormoz;              // Признак нажатого тормоза колес (скрежет колодок), 0-1
 	bool p_tormoz_press;        // Признак нажатого тормоза колес (давление в системе), 0-1
 	float tormoz;               // Степень торможения колес, 0..1
 	float tormoz_vint;          // Степень зажатия тормоза винта, 0..1
@@ -181,10 +180,6 @@ double getOffset(string filename, double parameter);
 
 double getParameterFromFile(string filename, double offset);
 
-double getParameterFromVector(vector<double> &value, vector<double> &time, double offset);
-
 double getParameterFromVector(vector<point> &value, double offset);
-
-int binSer(vector<double> &time, double offset);
 
 int binSer(vector<point> &time, double offset);

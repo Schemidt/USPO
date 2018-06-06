@@ -1327,14 +1327,6 @@ void kbHit()
 			Eng2On = 0;
 			Eng2Hp = 0;
 			break;
-		//case 'a':
-		//	soundFFT.eng1_obor += .5;//Ручное регулирование оборотов двигателей (временно не работает)
-		//	soundFFT.eng2_obor += .5;
-		//	break;
-		//case 'z':
-		//	soundFFT.eng1_obor -= .5;//Ручное регулирование оборотов двигателей (временно не работает)
-		//	soundFFT.eng2_obor -= .5;
-		//	break;
 		case 'c':
 			soundFFT.master_gain -= .01f;//Уменьшить громкость
 			break;
@@ -1350,9 +1342,6 @@ void kbHit()
 		case 'b':
 			soundFFT.tormoz_vint = !soundFFT.tormoz_vint;//Тормоз винта
 			break;
-			/*case 'B':
-				soundFFT.rez_10 = !soundFFT.rez_10;
-				break;*/
 		case 'K':
 			soundFFT.stove = !soundFFT.stove;//КО-50(обогреватель)
 			break;
@@ -1374,50 +1363,51 @@ void kbHit()
 			soundFFT.p_reduktor_gl_crash = !soundFFT.p_reduktor_gl_crash;//Неисправность главного редуктора
 			break;
 		case ';':
-			if (soundFFT.p_nar_s8 == '2')
+			if (soundFFT.p_nar_s8 == 2)
 			{
-				soundFFT.p_nar_s8 = '0';//НАР 8 правый
+				soundFFT.p_nar_s8 = 0;//НАР 8 правый
 			}
 			else
 			{
-				soundFFT.p_nar_s8 = '2';//НАР 8 правый
+				soundFFT.p_nar_s8 = 2;//НАР 8 правый
 			}
 			break;
 		case 'l':
-			if (soundFFT.p_nar_s8 == '1')
+			if (soundFFT.p_nar_s8 == 1)
 			{
-				soundFFT.p_nar_s8 = '0';//НАР 8 левый
+				soundFFT.p_nar_s8 = 0;//НАР 8 левый
 			}
 			else
 			{
-				soundFFT.p_nar_s8 = '1';//НАР 8 левый
+				soundFFT.p_nar_s8 = 1;//НАР 8 левый
 			}
 			break;
 		case '.':
-			if (soundFFT.p_nar_s13 == '2')
+			if (soundFFT.p_nar_s13 == 2)
 			{
-				soundFFT.p_nar_s13 = '0';//НАР 13 правый
+				soundFFT.p_nar_s13 = 0;//НАР 13 правый
 			}
 			else
 			{
-				soundFFT.p_nar_s13 = '2';//НАР 13 правый
+				soundFFT.p_nar_s13 = 2;//НАР 13 правый
 			}
 			break;
 		case ',':
-			if (soundFFT.p_nar_s13 == '1')
+			if (soundFFT.p_nar_s13 == 1)
 			{
-				soundFFT.p_nar_s13 = '0';//НАР 13 левый
+				soundFFT.p_nar_s13 = 0;//НАР 13 левый
 			}
 			else
 			{
-				soundFFT.p_nar_s13 = '1';//НАР 13 левый
+				soundFFT.p_nar_s13 = 1;//НАР 13 левый
 			}
 			break;
 		case '[':
 			soundFFT.p_spo_ppu = !soundFFT.p_spo_ppu;//СПО ППУ
 			break;
 		case ']':
-			soundFFT.p_tormoz = !soundFFT.p_tormoz;//Признак тормоз шасси
+			soundFFT.p_tormoz_press = !soundFFT.p_tormoz_press;//Признак тормоз шасси
+			soundFFT.tormoz = 1;
 			break;
 		case 'f':
 			soundFFT.p_rocket_hit = !soundFFT.p_rocket_hit;//Признак попадания ракетой
@@ -1645,7 +1635,7 @@ double interpolation(point p1, point p2, point p3, double x)
 
 double getParameterFromFile(string filename, double offset)
 {
-	vector <double> time, value;
+	vector <point> vect;
 
 	//данные в базе должны храниться в строках парами, по паре в каждой строке (не больше)
 	ifstream base(filename);
@@ -1656,12 +1646,11 @@ double getParameterFromFile(string filename, double offset)
 		double v = 0;
 		getline(base, str);
 		sscanf(str.c_str(), "%lf %lf", &t, &v);
-		time.push_back(t);
-		value.push_back(v);
+		vect.push_back({t,v});
 	}
 	base.close();
 
-	return getParameterFromVector(value, time, offset);
+	return getParameterFromVector(vect, offset);
 }
 
 double getPitch(double offset, string filename, double parameter)
@@ -1855,41 +1844,6 @@ double getOffset(string filename, double parameter)
 	return (new_offset <= 0) ? 0 : new_offset;
 }
 
-double getParameterFromVector(vector<double> &value, vector<double> &time, double offset)
-{
-	int n = time.size();
-	point p1, p2, p3;
-	double x, a0, a1, a2;
-
-	if (offset < time[0])
-	{
-		return value[0];//достаем обороты из базы
-	}
-	else if (offset > time[n - 1])//отметка не совпала с базой
-	{
-		return value[n - 1];//достаем обороты из базы
-	}
-	else
-	{
-		n = binSer(time, offset);
-	}
-	//Выбираем 3 точки (вариант -1 0 +1)
-	if (n - 1 == -1)
-	{
-		p1.x = time[n]; p1.y = value[n]; p2.x = time[n + 1]; p2.y = value[n + 1]; p3.x = time[n + 2]; p3.y = value[n + 2];
-	}
-	else if (n + 1 == time.size())
-	{
-		p1.x = time[n - 2]; p1.y = value[n - 2]; p2.x = time[n - 1]; p2.y = value[n - 1]; p3.x = time[n]; p3.y = value[n];
-	}
-	else
-	{
-		p1.x = time[n - 1]; p1.y = value[n - 1]; p2.x = time[n]; p2.y = value[n]; p3.x = time[n + 1]; p3.y = value[n + 1];
-	}
-
-	return interpolation(p1, p2, p3, offset);
-}
-
 double getParameterFromVector(vector<point> &value, double offset)
 {
 	int n = value.size();
@@ -1923,30 +1877,6 @@ double getParameterFromVector(vector<point> &value, double offset)
 	}
 
 	return interpolation(p1, p2, p3, offset);
-}
-
-int binSer(vector<double> &time, double offset)
-{
-	int l = 0;
-	int n = time.size() - 1;
-	int r = n;
-	while (abs(l - r) >= 2)
-	{
-		if (offset == time[n])
-		{
-			return n;
-		}
-		else if (offset < time[n])
-		{
-			r = n;
-		}
-		else
-		{
-			l = n;
-		}
-		n = (l + r) / 2;
-	}
-	return n;
 }
 
 int binSer(vector<point> &time, double offset)
