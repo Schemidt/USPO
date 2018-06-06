@@ -1374,10 +1374,44 @@ void kbHit()
 			soundFFT.p_reduktor_gl_crash = !soundFFT.p_reduktor_gl_crash;//Неисправность главного редуктора
 			break;
 		case ';':
-			soundFFT.p_nar_s8 = !soundFFT.p_nar_s8;//НАР 8
+			if (soundFFT.p_nar_s8 == '2')
+			{
+				soundFFT.p_nar_s8 = '0';//НАР 8 правый
+			}
+			else
+			{
+				soundFFT.p_nar_s8 = '2';//НАР 8 правый
+			}
 			break;
 		case 'l':
-			soundFFT.p_nar_s13 = !soundFFT.p_nar_s13;//НАР 13
+			if (soundFFT.p_nar_s8 == '1')
+			{
+				soundFFT.p_nar_s8 = '0';//НАР 8 левый
+			}
+			else
+			{
+				soundFFT.p_nar_s8 = '1';//НАР 8 левый
+			}
+			break;
+		case '.':
+			if (soundFFT.p_nar_s13 == '2')
+			{
+				soundFFT.p_nar_s13 = '0';//НАР 13 правый
+			}
+			else
+			{
+				soundFFT.p_nar_s13 = '2';//НАР 13 правый
+			}
+			break;
+		case ',':
+			if (soundFFT.p_nar_s13 == '1')
+			{
+				soundFFT.p_nar_s13 = '0';//НАР 13 левый
+			}
+			else
+			{
+				soundFFT.p_nar_s13 = '1';//НАР 13 левый
+			}
 			break;
 		case '[':
 			soundFFT.p_spo_ppu = !soundFFT.p_spo_ppu;//СПО ППУ
