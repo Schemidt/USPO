@@ -108,6 +108,10 @@ int main(int argc, char* argv[])
 	soundFFT.p_eng2_lkorr = 1;
 	soundFFT.p_eng1_ostanov = 1;
 	soundFFT.p_eng2_ostanov = 1;
+	soundFFT.obj_hv = 0.5;
+	soundFFT.obj_nos = 0.5;
+	soundFFT.obj_l = 0.75;
+	soundFFT.obj_r = 0.75;
 
 	if (!shaInit())				// Инициализация общей памяти 
 		return 0;
@@ -153,11 +157,7 @@ int main(int argc, char* argv[])
 		currentTime = rt.timeS;
 
 		/*delta *= 0.5;*/
-		/*soundFFT.v_surf_x = (1 + rand() % 20) * 0.00001;
-		soundFFT.obj_hv = 0.5;
-		soundFFT.obj_nos = 0.5;
-		soundFFT.obj_l = 0.75;
-		soundFFT.obj_r = 0.75;*/
+		//soundFFT.v_surf_x = (1 + rand() % 20) * 0.00001;
 		//soundFFT.step = (1 + rand() % 10) * 0.1;
 
 		if (!rt.pExchOK)
@@ -779,7 +779,7 @@ int main(int argc, char* argv[])
 						{
 							soundFFT.p_eng2_zap = 0;
 						}
-						soundFFT.p_eng2_zap = 0;
+						soundFFT.p_eng2_hp = 0;
 						soundFFT.p_eng2_ostanov = 0;
 					}
 					if (Eng2Off)
@@ -803,7 +803,7 @@ int main(int argc, char* argv[])
 						soundFFT.p_vsu_hp = 0;
 					}
 					if (soundFFT.vsu_obor < (VSU_MAX_TURN * 0.35))
-						soundFFT.vsu_obor += (VSU_MAX_TURN * 0.35) / 5. * (delta);
+						soundFFT.vsu_obor += (VSU_MAX_TURN * 0.35) / helicopter.vsuHptimeOn * (delta);
 					soundFFT.vsu_obor = (soundFFT.vsu_obor > (VSU_MAX_TURN * 0.35)) ? (VSU_MAX_TURN * 0.35) : soundFFT.vsu_obor;
 				}
 				//Запуск ВСУ
@@ -819,7 +819,7 @@ int main(int argc, char* argv[])
 					}
 					soundFFT.p_vsu_ostanov = 0;
 					if (soundFFT.vsu_obor < VSU_MAX_TURN)
-						soundFFT.vsu_obor += VSU_MAX_TURN / 5. * (delta);
+						soundFFT.vsu_obor += VSU_MAX_TURN / helicopter.vsuTimeOn * (delta);
 					soundFFT.vsu_obor = (soundFFT.vsu_obor > VSU_MAX_TURN) ? VSU_MAX_TURN : soundFFT.vsu_obor;
 				}
 				//Остановка ВСУ
@@ -835,7 +835,7 @@ int main(int argc, char* argv[])
 						{
 							soundFFT.p_vsu_ostanov = 0;
 						}
-						soundFFT.vsu_obor -= VSU_MAX_TURN / 11. * (delta);
+						soundFFT.vsu_obor -= VSU_MAX_TURN / helicopter.vsuTimeOff * (delta);
 						//Обороты ВСУ не должны падать ниже 0
 						soundFFT.vsu_obor = (soundFFT.vsu_obor < 0) ? 0 : soundFFT.vsu_obor;
 					}
@@ -850,7 +850,7 @@ int main(int argc, char* argv[])
 							soundFFT.p_vsu_ostanov = 0;
 							vsuhpbl = 0;
 						}
-						soundFFT.vsu_obor -= (VSU_MAX_TURN * 0.35) / 5. * (delta);
+						soundFFT.vsu_obor -= (VSU_MAX_TURN * 0.35) / helicopter.vsuHPtimeOff * (delta);
 						soundFFT.vsu_obor = (soundFFT.vsu_obor < 0) ? 0 : soundFFT.vsu_obor;
 					}
 				}
@@ -1204,7 +1204,10 @@ int main(int argc, char* argv[])
 			<< " OFFS: " << offsetTest
 			<< " ENG1(%): " << soundFFT.eng1_obor
 			<< " ENG2(%): " << soundFFT.eng2_obor
+			<< " ENG1Z: " << soundFFT.p_eng1_zap
+			<< " ENG2Z: " << soundFFT.p_eng2_zap
 			<< " REDO(%): " << soundFFT.reduktor_gl_obor
+			<< " VSUO(%): " << soundFFT.vsu_obor
 			<< " VELY(%): " << soundFFT.vy
 			<< " TANG(%): " << soundFFT.tangaz
 			<< " STEP(%): " << soundFFT.step
@@ -1324,14 +1327,14 @@ void kbHit()
 			Eng2On = 0;
 			Eng2Hp = 0;
 			break;
-		case 'a':
-			soundFFT.eng1_obor += .5;//Ручное регулирование оборотов двигателей (временно не работает)
-			soundFFT.eng2_obor += .5;
-			break;
-		case 'z':
-			soundFFT.eng1_obor -= .5;//Ручное регулирование оборотов двигателей (временно не работает)
-			soundFFT.eng2_obor -= .5;
-			break;
+		//case 'a':
+		//	soundFFT.eng1_obor += .5;//Ручное регулирование оборотов двигателей (временно не работает)
+		//	soundFFT.eng2_obor += .5;
+		//	break;
+		//case 'z':
+		//	soundFFT.eng1_obor -= .5;//Ручное регулирование оборотов двигателей (временно не работает)
+		//	soundFFT.eng2_obor -= .5;
+		//	break;
 		case 'c':
 			soundFFT.master_gain -= .01f;//Уменьшить громкость
 			break;
@@ -1360,12 +1363,12 @@ void kbHit()
 			soundFFT.p_kran_perekr_2 = !soundFFT.p_kran_perekr_2;//Правый кран
 			break;
 		case 's':
-			soundFFT.v += 0.277;//Увеличить скорость
-			soundFFT.v = (soundFFT.v > 100.) ? 100. : soundFFT.v;
+			soundFFT.v_surf_x += 0.277;//Увеличить скорость
+			soundFFT.v_surf_x = (soundFFT.v_surf_x > 100.) ? 100. : soundFFT.v_surf_x;
 			break;
 		case 'x':
-			soundFFT.v -= 0.277;//Уменьшить скорость
-			soundFFT.v = (soundFFT.v < 0.) ? 0. : soundFFT.v;
+			soundFFT.v_surf_x -= 0.277;//Уменьшить скорость
+			soundFFT.v_surf_x = (soundFFT.v_surf_x < 0.) ? 0. : soundFFT.v_surf_x;
 			break;
 		case 'k':
 			soundFFT.p_reduktor_gl_crash = !soundFFT.p_reduktor_gl_crash;//Неисправность главного редуктора

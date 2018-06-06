@@ -15,6 +15,10 @@ public:
 	double redTurnoverMg2; //обороты редуктора с 2мя двигателями на малом газу
 	double redTurnoverAvt; //обороты редуктора на режиме автомат
 
+	double vsuTimeOn;
+	double vsuTimeOff;
+	double vsuHptimeOn;
+	double vsuHPtimeOff;
 
 	map<string, string> shortName;
 	map<string, string> fullName;
