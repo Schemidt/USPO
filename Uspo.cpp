@@ -1407,7 +1407,7 @@ void kbHit()
 			break;
 		case ']':
 			soundFFT.p_tormoz_press = !soundFFT.p_tormoz_press;//Признак тормоз шасси
-			soundFFT.tormoz = 1;
+			soundFFT.tormoz = !soundFFT.tormoz;
 			break;
 		case 'f':
 			soundFFT.p_rocket_hit = !soundFFT.p_rocket_hit;//Признак попадания ракетой
