@@ -1268,8 +1268,8 @@ void kbHit()
 			//
 			break;
 		case 'e':		//ВСУ запуск
-			soundFFT.p_vsu_hp = 0;
 			vsuOn = 1;
+			soundFFT.p_vsu_hp = 0;
 			soundFFT.p_vsu_ostanov = 0;
 			vsuOff = 0;
 			vsuHp = 0;
@@ -1292,12 +1292,16 @@ void kbHit()
 		case 'y':		//Дв1 запуск
 			eng1hpbl = 0;
 			Eng1On = 1;
+			soundFFT.p_eng1_hp = 0;
+			soundFFT.p_eng1_ostanov = 0;
 			Eng1Off = 0;
 			Eng1Hp = 0;
 			break;
 		case 't':		//Дв1 hp
 			eng1hpbl = 1;
 			Eng1Hp = 1;
+			soundFFT.p_eng1_zap = 0;
+			soundFFT.p_eng1_ostanov = 0;
 			Eng1On = 0;
 			Eng1Off = 0;
 			break;
