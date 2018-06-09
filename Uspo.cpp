@@ -50,6 +50,8 @@ double pojTimer[2] = { 1, 1 };
 double perekTimer[2] = { 1, 1 };
 double craneVsuTimer = 1;
 double kolcTimer = 1;
+bool singleNar8 = 0;
+double singleNar8Timer = 0;
 
 int main(int argc, char* argv[])
 {
@@ -1043,6 +1045,40 @@ int main(int argc, char* argv[])
 					}
 				}
 
+				//Одиночный нар8
+				if (singleNar8)
+				{
+					singleNar8Timer += deltaTime;
+					if (singleNar8Timer < 0.01/*максимальная длиина сигнала 1го нара*/)
+					{
+						soundFFT.p_nar_s8 = 1;
+					}
+					else
+					{
+						singleNar8 = 0;
+						soundFFT.p_nar_s8 = 0;
+					}
+				}
+
+				//cout замедляет программу (в 7 раз 0.002 -> 0.014) использовать с осторожностью
+				/*cout.precision(3);
+				cout << fixed
+					<< " TIME: " << soundFFT.time
+					<< " DELT: " << deltaTime
+					<< " OFFS: " << offsetTest
+					<< " ENG1(%): " << soundFFT.eng1_obor
+					<< " ENG2(%): " << soundFFT.eng2_obor
+					<< " ENG1Z: " << soundFFT.p_eng1_zap
+					<< " ENG2Z: " << soundFFT.p_eng2_zap
+					<< " REDO(%): " << soundFFT.reduktor_gl_obor
+					<< " VSUO(%): " << soundFFT.vsu_obor
+					<< " VELY(%): " << soundFFT.vy
+					<< " TANG(%): " << soundFFT.tangaz
+					<< " STEP(%): " << soundFFT.step
+					<< " VELX(%): " << spd
+					<< " HIGH(%): " << soundFFT.hight
+					<< "\t\r";*/
+
 			}
 			//тестовые циклограммы полетов для некоторых вертолетов
 			else
@@ -1386,28 +1422,7 @@ int main(int argc, char* argv[])
 			soundFFT.time = currentTime;
 		}
 
-		cout.precision(3);
-		cout << fixed
-			<< " TIME: " << soundFFT.time
-			/*<< " POJL: " << (int)soundFFT.p_kran_poj_l
-			<< " POJR: " << (int)soundFFT.p_kran_poj_r
-			<< " CVSU: " << (int)soundFFT.p_kran_perekr_vsu
-			<< " KOLC: " << (int)soundFFT.p_kran_kolcev
-			<< " PER1: " << (int)soundFFT.p_kran_perekr_1
-			<< " PER2: " << (int)soundFFT.p_kran_perekr_2*/
-			<< " OFFS: " << offsetTest
-			<< " ENG1(%): " << soundFFT.eng1_obor
-			<< " ENG2(%): " << soundFFT.eng2_obor
-			<< " ENG1Z: " << soundFFT.p_eng1_zap
-			<< " ENG2Z: " << soundFFT.p_eng2_zap
-			<< " REDO(%): " << soundFFT.reduktor_gl_obor
-			<< " VSUO(%): " << soundFFT.vsu_obor
-			<< " VELY(%): " << soundFFT.vy
-			<< " TANG(%): " << soundFFT.tangaz
-			<< " STEP(%): " << soundFFT.step
-			<< " VELX(%): " << spd
-			<< " HIGH(%): " << soundFFT.hight
-			<< "\t\r";
+		printf(" DT__: %.3lf\tENG1: %.3f\tENG2: %.3f\tRED_: %.3f\tVSU: %.3f\tSPD: %.3lf\t\r",deltaTime, soundFFT.eng1_obor,soundFFT.eng2_obor, soundFFT.reduktor_gl_obor, soundFFT.vsu_obor, spd);
 
 		if (rt.pExchOK)
 		{
@@ -1459,7 +1474,8 @@ void kbHit()
 			soundFFT.p_vu3 = !soundFFT.p_vu3;//Свист опционально
 			break;
 		case 'w':
-			//
+			singleNar8 = 1;
+			singleNar8Timer = 0;
 			break;
 		case 'e':		//ВСУ запуск
 			vsuOn = 1;
