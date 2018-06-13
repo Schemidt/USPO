@@ -161,15 +161,14 @@ int main(int argc, char* argv[])
 	double offsetAvt = 0;
 	double offsetAnsatRev = 0;
 	double spd = 0;
+	double router = 0;
+	double metersToSlitFront = 3;
+	double metersToSlitBack = 3;
 
 	while (true)
 	{
 		double deltaTime = rt.timeS - currentTime;
 		currentTime = rt.timeS;
-
-		/*deltaTime *= 0.5;*/
-		//soundFFT.v_surf_x = (1 + rand() % 20) * 0.00001;
-		//soundFFT.step = (1 + rand() % 10) * 0.1;
 
 		if (!rt.pExchOK)
 		{
@@ -1060,6 +1059,39 @@ int main(int argc, char* argv[])
 					}
 				}
 
+				//—тук плит
+				if (soundFFT.hight == 0)
+				{
+					router += soundFFT.v_surf_x * deltaTime;
+					if (router != 0)
+					{
+						if (router >= metersToSlitFront)
+						{
+							soundFFT.styk_hv = (rand() % 10 + 1) / 10.0;
+							soundFFT.styk_nos = soundFFT.styk_hv + (rand() % 10 - 10) / 100.0;
+							metersToSlitBack = metersToSlitFront + 1.5;
+							metersToSlitFront = router + 3 + (rand() % 10 - 10) / 10.0;
+						}
+						else
+						{
+							soundFFT.styk_hv = 0;
+							soundFFT.styk_nos = 0;
+						}
+
+						if (router >= metersToSlitBack)
+						{
+							soundFFT.styk_l = (rand() % 10 + 1) / 10.0;
+							soundFFT.styk_r = soundFFT.styk_l + (rand() % 10 - 10) / 100.0;
+							metersToSlitBack = metersToSlitFront + 1.5;
+						}
+						else
+						{
+							soundFFT.styk_l = 0;
+							soundFFT.styk_r = 0;
+						}
+					}
+				}
+
 				//cout замедл€ет программу (в 7 раз 0.002 -> 0.014) использовать с осторожностью
 				/*cout.precision(3);
 				cout << fixed
@@ -1111,6 +1143,7 @@ int main(int argc, char* argv[])
 						break;
 					}
 
+					//TODO: подготовить тесты дл€ всех бортов, и организовать файлы
 					if (helicopter.modelName == "mi_8_mtv5")
 					{
 						if (hovering)
@@ -1369,7 +1402,6 @@ int main(int argc, char* argv[])
 				{
 					soundFFT.v_surf_x = getParameterFromVector(vectorPar[6], offsetTest);//скорость
 					soundFFT.v_atm_x = 0;
-					spd = soundFFT.v_surf_x;
 					soundFFT.obj_hv = 0.5;
 					soundFFT.obj_nos = 0.5;
 					soundFFT.obj_l = 0.75;
@@ -1379,7 +1411,6 @@ int main(int argc, char* argv[])
 				{
 					soundFFT.v_atm_x = getParameterFromVector(vectorPar[6], offsetTest);//скорость
 					soundFFT.v_surf_x = 0;
-					spd = soundFFT.v_atm_x;
 					soundFFT.obj_hv = 0;
 					soundFFT.obj_nos = 0;
 					soundFFT.obj_l = 0;
@@ -1422,7 +1453,15 @@ int main(int argc, char* argv[])
 			soundFFT.time = currentTime;
 		}
 
-		printf(" DT__: %.3lf\tENG1: %.3f\tENG2: %.3f\tRED_: %.3f\tVSU: %.3f\tSPD: %.3lf\t\r",deltaTime, soundFFT.eng1_obor,soundFFT.eng2_obor, soundFFT.reduktor_gl_obor, soundFFT.vsu_obor, spd);
+		if (soundFFT.hight == 0)
+		{
+			spd = soundFFT.v_surf_x;
+		}
+		else
+		{
+			spd = soundFFT.v_atm_x;
+		}
+		printf(" DT__: %.3lf\tENG1: %.3f\tENG2: %.3f\tRED_: %.3f\tVSU: %.3f\tSPD: %.3lf\tSFL: %.3f\tSFR: %.3f\tSBL: %.3f\tSBR: %.3f\tROU: %.3lf\tMTL: %.3lf\t\r", deltaTime, soundFFT.eng1_obor, soundFFT.eng2_obor, soundFFT.reduktor_gl_obor, soundFFT.vsu_obor, spd ,soundFFT.styk_nos, soundFFT.styk_hv, soundFFT.styk_l, soundFFT.styk_r, router, metersToSlitFront);
 
 		if (rt.pExchOK)
 		{
