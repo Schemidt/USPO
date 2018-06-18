@@ -164,11 +164,24 @@ int main(int argc, char* argv[])
 	double router = 0;
 	double metersToSlitFront = 3;
 	double metersToSlitBack = 3;
+	double avrDeltaTime = 0;
+	vector<double> adt;
 
 	while (true)
 	{
 		double deltaTime = rt.timeS - currentTime;
 		currentTime = rt.timeS;
+
+		avrDeltaTime = 0;
+		adt.push_back(deltaTime);
+		if (adt.size() > 500)
+		{
+			adt.erase(adt.begin());
+		}
+		for (auto tg : adt)
+		{
+			avrDeltaTime += tg / adt.size();
+		}
 
 		// од дл€ автономных тестов - без модели вертолета 
 		if (standAlone)
@@ -1499,7 +1512,7 @@ int main(int argc, char* argv[])
 		{
 			spd = soundFFT.v_atm_x;
 		}
-		printf(" DT__: %.3lf\tENG1: %.3f\tENG2: %.3f\tRED_: %.3f\tVSU: %.3f\tSPD: %.3lf\tSFL: %.3f\tSFR: %.3f\tSBL: %.3f\tSBR: %.3f\tROU: %.3lf\tMTL: %.3lf\t\r", deltaTime, soundFFT.eng1_obor, soundFFT.eng2_obor, soundFFT.reduktor_gl_obor, soundFFT.vsu_obor, spd ,soundFFT.styk_nos, soundFFT.styk_hv, soundFFT.styk_l, soundFFT.styk_r, router, metersToSlitFront);
+		printf(" DT__: %.4lf\tENG1: %.3f\tENG2: %.3f\tRED_: %.3f\tVSU: %.3f\tSPD: %.3lf\tSTP: %.3f\tTNG: %.3f\tVLY: %.3f\tHIG: %.3f\tROU: %.3lf\tMTL: %.3lf\t\r", avrDeltaTime, soundFFT.eng1_obor, soundFFT.eng2_obor, soundFFT.reduktor_gl_obor, soundFFT.vsu_obor, spd, soundFFT.step, soundFFT.tangaz, soundFFT.vy, soundFFT.hight, router, metersToSlitFront);
 
 	}
 
