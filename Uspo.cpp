@@ -170,15 +170,11 @@ int main(int argc, char* argv[])
 		double deltaTime = rt.timeS - currentTime;
 		currentTime = rt.timeS;
 
-		if (!rt.pExchOK)
-		{
-			//Функция обработки нажатий клавиш	  
-			kbHit();
-		}
-
 		//Код для автономных тестов - без модели вертолета 
 		if (standAlone)
 		{
+			//Функция обработки нажатий клавиш	  
+			kbHit();
 			//Блок проверки запуска (и холодной прокрутки) двигателей, редуктора, всу
 			if (!test)
 			{
@@ -1480,6 +1476,19 @@ int main(int argc, char* argv[])
 			}
 			soundFFT.time = currentTime;
 		}
+		else
+		{
+			//Данные успешно приянты
+			if (rt.pExchOK)
+			{
+				rt.pExchOK = 0;
+			}
+			//Обмен от модели прекратился
+			else
+			{
+				soundFFT.p_model_stop = 1;
+			}
+		}
 
 		if (soundFFT.hight == 0)
 		{
@@ -1491,10 +1500,6 @@ int main(int argc, char* argv[])
 		}
 		printf(" DT__: %.3lf\tENG1: %.3f\tENG2: %.3f\tRED_: %.3f\tVSU: %.3f\tSPD: %.3lf\tSFL: %.3f\tSFR: %.3f\tSBL: %.3f\tSBR: %.3f\tROU: %.3lf\tMTL: %.3lf\t\r", deltaTime, soundFFT.eng1_obor, soundFFT.eng2_obor, soundFFT.reduktor_gl_obor, soundFFT.vsu_obor, spd ,soundFFT.styk_nos, soundFFT.styk_hv, soundFFT.styk_l, soundFFT.styk_r, router, metersToSlitFront);
 
-		if (rt.pExchOK)
-		{
-			rt.pExchOK = 0;
-		}
 	}
 
 	StopRealTime();
