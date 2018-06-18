@@ -1069,38 +1069,7 @@ int main(int argc, char* argv[])
 					}
 				}
 
-				//Стук плит
-				if (soundFFT.hight == 0)
-				{
-					router += soundFFT.v_surf_x * deltaTime;
-					if (router != 0)
-					{
-						if (router >= metersToSlitFront)
-						{
-							soundFFT.styk_hv = (rand() % 10 + 1) / 10.0;
-							soundFFT.styk_nos = soundFFT.styk_hv + (rand() % 10 - 10) / 100.0;
-							metersToSlitBack = metersToSlitFront + 1.5;
-							metersToSlitFront = router + 3 + (rand() % 10 - 10) / 10.0;
-						}
-						else
-						{
-							soundFFT.styk_hv = 0;
-							soundFFT.styk_nos = 0;
-						}
-
-						if (router >= metersToSlitBack)
-						{
-							soundFFT.styk_l = (rand() % 10 + 1) / 10.0;
-							soundFFT.styk_r = soundFFT.styk_l + (rand() % 10 - 10) / 100.0;
-							metersToSlitBack = metersToSlitFront + 1.5;
-						}
-						else
-						{
-							soundFFT.styk_l = 0;
-							soundFFT.styk_r = 0;
-						}
-					}
-				}
+				
 
 				//cout замедляет программу (в 7 раз 0.002 -> 0.014) использовать с осторожностью
 				/*cout.precision(3);
@@ -1436,24 +1405,20 @@ int main(int argc, char* argv[])
 				soundFFT.step = getParameterFromVector(vectorPar[5], offsetTest);//шаг
 				soundFFT.hight = getParameterFromVector(vectorPar[3], offsetTest);//шаг
 				soundFFT.hight = (soundFFT.hight < 0) ? 0 : soundFFT.hight;
-				if (soundFFT.hight == 0)
+				if (!soundFFT.hight)
 				{
 					soundFFT.v_surf_x = getParameterFromVector(vectorPar[6], offsetTest);//скорость
 					soundFFT.v_atm_x = 0;
-					soundFFT.obj_hv = 0.5;
-					soundFFT.obj_nos = 0.5;
-					soundFFT.obj_l = 0.75;
-					soundFFT.obj_r = 0.75;
 				}
 				else
 				{
 					soundFFT.v_atm_x = getParameterFromVector(vectorPar[6], offsetTest);//скорость
 					soundFFT.v_surf_x = 0;
-					soundFFT.obj_hv = 0;
-					soundFFT.obj_nos = 0;
-					soundFFT.obj_l = 0;
-					soundFFT.obj_r = 0;
 				}
+				soundFFT.obj_hv = getParameterFromVector(vector<point>{ { 0, 0.5 }, { 0.5, 0 }}, soundFFT.hight);
+				soundFFT.obj_nos = getParameterFromVector(vector<point>{ { 0, 0.5 }, { 0.5, 0 }}, soundFFT.hight);
+				soundFFT.obj_l = getParameterFromVector(vector<point>{ { 0, 0.75 }, { 0.5, 0 }}, soundFFT.hight);
+				soundFFT.obj_r = getParameterFromVector(vector<point>{ { 0, 0.75 }, { 0.5, 0 }}, soundFFT.hight);
 				soundFFT.p_eng1_lkorr = 0;//Правая - левая коррекция
 				soundFFT.p_eng2_lkorr = 0;
 				soundFFT.p_eng1_rkorr = 1;
@@ -1485,6 +1450,39 @@ int main(int argc, char* argv[])
 						StopNetVoice();
 						return 0;
 						break;
+					}
+				}
+			}
+
+			//Стук плит
+			if (soundFFT.hight == 0)
+			{
+				router += soundFFT.v_surf_x * deltaTime;
+				if (router != 0)
+				{
+					if (router >= metersToSlitFront)
+					{
+						soundFFT.styk_hv = (rand() % 10 + 1) / 10.0;
+						soundFFT.styk_nos = soundFFT.styk_hv + (rand() % 10 - 10) / 100.0;
+						metersToSlitBack = metersToSlitFront + 1.5;
+						metersToSlitFront = router + 3 + (rand() % 10 - 10) / 10.0;
+					}
+					else
+					{
+						soundFFT.styk_hv = 0;
+						soundFFT.styk_nos = 0;
+					}
+
+					if (router >= metersToSlitBack)
+					{
+						soundFFT.styk_l = (rand() % 10 + 1) / 10.0;
+						soundFFT.styk_r = soundFFT.styk_l + (rand() % 10 - 10) / 100.0;
+						metersToSlitBack = metersToSlitFront + 1.5;
+					}
+					else
+					{
+						soundFFT.styk_l = 0;
+						soundFFT.styk_r = 0;
 					}
 				}
 			}
