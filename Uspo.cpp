@@ -1959,12 +1959,10 @@ double getParameterFromFile(string filename, double offset)
 	return getParameterFromVector(vect, offset);
 }
 
-double getOffset(string filename, double parameter)
+vector<point> getVectorFromFile(string filename)
 {
-	double new_offset = 0;
-	double turn = 0;
+	vector<point> vect;
 
-	vector <double> time, value;
 	//данные в базе должны храниться в строках парами, по паре в каждой строке (не больше)
 	ifstream base(filename);
 	while (!base.eof())
@@ -1974,112 +1972,144 @@ double getOffset(string filename, double parameter)
 		double v = 0;
 		getline(base, str);
 		sscanf(str.c_str(), "%lf %lf", &t, &v);
-		time.push_back(t);
-		value.push_back(v);
+		vect.push_back({ t,v });
 	}
 	base.close();
-	int n = time.size();
 
-	if (parameter < 0)
-		turn = 0;
-	else
-		turn = parameter;
+	return vect;
+}
 
-	double x, a0, a1, a2;
+double getOffset(string filename, double offset)
+{
+	vector<point> value = getVectorFromFile(filename);
 
 	point p1, p2, p3;
-
-	if (value[0] <= value[n - 1])
+	double x, a0, a1, a2;
+	int n = value.size();
+	//если вектор из 1ой точки - возвращаем "y" этой точки
+	if (n == 1)
 	{
-		for (int i = 0; i < n; i++)
-		{
-			if (turn < value[0])
-			{
-				new_offset = time[0];//достаем обороты из базы
-				break;
-			}
-			if (turn == value[i])//реальная отметка времени совпала с отметкой из бд
-			{
-				new_offset = time[i];//достаем обороты из базы
-				break;
-			}
-			if (turn > value[n - 1])//отметка не совпала с базой
-			{
-				new_offset = time[n - 1];//достаем обороты из базы
-				break;
-			}
-			if (turn > value[i] && turn < value[i + 1])//отметка не совпала с базой
-			{
-
-				//квадратичная интерполяция
-				if (i + 2 == n || i + 1 == n)
-				{
-					if (i + 2 == n)
-					{
-						p1.x = value[i - 1]; p1.y = time[i - 1]; p2.x = value[i]; p2.y = time[i]; p3.x = value[i + 1]; p3.y = time[i + 1];
-					}
-					if (i + 1 == n)
-					{
-						p1.x = value[i - 2]; p1.y = time[i - 2]; p2.x = value[i - 1]; p2.y = time[i - 1]; p3.x = value[i]; p3.y = time[i];
-					}
-				}
-				else
-				{
-					p1.x = value[i]; p1.y = time[i]; p2.x = value[i + 1]; p2.y = time[i + 1]; p3.x = value[i + 2]; p3.y = time[i + 2];
-				}
-
-				new_offset = interpolation(p1, p2, p3, turn);
-			}
-
-		}
-
+		return value[0].y;
 	}
+	else if (n == 2)
+	{
+		p1 = value[0];
+		p2 = value[1];
+		p3 = p2;
+	}
+	else if (n == 3)
+	{
+		p1 = value[0];
+		p2 = value[1];
+		p3 = value[2];
+	}
+	//если вектор состоит из малого числа значений - перебираем их
+	else if (n < 8)
+	{
+		if (value[0].x <= value[n - 1].x)
+		{
+			for (int i = 0; i < n; i++)
+			{
+				if (offset < value[0].x)
+				{
+					return value[i].y;//достаем обороты из базы
+				}
+				if (offset == value[i].x)//реальная отметка времени совпала с отметкой из бд
+				{
+					return value[i].y;//достаем обороты из базы
+				}
+				if (offset > value[n - 1].x)//отметка не совпала с базой
+				{
+					return value[n - 1].y;//достаем обороты из базы
+				}
+				if (offset > value[i].x && offset < value[i + 1].x)//отметка не совпала с базой
+				{
+					if (value.size() > 2)
+					{
+						//Выбираем 3 точки (вариант -1 0 +1)
+						if (i - 1 == -1)
+						{
+							p1 = value[i]; p2 = value[i + 1]; p3 = value[i + 2];
+						}
+						else if (i + 1 == value.size())
+						{
+							p1 = value[i - 2]; p2 = value[i - 1]; p3 = value[i];
+						}
+						else
+						{
+							p1 = value[i - 1]; p2 = value[i]; p3 = value[i + 1];
+						}
+					}
+					else
+					{
+						return interpolation(value[0], value[1], offset);
+					}
+				}
+			}
+		}
+		else
+		{
+			for (int i = 0; i < n; i++)
+			{
+				if (offset > value[0].x)
+				{
+					return value[0].y;//достаем обороты из базы
+				}
+				if (offset == value[i].x)//реальная отметка времени совпала с отметкой из бд
+				{
+					return value[i].y;//достаем обороты из базы
+				}
+				if (offset < value[n - 1].x)//отметка не совпала с базой
+				{
+					return value[n - 1].y;//достаем обороты из базы
+				}
+				if (offset < value[i].x && offset > value[i + 1].x)//отметка не совпала с базой
+				{
+					if (value.size() > 2)
+					{
+						//Выбираем 3 точки (вариант -1 0 +1)
+						if (i - 1 == -1)
+						{
+							p1 = value[i]; p2 = value[i + 1]; p3 = value[i + 2];
+						}
+						else if (i + 1 == value.size())
+						{
+							p1 = value[i - 2]; p2 = value[i - 1]; p3 = value[i];
+						}
+						else
+						{
+							p1 = value[i - 1]; p2 = value[i]; p3 = value[i + 1];
+						}
+					}
+					else
+					{
+						return interpolation(value[0], value[1], offset);
+					}
+				}
+			}
+		}
+	}
+	//если вектор длинный и сортирован! (вектора должны быть подготовлены заранее) - используем бинарный поиск
+	//TODO: алгоритм сортировки
 	else
 	{
-		for (int i = 0; i < n; i++)
+		int num = binSer(value, offset);
+		//Выбираем 3 точки (вариант -1 0 +1)
+		if (num - 1 == -1)
 		{
-			if (turn > value[0])
-			{
-				new_offset = time[0];//достаем обороты из базы
-				break;
-			}
-			if (turn == value[i])//реальная отметка времени совпала с отметкой из бд
-			{
-				new_offset = time[i];//достаем обороты из базы
-				break;
-			}
-			if (turn < value[n - 1])//отметка не совпала с базой
-			{
-				new_offset = time[n - 1];//достаем обороты из базы
-				break;
-			}
-			if (turn < value[i] && turn > value[i + 1])//отметка не совпала с базой
-			{
-
-				//квадратичная интерполяция
-				if (i + 2 == n || i + 1 == n)
-				{
-					if (i + 2 == n)
-					{
-						p1.x = value[i - 1]; p1.y = time[i - 1]; p2.x = value[i]; p2.y = time[i]; p3.x = value[i + 1]; p3.y = time[i + 1];
-					}
-					if (i + 1 == n)
-					{
-						p1.x = value[i - 2]; p1.y = time[i - 2]; p2.x = value[i - 1]; p2.y = time[i - 1]; p3.x = value[i]; p3.y = time[i];
-					}
-				}
-				else
-				{
-					p1.x = value[i]; p1.y = time[i]; p2.x = value[i + 1]; p2.y = time[i + 1]; p3.x = value[i + 2]; p3.y = time[i + 2];
-				}
-
-				new_offset = interpolation(p1, p2, p3, turn);
-			}
-
+			p1 = value[num]; p2 = value[num + 1]; p3 = value[num + 2];
+		}
+		else if (num + 1 == value.size())
+		{
+			p1 = value[num - 2]; p2 = value[num - 1]; p3 = value[num];
+		}
+		else
+		{
+			p1 = value[num - 1]; p2 = value[num]; p3 = value[num + 1];
 		}
 	}
 
-	return (new_offset <= 0) ? 0 : new_offset;
+	return interpolation(p1, p2, p3, offset);
 }
 
 double getParameterFromVector(vector<point> &value, double offset)

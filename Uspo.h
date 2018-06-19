@@ -176,10 +176,13 @@ double interpolation(point p1, point p2, double x);
 
 double interpolation(point p1, point p2, point p3, double x);
 
-double getOffset(string filename, double parameter);
+double getOffset(string filename, double offset);
 
 double getParameterFromFile(string filename, double offset);
 
 double getParameterFromVector(vector<point> &value, double offset);
+
+//
+vector <point> getVectorFromFile(string filename);
 
 int binSer(vector<point> &points, double offset);
