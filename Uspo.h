@@ -140,22 +140,41 @@ extern SOUNDFFT soundFFT;
 
 #endif
 
+/*!
+\brief Класс "точка"
+\details Определяет класс точки
+*/
 class point {
 public:
-	double x;
-	double y;
+	double x = 0;//Абсцисса
+	double y = 0;//Ордината
 
 	point()
 	{
-		x = 0;
-		y = 0;
+
 	}
 
-	point(double x, double y)
+	point(double xi, double yi)
 	{
-		this->x = x;
-		this->y = y;
+		x = xi;
+		y = yi;
 	}
+
+	//!<Меняет x и y местами
+	point swap()
+	{
+		double _x;
+		double _y;
+
+		_x = y;
+		_y = x;
+		y = _y;
+		x = _x;
+
+		return *this;
+	}
+
+	point& operator =(const point &copy);
 };
 
 class testChunk
@@ -176,7 +195,7 @@ double interpolation(point p1, point p2, double x);
 
 double interpolation(point p1, point p2, point p3, double x);
 
-double getOffset(string filename, double offset);
+double getOffset(string filename, double parameter);
 
 double getParameterFromFile(string filename, double offset);
 

@@ -1899,7 +1899,14 @@ double interpolation(point p1, point p2, double x)
 		return p1.y;
 	}
 
-	return	p1.y + ((p2.y - p1.y) / (p2.x - p1.x))*(x - p1.x);
+	if ((p2.x - p1.x) == 0)
+	{
+		return p1.y;
+	}
+	else
+	{
+		return	p1.y + ((p2.y - p1.y) / (p2.x - p1.x))*(x - p1.x);
+	}
 }
 
 double interpolation(point p1, point p2, point p3, double x)
@@ -1979,9 +1986,14 @@ vector<point> getVectorFromFile(string filename)
 	return vect;
 }
 
-double getOffset(string filename, double offset)
+double getOffset(string filename, double parameter)
 {
 	vector<point> value = getVectorFromFile(filename);
+
+	for (auto &swp : value)
+	{
+		swp.swap();
+	}
 
 	point p1, p2, p3;
 	double x, a0, a1, a2;
@@ -2010,19 +2022,19 @@ double getOffset(string filename, double offset)
 		{
 			for (int i = 0; i < n; i++)
 			{
-				if (offset < value[0].x)
+				if (parameter < value[0].x)
 				{
 					return value[i].y;//достаем обороты из базы
 				}
-				if (offset == value[i].x)//реальная отметка времени совпала с отметкой из бд
+				if (parameter == value[i].x)//реальная отметка времени совпала с отметкой из бд
 				{
 					return value[i].y;//достаем обороты из базы
 				}
-				if (offset > value[n - 1].x)//отметка не совпала с базой
+				if (parameter > value[n - 1].x)//отметка не совпала с базой
 				{
 					return value[n - 1].y;//достаем обороты из базы
 				}
-				if (offset > value[i].x && offset < value[i + 1].x)//отметка не совпала с базой
+				if (parameter > value[i].x && parameter < value[i + 1].x)//отметка не совпала с базой
 				{
 					if (value.size() > 2)
 					{
@@ -2042,7 +2054,7 @@ double getOffset(string filename, double offset)
 					}
 					else
 					{
-						return interpolation(value[0], value[1], offset);
+						return interpolation(value[0], value[1], parameter);
 					}
 				}
 			}
@@ -2051,19 +2063,19 @@ double getOffset(string filename, double offset)
 		{
 			for (int i = 0; i < n; i++)
 			{
-				if (offset > value[0].x)
+				if (parameter > value[0].x)
 				{
 					return value[0].y;//достаем обороты из базы
 				}
-				if (offset == value[i].x)//реальная отметка времени совпала с отметкой из бд
+				if (parameter == value[i].x)//реальная отметка времени совпала с отметкой из бд
 				{
 					return value[i].y;//достаем обороты из базы
 				}
-				if (offset < value[n - 1].x)//отметка не совпала с базой
+				if (parameter < value[n - 1].x)//отметка не совпала с базой
 				{
 					return value[n - 1].y;//достаем обороты из базы
 				}
-				if (offset < value[i].x && offset > value[i + 1].x)//отметка не совпала с базой
+				if (parameter < value[i].x && parameter > value[i + 1].x)//отметка не совпала с базой
 				{
 					if (value.size() > 2)
 					{
@@ -2083,7 +2095,7 @@ double getOffset(string filename, double offset)
 					}
 					else
 					{
-						return interpolation(value[0], value[1], offset);
+						return interpolation(value[0], value[1], parameter);
 					}
 				}
 			}
@@ -2093,7 +2105,7 @@ double getOffset(string filename, double offset)
 	//TODO: алгоритм сортировки
 	else
 	{
-		int num = binSer(value, offset);
+		int num = binSer(value, parameter);
 		//Выбираем 3 точки (вариант -1 0 +1)
 		if (num - 1 == -1)
 		{
@@ -2109,7 +2121,7 @@ double getOffset(string filename, double offset)
 		}
 	}
 
-	return interpolation(p1, p2, p3, offset);
+	return interpolation(p1, p2, p3, parameter);
 }
 
 double getParameterFromVector(vector<point> &value, double offset)
@@ -2290,3 +2302,10 @@ int binSer(vector<point> &points, double offset)
 	return n;
 }
 
+point & point::operator=(const point & copy)
+{
+	this->x = copy.x;
+	this->y = copy.y;
+
+	return *this;
+}
