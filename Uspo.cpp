@@ -1316,140 +1316,150 @@ int main(int argc, char* argv[])
 					}
 
 					int testNumber;
+					printf(" ");
 					cin >> testNumber;//считываем буфер ввода
 
-					if (testNumber == 0)
+					if (testNumber <= tests.size())
 					{
+						if (testNumber == 0)
+						{
+							system("cls");
+							printf(" Enter range (in seconds): [start] [end]\n ");
+							cin >> testTimeStart;
+							cin >> testTimeEnd;
+						}
+						else
+						{
+							testTimeStart = tests[testNumber - 1].start;
+							testTimeEnd = tests[testNumber - 1].end;
+						}
+						offsetTest = testTimeStart;
+						soundFFT.time = 0;
+						rt.timeS = 0;
+						currentTime = 0;
+						deltaTime = 0;
 						system("cls");
-						printf(" Enter range (in seconds): [start] [end]\n ");
-						cin >> testTimeStart;
-						cin >> testTimeEnd;
+						timeReset = 1;
 					}
 					else
 					{
-						testTimeStart = tests[testNumber - 1].start;
-						testTimeEnd = tests[testNumber - 1].end;
+						printf(" You set wrong number of test!\n ");
+						Sleep(500);
+						timeReset = 0;
 					}
-
-					offsetTest = testTimeStart;
-					soundFFT.time = 0;
-					rt.timeS = 0;
-					currentTime = 0;
-					deltaTime = 0;
-					system("cls");
-					timeReset = 1;
-				}
-
-				if (!vectload)
-				{
-					string filename;
-					if (hovering)
-					{
-						filename = "test/" + helicopter.modelName + "/Hovering/test.txt";
-					}
-					else if (skv)
-					{
-						filename = "test/" + helicopter.modelName + "/Skv/test.txt";
-					}
-					else
-					{
-						filename = "test/" + helicopter.modelName + "/Standart/test.txt";
-					}
-
-					ifstream base(filename);
-					while (!base.eof())
-					{
-						string str;
-						double timeCol = 0;
-						double HighCol = 0;
-						double tangazCol = 0;
-						double VelocityCol = 0;
-						double StepCol = 0;
-						double Eng1Col = 0;
-						double Eng2Col = 0;
-						double RedCol = 0;
-						getline(base, str);
-						//T H TNG VELX STEP ENG1 ENG2 RED
-						sscanf(str.c_str(), "%lf %lf %lf %lf %lf %lf %lf %lf", &timeCol, &HighCol, &tangazCol, &VelocityCol, &StepCol, &Eng1Col, &Eng2Col, &RedCol);
-						vectorPar[0].push_back({ timeCol,Eng1Col });
-						vectorPar[1].push_back({ timeCol,Eng2Col });
-						vectorPar[2].push_back({ timeCol,RedCol });
-						vectorPar[3].push_back({ timeCol,HighCol });
-						vectorPar[4].push_back({ timeCol,tangazCol });
-						vectorPar[5].push_back({ timeCol,StepCol });
-						vectorPar[6].push_back({ timeCol,VelocityCol });
-					}
-					base.close();
-
-					//Получаем вектор вертикальной скорости из высоты
-					vectorVy = vectorPar[3];
-					for (int i = 1; i < vectorPar[3].size(); i++)
-					{
-						vectorVy[i].y = vectorPar[3][i].y - vectorPar[3][i - 1].y;
-					}
-
-					vectload = 1;
-				}
-
-				//Признак работы теста
-				soundFFT.p_model_stop = 0;
-
-
-
-				offsetTest += deltaTime;
-				soundFFT.eng1_obor = getParameterFromVector(vectorPar[0], offsetTest);//дв1
-				soundFFT.eng2_obor = getParameterFromVector(vectorPar[1], offsetTest);//дв2
-				soundFFT.reduktor_gl_obor = getParameterFromVector(vectorPar[2], offsetTest);//редуктор
-				soundFFT.vy = getParameterFromVector(vectorVy, offsetTest);//высота
-				soundFFT.tangaz = getParameterFromVector(vectorPar[4], offsetTest);//тангаж
-				soundFFT.step = getParameterFromVector(vectorPar[5], offsetTest);//шаг
-				soundFFT.hight = getParameterFromVector(vectorPar[3], offsetTest);//шаг
-				soundFFT.hight = (soundFFT.hight < 0) ? 0 : soundFFT.hight;
-				if (!soundFFT.hight)
-				{
-					soundFFT.v_surf_x = getParameterFromVector(vectorPar[6], offsetTest);//скорость
-					soundFFT.v_atm_x = 0;
 				}
 				else
 				{
-					soundFFT.v_atm_x = getParameterFromVector(vectorPar[6], offsetTest);//скорость
-					soundFFT.v_surf_x = 0;
-				}
-				soundFFT.obj_hv = getParameterFromVector(vector<point>{ { 0, 0.5 }, { 0.5, 0 }}, soundFFT.hight);
-				soundFFT.obj_nos = getParameterFromVector(vector<point>{ { 0, 0.5 }, { 0.5, 0 }}, soundFFT.hight);
-				soundFFT.obj_l = getParameterFromVector(vector<point>{ { 0, 0.75 }, { 0.5, 0 }}, soundFFT.hight);
-				soundFFT.obj_r = getParameterFromVector(vector<point>{ { 0, 0.75 }, { 0.5, 0 }}, soundFFT.hight);
-				soundFFT.p_eng1_lkorr = 0;//Правая - левая коррекция
-				soundFFT.p_eng2_lkorr = 0;
-				soundFFT.p_eng1_rkorr = 1;
-				soundFFT.p_eng2_rkorr = 1;
-				soundFFT.p_eng1_ostanov = 0;
-				soundFFT.p_eng2_ostanov = 0;
-				soundFFT.p_eng1_zap = 0;
-				soundFFT.p_eng2_zap = 0;
-
-
-				//Тест закончился
-				if (soundFFT.time + testTimeStart > testTimeEnd)
-				{
-					//Признак работы теста
-					soundFFT.p_model_stop = 1;
-					system("cls");
-					cout << "Test ended..." << endl;
-					cout << "Continue? [y/n]" << endl;
-					string Selector;
-					while (!std::regex_match(Selector, regex("[yn]")))//повторяем ввод пока не будет цифра от 1 до 4
-						Selector = getch();//считываем буфер ввода
-					switch (Selector[0])
+					if (!vectload)
 					{
-					case 'y':
-						timeReset = 0;
-						break;
-					case 'n':
-						StopRealTime();
-						StopNetVoice();
-						return 0;
-						break;
+						string filename;
+						if (hovering)
+						{
+							filename = "test/" + helicopter.modelName + "/Hovering/test.txt";
+						}
+						else if (skv)
+						{
+							filename = "test/" + helicopter.modelName + "/Skv/test.txt";
+						}
+						else
+						{
+							filename = "test/" + helicopter.modelName + "/Standart/test.txt";
+						}
+
+						ifstream base(filename);
+						while (!base.eof())
+						{
+							string str;
+							double timeCol = 0;
+							double HighCol = 0;
+							double tangazCol = 0;
+							double VelocityCol = 0;
+							double StepCol = 0;
+							double Eng1Col = 0;
+							double Eng2Col = 0;
+							double RedCol = 0;
+							getline(base, str);
+							//T H TNG VELX STEP ENG1 ENG2 RED
+							sscanf(str.c_str(), "%lf %lf %lf %lf %lf %lf %lf %lf", &timeCol, &HighCol, &tangazCol, &VelocityCol, &StepCol, &Eng1Col, &Eng2Col, &RedCol);
+							vectorPar[0].push_back({ timeCol,Eng1Col });
+							vectorPar[1].push_back({ timeCol,Eng2Col });
+							vectorPar[2].push_back({ timeCol,RedCol });
+							vectorPar[3].push_back({ timeCol,HighCol });
+							vectorPar[4].push_back({ timeCol,tangazCol });
+							vectorPar[5].push_back({ timeCol,StepCol });
+							vectorPar[6].push_back({ timeCol,VelocityCol });
+						}
+						base.close();
+
+						//Получаем вектор вертикальной скорости из высоты
+						vectorVy = vectorPar[3];
+						for (int i = 1; i < vectorPar[3].size(); i++)
+						{
+							vectorVy[i].y = vectorPar[3][i].y - vectorPar[3][i - 1].y;
+						}
+
+						vectload = 1;
+					}
+					else
+					{
+						//Признак работы теста
+						soundFFT.p_model_stop = 0;
+
+						offsetTest += deltaTime;
+						soundFFT.eng1_obor = getParameterFromVector(vectorPar[0], offsetTest);//дв1
+						soundFFT.eng2_obor = getParameterFromVector(vectorPar[1], offsetTest);//дв2
+						soundFFT.reduktor_gl_obor = getParameterFromVector(vectorPar[2], offsetTest);//редуктор
+						soundFFT.vy = getParameterFromVector(vectorVy, offsetTest);//высота
+						soundFFT.tangaz = getParameterFromVector(vectorPar[4], offsetTest);//тангаж
+						soundFFT.step = getParameterFromVector(vectorPar[5], offsetTest);//шаг
+						soundFFT.hight = getParameterFromVector(vectorPar[3], offsetTest);//шаг
+						soundFFT.hight = (soundFFT.hight < 0) ? 0 : soundFFT.hight;
+						if (!soundFFT.hight)
+						{
+							soundFFT.v_surf_x = getParameterFromVector(vectorPar[6], offsetTest);//скорость
+							soundFFT.v_atm_x = 0;
+						}
+						else
+						{
+							soundFFT.v_atm_x = getParameterFromVector(vectorPar[6], offsetTest);//скорость
+							soundFFT.v_surf_x = 0;
+						}
+						soundFFT.obj_hv = getParameterFromVector(vector<point>{ { 0, 0.5 }, { 0.5, 0 }}, soundFFT.hight);
+						soundFFT.obj_nos = getParameterFromVector(vector<point>{ { 0, 0.5 }, { 0.5, 0 }}, soundFFT.hight);
+						soundFFT.obj_l = getParameterFromVector(vector<point>{ { 0, 0.75 }, { 0.5, 0 }}, soundFFT.hight);
+						soundFFT.obj_r = getParameterFromVector(vector<point>{ { 0, 0.75 }, { 0.5, 0 }}, soundFFT.hight);
+						soundFFT.p_eng1_lkorr = 0;//Правая - левая коррекция
+						soundFFT.p_eng2_lkorr = 0;
+						soundFFT.p_eng1_rkorr = 1;
+						soundFFT.p_eng2_rkorr = 1;
+						soundFFT.p_eng1_ostanov = 0;
+						soundFFT.p_eng2_ostanov = 0;
+						soundFFT.p_eng1_zap = 0;
+						soundFFT.p_eng2_zap = 0;
+
+						//Тест закончился
+						if (soundFFT.time + testTimeStart > testTimeEnd)
+						{
+							//Признак работы теста
+							soundFFT.p_model_stop = 1;
+							system("cls");
+							cout << "Test ended..." << endl;
+							cout << "Continue? [y/n]" << endl;
+							string Selector;
+							while (!std::regex_match(Selector, regex("[yn]")))//повторяем ввод пока не будет цифра от 1 до 4
+								Selector = getch();//считываем буфер ввода
+							switch (Selector[0])
+							{
+							case 'y':
+								timeReset = 0;
+								break;
+							case 'n':
+								StopRealTime();
+								StopNetVoice();
+								return 0;
+								break;
+							}
+						}
 					}
 				}
 			}
@@ -2082,34 +2092,130 @@ double getOffset(string filename, double parameter)
 
 double getParameterFromVector(vector<point> &value, double offset)
 {
-	int n = value.size();
 	point p1, p2, p3;
 	double x, a0, a1, a2;
-
-	if (offset < value[0].x)
+	int n = value.size();
+	//если вектор из 1ой точки - возвращаем "y" этой точки
+	if (n == 1)
 	{
-		return value[0].y;//достаем обороты из базы
+		return value[0].y;
 	}
-	else if (offset > value[n - 1].x)//отметка не совпала с базой
+	else if (n == 2)
 	{
-		return value[n - 1].y;//достаем обороты из базы
+		p1 = value[0];
+		p2 = value[1];
+		p3 = p2;
 	}
+	else if (n == 3)
+	{
+		p1 = value[0];
+		p2 = value[1];
+		p3 = value[2];
+	}
+	//если вектор состоит из малого числа значений - перебираем их
+	else if (n < 8)
+	{
+		if (value[0].x <= value[n - 1].x)
+		{
+			for (int i = 0; i < n; i++)
+			{
+				if (offset < value[0].x)
+				{
+					return value[i].y;//достаем обороты из базы
+				}
+				if (offset == value[i].x)//реальная отметка времени совпала с отметкой из бд
+				{
+					return value[i].y;//достаем обороты из базы
+				}
+				if (offset > value[n - 1].x)//отметка не совпала с базой
+				{
+					return value[n - 1].y;//достаем обороты из базы
+				}
+				if (offset > value[i].x && offset < value[i + 1].x)//отметка не совпала с базой
+				{
+					if (value.size() > 2)
+					{
+						//Выбираем 3 точки (вариант -1 0 +1)
+						if (i - 1 == -1)
+						{
+							p1 = value[i]; p2 = value[i + 1]; p3 = value[i + 2];
+						}
+						else if (i + 1 == value.size())
+						{
+							p1 = value[i - 2]; p2 = value[i - 1]; p3 = value[i];
+						}
+						else
+						{
+							p1 = value[i - 1]; p2 = value[i]; p3 = value[i + 1];
+						}
+					}
+					else
+					{
+						return interpolation(value[0], value[1], offset);
+					}
+				}
+			}
+		}
+		else
+		{
+			for (int i = 0; i < n; i++)
+			{
+				if (offset > value[0].x)
+				{
+					return value[0].y;//достаем обороты из базы
+				}
+				if (offset == value[i].x)//реальная отметка времени совпала с отметкой из бд
+				{
+					return value[i].y;//достаем обороты из базы
+				}
+				if (offset < value[n - 1].x)//отметка не совпала с базой
+				{
+					return value[n - 1].y;//достаем обороты из базы
+				}
+				if (offset < value[i].x && offset > value[i + 1].x)//отметка не совпала с базой
+				{
+					if (value.size() > 2)
+					{
+						//Выбираем 3 точки (вариант -1 0 +1)
+						if (i - 1 == -1)
+						{
+							p1 = value[i]; p2 = value[i + 1]; p3 = value[i + 2];
+						}
+						else if (i + 1 == value.size())
+						{
+							p1 = value[i - 2]; p2 = value[i - 1]; p3 = value[i];
+						}
+						else
+						{
+							p1 = value[i - 1]; p2 = value[i]; p3 = value[i + 1];
+						}
+					}
+					else
+					{
+						return interpolation(value[0], value[1], offset);
+					}
+				}
+			}
+		}
+	}
+	//если вектор длинный и сортирован! (вектора должны быть подготовлены заранее) - используем бинарный поиск
+	//TODO: алгоритм сортировки
 	else
 	{
-		n = binSer(value, offset);
-	}
-	//Выбираем 3 точки (вариант -1 0 +1)
-	if (n - 1 == -1)
-	{
-		p1 = value[n]; p2 = value[n + 1]; p3 = value[n + 2];
-	}
-	else if (n + 1 == value.size())
-	{
-		p1 = value[n - 2]; p2 = value[n - 1]; p3 = value[n];
-	}
-	else
-	{
-		p1 = value[n - 1]; p2 = value[n]; p3 = value[n + 1];
+		int num = binSer(value, offset);
+		//Выбираем 3 точки (вариант -1 0 +1)
+		if (num - 1 == -1)
+		{
+			p1 = value[num]; p2 = value[num + 1]; p3 = value[num + 2];
+		}
+		else if (num + 1 == value.size())
+		{
+			p1 = value[num - 2]; p2 = value[num - 1]; p3 = value[num];
+		}
+		else
+		{
+			p1 = value[num - 1]; p2 = value[num]; p3 = value[num + 1];
+		}
 	}
 
 	return interpolation(p1, p2, p3, offset);
