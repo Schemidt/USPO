@@ -182,4 +182,4 @@ double getParameterFromFile(string filename, double offset);
 
 double getParameterFromVector(vector<point> &value, double offset);
 
-int binSer(vector<point> &time, double offset);
+int binSer(vector<point> &points, double offset);

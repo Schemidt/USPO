@@ -1596,16 +1596,12 @@ void kbHit()
 		case 'y':		//Äâ1 çàïóñê
 			eng1hpbl = 0;
 			Eng1On = 1;
-			soundFFT.p_eng1_hp = 0;
-			soundFFT.p_eng1_ostanov = 0;
 			Eng1Off = 0;
 			Eng1Hp = 0;
 			break;
 		case 't':		//Äâ1 hp
 			eng1hpbl = 1;
 			Eng1Hp = 1;
-			soundFFT.p_eng1_zap = 0;
-			soundFFT.p_eng1_ostanov = 0;
 			Eng1On = 0;
 			Eng1Off = 0;
 			break;
@@ -1617,16 +1613,12 @@ void kbHit()
 		case 'g':		//Äâ2 hp
 			eng2hpbl = 1;
 			Eng2Hp = 1;
-			soundFFT.p_eng2_zap = 0;
-			soundFFT.p_eng2_ostanov = 0;
 			Eng2On = 0;
 			Eng2Off = 0;
 			break;
 		case 'h':		//Äâ2 çàïóñê
 			Eng2On = 1;
 			eng2hpbl = 0;
-			soundFFT.p_eng2_hp = 0;
-			soundFFT.p_eng2_ostanov = 0;
 			Eng2Off = 0;
 			Eng2Hp = 0;
 			break;
@@ -2221,26 +2213,49 @@ double getParameterFromVector(vector<point> &value, double offset)
 	return interpolation(p1, p2, p3, offset);
 }
 
-int binSer(vector<point> &time, double offset)
+int binSer(vector<point> &points, double offset)
 {
 	int l = 0;
-	int n = time.size() - 1;
-	int r = n;
-	while (abs(l - r) >= 2)
+	int n = points.size() / 2;
+	int r = points.size() - 1;
+
+	if (points.front().x < points.back().x)
 	{
-		if (offset == time[n].x)
+		while (abs(l - r) >= 2)
 		{
-			return n;
+			if (offset == points[n].x)
+			{
+				return n;
+			}
+			else if (offset < points[n].x)
+			{
+				r = n;
+			}
+			else
+			{
+				l = n;
+			}
+			n = trunc((float)(l + r) / 2.0);
 		}
-		else if (offset < time[n].x)
+	}
+	else
+	{
+		while (abs(l - r) >= 2)
 		{
-			r = n;
+			if (offset == points[n].x)
+			{
+				return n;
+			}
+			else if (offset > points[n].x)
+			{
+				r = n;
+			}
+			else
+			{
+				l = n;
+			}
+			n = trunc((float)(l + r) / 2.0);
 		}
-		else
-		{
-			l = n;
-		}
-		n = (l + r) / 2;
 	}
 	return n;
 }
