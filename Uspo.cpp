@@ -172,6 +172,8 @@ int main(int argc, char* argv[])
 		double deltaTime = rt.timeS - currentTime;
 		currentTime = rt.timeS;
 
+		//deltaTime *= 2;
+
 		avrDeltaTime = 0;
 		adt.push_back(deltaTime);
 		if (adt.size() > 500)
@@ -212,6 +214,9 @@ int main(int argc, char* argv[])
 						if (soundFFT.reduktor_gl_obor < 10)
 							soundFFT.reduktor_gl_obor += 10 / 100. * (deltaTime);
 						soundFFT.reduktor_gl_obor = (soundFFT.reduktor_gl_obor > 25) ? 25 : soundFFT.reduktor_gl_obor;
+
+						soundFFT.p_eng1_ostanov = 0;
+						soundFFT.p_eng1_zap = 0;
 					}
 					if (Eng2Hp)
 					{
@@ -229,40 +234,41 @@ int main(int argc, char* argv[])
 						if (soundFFT.reduktor_gl_obor < 10)
 							soundFFT.reduktor_gl_obor += 10 / 100. * (deltaTime);
 						soundFFT.reduktor_gl_obor = (soundFFT.reduktor_gl_obor > 25) ? 25 : soundFFT.reduktor_gl_obor;
+
+						soundFFT.p_eng2_ostanov = 0;
+						soundFFT.p_eng2_zap = 0;
 					}
 					if (Eng1Off)
 					{
-						if (soundFFT.eng1_obor > 0)
-						{
-							soundFFT.p_eng1_ostanov = 1;
-						}
-						else
+						if (soundFFT.eng1_obor== 0)
 						{
 							eng1hpbl = 0;
-							soundFFT.p_eng1_ostanov = 0;
 						}
 
 						soundFFT.eng1_obor -= 25 / 35. * (deltaTime);
 						soundFFT.eng1_obor = (soundFFT.eng1_obor < 0) ? 0 : soundFFT.eng1_obor;
 						soundFFT.reduktor_gl_obor -= 10 / 50. * (deltaTime);
 						soundFFT.reduktor_gl_obor = (soundFFT.reduktor_gl_obor < 0) ? 0 : soundFFT.reduktor_gl_obor;
+
+						soundFFT.p_eng1_ostanov = 1;
+						soundFFT.p_eng1_hp = 0;
+						soundFFT.p_eng1_zap = 0;
 					}
 					if (Eng2Off)
 					{
-						if (soundFFT.eng2_obor > 0)
-						{
-							soundFFT.p_eng2_ostanov = 1;
-						}
-						else
+						if (soundFFT.eng2_obor == 0)
 						{
 							eng2hpbl = 0;
-							soundFFT.p_eng2_ostanov = 0;
 						}
 
 						soundFFT.eng2_obor -= 25 / 35. * (deltaTime);
 						soundFFT.eng2_obor = (soundFFT.eng2_obor < 0) ? 0 : soundFFT.eng2_obor;
 						soundFFT.reduktor_gl_obor -= 10 / 50. * (deltaTime);
 						soundFFT.reduktor_gl_obor = (soundFFT.reduktor_gl_obor < 0) ? 0 : soundFFT.reduktor_gl_obor;
+
+						soundFFT.p_eng2_hp = 0;
+						soundFFT.p_eng2_zap = 0;
+						soundFFT.p_eng2_ostanov = 1;
 					}
 				}
 				else
@@ -549,7 +555,6 @@ int main(int argc, char* argv[])
 					}
 					else
 					{
-
 						bool oneEng = (((Eng1On & (!Eng2On | Eng2Off))
 							^ (Eng2On & (!Eng1On | Eng1Off)))
 							| (Eng1On & Eng2On & soundFFT.eng1_obor < (helicopter.engTurnoverMg - 15)
@@ -563,7 +568,6 @@ int main(int argc, char* argv[])
 						//Двигатель 1
 						if (Eng1On)
 						{
-
 							if (avtOn)
 							{
 								if (statusEng1 != "eng_mg_avt")
@@ -617,7 +621,6 @@ int main(int argc, char* argv[])
 						//Двигатель 2
 						if (Eng2On)
 						{
-
 							if (avtOn)
 							{
 								if (statusEng2 != "eng_mg_avt")
@@ -795,7 +798,6 @@ int main(int argc, char* argv[])
 					if (Eng1Off)
 					{
 						soundFFT.p_eng1_ostanov = 1;
-
 						soundFFT.p_eng1_zap = 0;
 						soundFFT.p_eng1_hp = 0;
 					}
@@ -815,7 +817,6 @@ int main(int argc, char* argv[])
 					if (Eng2Off)
 					{
 						soundFFT.p_eng2_ostanov = 1;
-
 						soundFFT.p_eng2_zap = 0;
 						soundFFT.p_eng2_hp = 0;
 					}
@@ -835,6 +836,9 @@ int main(int argc, char* argv[])
 					if (soundFFT.vsu_obor < (VSU_MAX_TURN * 0.35))
 						soundFFT.vsu_obor += (VSU_MAX_TURN * 0.35) / helicopter.vsuHptimeOn * (deltaTime);
 					soundFFT.vsu_obor = (soundFFT.vsu_obor > (VSU_MAX_TURN * 0.35)) ? (VSU_MAX_TURN * 0.35) : soundFFT.vsu_obor;
+
+					soundFFT.p_vsu_ostanov = 0;
+					soundFFT.p_vsu_zap = 0;
 				}
 				//Запуск ВСУ
 				if (vsuOn)
@@ -851,6 +855,9 @@ int main(int argc, char* argv[])
 					if (soundFFT.vsu_obor < VSU_MAX_TURN)
 						soundFFT.vsu_obor += VSU_MAX_TURN / helicopter.vsuTimeOn * (deltaTime);
 					soundFFT.vsu_obor = (soundFFT.vsu_obor > VSU_MAX_TURN) ? VSU_MAX_TURN : soundFFT.vsu_obor;
+
+					soundFFT.p_vsu_ostanov = 0;
+					soundFFT.p_vsu_hp = 0;
 				}
 				//Остановка ВСУ
 				if (vsuOff)
@@ -883,6 +890,8 @@ int main(int argc, char* argv[])
 						soundFFT.vsu_obor -= (VSU_MAX_TURN * 0.35) / helicopter.vsuHPtimeOff * (deltaTime);
 						soundFFT.vsu_obor = (soundFFT.vsu_obor < 0) ? 0 : soundFFT.vsu_obor;
 					}
+					soundFFT.p_vsu_zap = 0;
+					soundFFT.p_vsu_hp = 0;
 				}
 
 				double timeSw = 0.5;
@@ -1573,23 +1582,17 @@ void kbHit()
 			break;
 		case 'e':		//ВСУ запуск
 			vsuOn = 1;
-			soundFFT.p_vsu_hp = 0;
-			soundFFT.p_vsu_ostanov = 0;
 			vsuOff = 0;
 			vsuHp = 0;
 			break;
 		case 'r':		//ВСУ останов
 			vsuOff = 1;
-			soundFFT.p_vsu_zap = 0;
-			soundFFT.p_vsu_hp = 0;
 			vsuOn = 0;
 			vsuHp = 0;
 			break;
 		case 'd':		//ВСУ ХП
 			vsuhpbl = 1;
 			vsuHp = 1;
-			soundFFT.p_vsu_zap = 0;
-			soundFFT.p_vsu_ostanov = 0;
 			vsuOff = 0;
 			vsuOn = 0;
 			break;
@@ -1929,10 +1932,21 @@ double interpolation(point p1, point p2, point p3, double x)
 	}
 
 	//если квадратичная интерполяция не работает - берем линейную
-	if (p2.x == p1.x | p3.x == p2.x)
+	if (p1.x == p2.x)
+	{
+		return	interpolation(p1, p3, x);
+	}
+	else if (p1.x == p3.x)
 	{
 		return	interpolation(p1, p2, x);
-
+	}
+	else if (p2.x == p3.x)
+	{
+		return	interpolation(p1, p3, x);
+	}
+	else if (p1.x == p2.x && p2.x == p3.x)
+	{
+		return p3.y;
 	}
 	else
 	{
@@ -1940,6 +1954,7 @@ double interpolation(point p1, point p2, point p3, double x)
 		a2 = ((p3.y - p1.y) / ((p3.x - p1.x)*(p3.x - p2.x))) - ((p2.y - p1.y) / ((p2.x - p1.x)*(p3.x - p2.x)));
 		a1 = ((p2.y - p1.y) / (p2.x - p1.x)) - (a2*(p2.x + p1.x));
 		a0 = p1.y - a1 * p1.x - a2 * p1.x*p1.x;
+
 		return fx = a0 + a1 * x + a2*x*x;
 
 	}
@@ -2147,7 +2162,7 @@ double getParameterFromVector(vector<point> &value, double offset)
 		p3 = value[2];
 	}
 	//если вектор состоит из малого числа значений - перебираем их
-	else if (n < 8)
+	else /*if (n < 8)*/
 	{
 		if (value[0].x <= value[n - 1].x)
 		{
@@ -2234,23 +2249,23 @@ double getParameterFromVector(vector<point> &value, double offset)
 	}
 	//если вектор длинный и сортирован! (вектора должны быть подготовлены заранее) - используем бинарный поиск
 	//TODO: алгоритм сортировки
-	else
-	{
-		int num = binSer(value, offset);
-		//Выбираем 3 точки (вариант -1 0 +1)
-		if (num - 1 == -1)
-		{
-			p1 = value[num]; p2 = value[num + 1]; p3 = value[num + 2];
-		}
-		else if (num + 1 == value.size())
-		{
-			p1 = value[num - 2]; p2 = value[num - 1]; p3 = value[num];
-		}
-		else
-		{
-			p1 = value[num - 1]; p2 = value[num]; p3 = value[num + 1];
-		}
-	}
+	//else
+	//{
+	//	int num = binSer(value, offset);
+	//	//Выбираем 3 точки (вариант -1 0 +1)
+	//	if (num - 1 == -1)
+	//	{
+	//		p1 = value[num]; p2 = value[num + 1]; p3 = value[num + 2];
+	//	}
+	//	else if (num + 1 == value.size())
+	//	{
+	//		p1 = value[num - 2]; p2 = value[num - 1]; p3 = value[num];
+	//	}
+	//	else
+	//	{
+	//		p1 = value[num - 1]; p2 = value[num]; p3 = value[num + 1];
+	//	}
+	//}
 
 	return interpolation(p1, p2, p3, offset);
 }
