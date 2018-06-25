@@ -101,10 +101,10 @@ int main(int argc, char* argv[])
 	helicopter.setPath(helicopter.modelName + "/");
 
 	//Cетевое взаимодействие
-	if (!InitNetVoice((void*)&soundFFT, sizeof(SOUNDFFT)))
+	while (!InitNetVoice((void*)&soundFFT, sizeof(SOUNDFFT)))
 	{
 		cout << "Not InitNetVoice" << endl;
-		return 0;
+		Sleep(500);
 	}
 
 	soundFFT.reduktor_gl_obor = 0;
@@ -1078,8 +1078,6 @@ int main(int argc, char* argv[])
 					}
 				}
 
-
-
 				//cout замедл€ет программу (в 7 раз 0.002 -> 0.014) использовать с осторожностью
 				/*cout.precision(3);
 				cout << fixed
@@ -1509,16 +1507,16 @@ int main(int argc, char* argv[])
 		}
 		else
 		{
-			//ƒанные успешно при€нты
-			if (rt.pExchOK)
-			{
-				rt.pExchOK = 0;
-			}
-			//ќбмен от модели прекратилс€
-			else
-			{
-				soundFFT.p_model_stop = 1;
-			}
+			////ƒанные успешно при€нты
+			//if (rt.pExchOK)
+			//{
+			//	rt.pExchOK = 0;
+			//}
+			////ќбмен от модели прекратилс€
+			//else
+			//{
+			//	soundFFT.p_model_stop = 1;
+			//}
 		}
 
 		if (soundFFT.hight == 0)
@@ -1529,7 +1527,7 @@ int main(int argc, char* argv[])
 		{
 			spd = soundFFT.v_atm_x;
 		}
-		printf(" DT__: %.4lf\tENG1: %.3f\tENG2: %.3f\tRED_: %.3f\tVSU: %.3f\tSPD: %.3lf\tSTP: %.3f\tTNG: %.3f\tVLY: %.3f\tHIG: %.3f\tROU: %.3lf\tMTL: %.3lf\t\r", avrDeltaTime, soundFFT.eng1_obor, soundFFT.eng2_obor, soundFFT.reduktor_gl_obor, soundFFT.vsu_obor, spd, soundFFT.step, soundFFT.tangaz, soundFFT.vy, soundFFT.hight, router, metersToSlitFront);
+		printf(" T___: %.4lf\tDT__: %.4lf\tENG1: %.3f\tENG2: %.3f\tRED_: %.3f\tVSU: %.3f\tSPD: %.3lf\tSTP: %.3f\tTNG: %.3f\tVLY: %.3f\tHIG: %.3f\tROU: %.3lf\tMTL: %.3lf\t\r", currentTime,avrDeltaTime, soundFFT.eng1_obor, soundFFT.eng2_obor, soundFFT.reduktor_gl_obor, soundFFT.vsu_obor, spd, soundFFT.step, soundFFT.tangaz, soundFFT.vy, soundFFT.hight, router, metersToSlitFront);
 
 	}
 
@@ -2031,7 +2029,7 @@ double getOffset(string filename, double parameter)
 		p3 = value[2];
 	}
 	//если вектор состоит из малого числа значений - перебираем их
-	else if (n < 8)
+	else /*if (n < 8)*/
 	{
 		if (value[0].x <= value[n - 1].x)
 		{
@@ -2118,23 +2116,23 @@ double getOffset(string filename, double parameter)
 	}
 	//если вектор длинный и сортирован! (вектора должны быть подготовлены заранее) - используем бинарный поиск
 	//TODO: алгоритм сортировки
-	else
-	{
-		int num = binSer(value, parameter);
-		//¬ыбираем 3 точки (вариант -1 0 +1)
-		if (num - 1 == -1)
-		{
-			p1 = value[num]; p2 = value[num + 1]; p3 = value[num + 2];
-		}
-		else if (num + 1 == value.size())
-		{
-			p1 = value[num - 2]; p2 = value[num - 1]; p3 = value[num];
-		}
-		else
-		{
-			p1 = value[num - 1]; p2 = value[num]; p3 = value[num + 1];
-		}
-	}
+	//else
+	//{
+	//	int num = binSer(value, parameter);
+	//	//¬ыбираем 3 точки (вариант -1 0 +1)
+	//	if (num - 1 == -1)
+	//	{
+	//		p1 = value[num]; p2 = value[num + 1]; p3 = value[num + 2];
+	//	}
+	//	else if (num + 1 == value.size())
+	//	{
+	//		p1 = value[num - 2]; p2 = value[num - 1]; p3 = value[num];
+	//	}
+	//	else
+	//	{
+	//		p1 = value[num - 1]; p2 = value[num]; p3 = value[num + 1];
+	//	}
+	//}
 
 	return interpolation(p1, p2, p3, parameter);
 }
