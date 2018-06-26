@@ -50,8 +50,15 @@ double pojTimer[2] = { 1, 1 };
 double perekTimer[2] = { 1, 1 };
 double craneVsuTimer = 1;
 double kolcTimer = 1;
+
 bool singleNar8 = 0;
 double singleNar8Timer = 0;
+
+bool singleSturm = 0;
+double singleSturmTimer = 0;
+
+bool singleRocket = 0;
+double singleRocketTimer = 0;
 
 int main(int argc, char* argv[])
 {
@@ -240,7 +247,7 @@ int main(int argc, char* argv[])
 					}
 					if (Eng1Off)
 					{
-						if (soundFFT.eng1_obor== 0)
+						if (soundFFT.eng1_obor == 0)
 						{
 							eng1hpbl = 0;
 						}
@@ -1078,6 +1085,51 @@ int main(int argc, char* argv[])
 					}
 				}
 
+				//Попадание ракетой
+				if (singleNar8)
+				{
+					singleNar8Timer += deltaTime;
+					if (singleNar8Timer < 0.01/*максимальная длиина сигнала 1го нара*/)
+					{
+						soundFFT.p_nar_s8 = 1;
+					}
+					else
+					{
+						singleNar8 = 0;
+						soundFFT.p_nar_s8 = 0;
+					}
+				}
+
+				//Пуск штурма
+				if (singleSturm)
+				{
+					singleSturmTimer += deltaTime;
+					if (singleSturmTimer < 0.01/*максимальная длиина сигнала 1го нара*/)
+					{
+						soundFFT.p_ur_ataka = 1;
+					}
+					else
+					{
+						singleSturm = 0;
+						soundFFT.p_ur_ataka = 0;
+					}
+				}
+
+				//Пуск иглы
+				if (singleRocket)
+				{
+					singleRocketTimer += deltaTime;
+					if (singleRocketTimer < 0.01/*максимальная длиина сигнала 1го нара*/)
+					{
+						soundFFT.p_rocket_hit = 1;
+					}
+					else
+					{
+						singleRocket = 0;
+						soundFFT.p_rocket_hit = 0;
+					}
+				}
+
 				//cout замедляет программу (в 7 раз 0.002 -> 0.014) использовать с осторожностью
 				/*cout.precision(3);
 				cout << fixed
@@ -1527,7 +1579,8 @@ int main(int argc, char* argv[])
 		{
 			spd = soundFFT.v_atm_x;
 		}
-		printf(" T___: %.4lf\tDT__: %.4lf\tENG1: %.3f\tENG2: %.3f\tRED_: %.3f\tVSU: %.3f\tSPD: %.3lf\tSTP: %.3f\tTNG: %.3f\tVLY: %.3f\tHIG: %.3f\tROU: %.3lf\tMTL: %.3lf\t\r", currentTime,avrDeltaTime, soundFFT.eng1_obor, soundFFT.eng2_obor, soundFFT.reduktor_gl_obor, soundFFT.vsu_obor, spd, soundFFT.step, soundFFT.tangaz, soundFFT.vy, soundFFT.hight, router, metersToSlitFront);
+		printf(" T___: %.4lf\tDT__: %.4lf\tENG1: %.3f\tENG2: %.3f\tRED_: %.3f\tVSU: %.3f\tSPD: %.3lf\tSTP: %.3f\tTNG: %.3f\tVLY: %.3f\tHIG: %.3f\tROU: %.3lf\tMTL: %.3lf\t\r", currentTime, avrDeltaTime, soundFFT.eng1_obor, soundFFT.eng2_obor, soundFFT.reduktor_gl_obor, soundFFT.vsu_obor, spd, soundFFT.step, soundFFT.tangaz, soundFFT.vy, soundFFT.hight, router, metersToSlitFront);
+		//printf(" %: %.4f\tF: %.4i\r",soundFFT.eng1_obor, soundFFT.p_eng1_zap);
 
 	}
 
@@ -1560,7 +1613,8 @@ void kbHit()
 			soundFFT.p_eng2_pomp = !soundFFT.p_eng2_pomp;//Помпаж 2го двигателя
 			break;
 		case '4':
-			soundFFT.p_ur_ataka = !soundFFT.p_ur_ataka;//Признак применения УР
+			singleSturm = 1;
+			singleSturmTimer = 0;//Признак применения УР
 			break;
 		case '5':
 			soundFFT.p_spo_upk = !soundFFT.p_spo_upk;//Признак применения СПО УПК
@@ -1713,7 +1767,8 @@ void kbHit()
 			soundFFT.tormoz = !soundFFT.tormoz;
 			break;
 		case 'f':
-			soundFFT.p_rocket_hit = !soundFFT.p_rocket_hit;//Признак попадания ракетой
+			singleRocket = 1;
+			singleRocketTimer = 0;//Признак попадания ракетой
 			break;
 		case '6':
 			soundFFT.p_eng1_lkorr = !soundFFT.p_eng1_lkorr;//Правая - левая коррекция
